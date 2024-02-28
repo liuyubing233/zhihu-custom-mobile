@@ -1,0 +1,40 @@
+{
+  "name": "zhihu-custom-mobile",
+  "displayName": "知乎修改器移动版-持续更新",
+  "version": "1.0.0",
+  "description": "知乎修改器的移动版",
+  "main": "index.js",
+  "scripts": {
+    "start": "APP_ENV=dev node ./build-config/esbuild.build.js",
+    "build": "APP_ENV=prod node ./build-config/esbuild.build.js",
+    "start:win": "set APP_ENV=dev&&node ./build-config/esbuild.build.js",
+    "build:win": "set APP_ENV=prod&&node ./build-config/esbuild.build.js",
+    "tag:fix": "yarn tagAuto fix",
+    "tag:feature": "yarn tagAuto feature",
+    "tag:release": "yarn tagAuto release",
+    "tagAuto": "node ./build-config/auto-tag.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liuyubing233/zhihu-custom-mobile.git"
+  },
+  "keywords": [
+    "zhihu",
+    "tampermonkey",
+    "javascript",
+    "typescript"
+  ],
+  "author": "liuyubing",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/liuyubing233/zhihu-custom-mobile/issues"
+  },
+  "homepage": "https://github.com/liuyubing233/zhihu-custom-mobile#readme",
+  "devDependencies": {
+    "@types/node": "^20.5.9",
+    "esbuild": "^0.19.2",
+    "less": "^4.2.0",
+    "shelljs": "^0.8.5",
+    "typescript": "^5.2.2"
+  }
+}

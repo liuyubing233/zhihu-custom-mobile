@@ -1,0 +1,24 @@
+{
+  "editor.tabSize": 2,
+  "files.trimTrailingWhitespace": true,
+  // vscode默认启用了根据文件类型自动设置tabsize的选项
+  "prettier.singleQuote": true,
+  "prettier.semi": true,
+  "search.followSymlinks": false,
+  "emmet.triggerExpansionOnTab": true,
+  "less.compile": {
+    "compress": true //是否压缩
+  },
+  "cSpell.words": [
+    "liuyubing",
+    "Tampermonkey",
+    "Topstory",
+    "Violentmonkey",
+    "Zhihu",
+    "Zhuanlan"
+  ],
+  "prettier.printWidth": 160,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  }
+}

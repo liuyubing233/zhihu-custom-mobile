@@ -1,0 +1,89 @@
+<div id="CTZ_DIALOG" style="display: none">
+  <div class="ctz-header">
+    <span class="ctz-version"></span>
+    <div class="ctz-top-operate">
+      <!-- <span id="CTZ_FETCH_STATUS">状态获取中...</span>
+      <button class="ctz-button" id="CTZ_CHANGE_FETCH" size="small">切换接口拦截</button> -->
+    </div>
+    <button id="CTZ_CLOSE_DIALOG"><i class="ctz-icon">&#xe61b;</i></button>
+  </div>
+  <div class="ctz-menu"></div>
+  <div class="ctz-content">
+    <div id="CTZ_BASIS" style="display: none">
+      <div class="ctz-content-top">
+        <a href="#CTZ_BASIS_SHOW">显示</a>
+        <a href="#CTZ_BASIS_BACKGROUND">颜色</a>
+        <a href="#CTZ_BASIS_SETTING">配置</a>
+      </div>
+      <div class="ctz-content-center">
+        <div id="CTZ_BASIS_SHOW" style="display: none"></div>
+        <div id="CTZ_BASIS_BACKGROUND" style="display: none">
+          <div class="ctz-set-background">
+            <div class="fwb mt8 ctz-background-title">外观</div>
+            <div id="CTZ_BACKGROUND" class="ctz-background-content"></div>
+            <div class="fwb mt8 ctz-background-title">浅色设置</div>
+            <div id="CTZ_BACKGROUND_LIGHT" class="ctz-background-content"></div>
+            <div class="fwb mt8 ctz-background-title">深色设置</div>
+            <div id="CTZ_BACKGROUND_DARK" class="ctz-background-content"></div>
+          </div>
+        </div>
+        <div id="CTZ_BASIS_SETTING" style="display: none">
+          <button class="ctz-button" name="configExport" style="margin-right: 8px">获取当前配置</button>
+          <button class="ctz-button" name="configReset">恢复默认配置</button>
+          <div class="ctz-hidden-item-br"></div>
+          <div class="ctz-config-import-box">
+            <div>配置导入</div>
+            <textarea name="textConfigImport" placeholder="配置参考获取的格式"></textarea>
+            <button class="ctz-button" name="configImport">确 定</button>
+          </div>
+          <div class="ctz-hidden-item-br"></div>
+          <div class="ctz-config-import-box">
+            <div>自定义样式</div>
+            <textarea name="textStyleCustom" placeholder="示例: body{background: #ffffff;}"></textarea>
+            <div class="ctz-btn-box">
+              <button class="ctz-button" name="styleCustom" style="margin-right: 12px;">确 定</button>
+              <button class="ctz-button" name="styleCustomReset">清 空</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="CTZ_HIDDEN" style="display: none">
+      <div class="ctz-content-center"></div>
+    </div>
+
+    <div id="CTZ_FILTER" style="display: none">
+      <div class="ctz-content-top"></div>
+      <div class="ctz-content-center">CTZ_FILTER</div>
+    </div>
+
+    <div id="CTZ_BLACKLIST" style="display: none">
+      <div class="ctz-content-top"></div>
+      <div class="ctz-content-center">CTZ_BLACKLIST</div>
+    </div>
+
+    <div id="CTZ_HISTORY" style="display: none">
+      <div class="ctz-content-top">
+        <a href="#CTZ_HISTORY_LIST">推荐列表缓存</a>
+        <a href="#CTZ_HISTORY_VIEW">浏览历史记录</a>
+      </div>
+      <div class="ctz-content-center">
+        <div id="CTZ_HISTORY_LIST" style="display: none">
+          <button class="ctz-button" name="buttonHistoryClear" data-id="list">清空列表缓存</button>
+          <div class="ctz-set-content"></div>
+          <div class="ctz-commit ta-c mt8">--- 最多缓存500条，包含已过滤项 ---</div>
+        </div>
+        <div id="CTZ_HISTORY_VIEW" style="display: none">
+          <button class="ctz-button" name="buttonHistoryClear" data-id="view">清空历史记录</button>
+          <div class="ctz-set-content"></div>
+          <div class="ctz-commit ta-c mt8">--- 最多缓存500条 ---</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="CTZ_OPEN_BUTTON" class="ctz-icon">&#xe612;</div>
+
+<div id="CTZ_MESSAGE_BOX"></div>

@@ -2,7 +2,11 @@
 
 ![样式](https://pic.imgdb.cn/item/65ded2999f345e8d0394c926.png)
 
-基于 `知乎修改器` 制作。[Github](https://github.com/liuyubing233/zhihu-custom/tree/main) ｜ [GreasyFork](https://greasyfork.org/zh-CN/scripts/423404-%E7%9F%A5%E4%B9%8E%E6%A0%B7%E5%BC%8F%E4%BF%AE%E6%94%B9%E5%99%A8)
+基于 `知乎修改器` 制作[Github](https://github.com/liuyubing233/zhihu-custom/tree/main) ｜ [GreasyFork](https://greasyfork.org/zh-CN/scripts/423404-%E7%9F%A5%E4%B9%8E%E6%A0%B7%E5%BC%8F%E4%BF%AE%E6%94%B9%E5%99%A8)。
+
+[更新日志](https://github.com/liuyubing233/zhihu-custom-mobile/blob/main/CHANGELOG.md) ｜ [问题解答](https://github.com/liuyubing233/zhihu-custom-mobile/blob/main/Q%26A.md)
+
+[Github](https://github.com/liuyubing233/zhihu-custom-mobile/tree/main) ｜ [GreasyFork](https://greasyfork.org/zh-CN/scripts/488508-%E7%9F%A5%E4%B9%8E%E4%BF%AE%E6%94%B9%E5%99%A8%E7%A7%BB%E5%8A%A8%E7%89%88-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0)
 
 ## 功能简介
 

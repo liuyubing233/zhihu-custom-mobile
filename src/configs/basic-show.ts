@@ -1,5 +1,6 @@
 /** 基础设置 - 显示设置部分 */
 export const BASIC_SHOW_CONTENT = [
+  { label: '隐藏修改器唤起按钮，可在脚本菜单<b>⚙️ 设置</b>打开', value: 'openButtonInvisible'},
   {
     label:
       `<b>列表</b>标题类别显示` +

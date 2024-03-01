@@ -17,6 +17,7 @@
 // @grant        GM_getValue
 // @grant        GM.getValue
 // @grant        GM.setValue
+// @grant        GM_registerMenuCommand
 // @run-at       document-start
 // ==/UserScript==
 
@@ -290,6 +291,7 @@
     return "rgba(" + parseInt("0x" + hex.slice(1, 3)) + "," + parseInt("0x" + hex.slice(3, 5)) + "," + parseInt("0x" + hex.slice(5, 7)) + "," + opacity + ")";
   };
   var BASIC_SHOW_CONTENT = [
+    { label: "隐藏修改器唤起按钮，可在脚本菜单<b>⚙️ 设置</b>打开", value: "openButtonInvisible" },
     {
       label: `<b>列表</b>标题类别显示<span class="ctz-label-tag ctz-label-tag-Answer">问答</span><span class="ctz-label-tag ctz-label-tag-Article">文章</span><span class="ctz-label-tag ctz-label-tag-ZVideo">视频</span><span class="ctz-label-tag ctz-label-tag-Pin">想法</span>`,
       value: "questionTitleTag",
@@ -880,7 +882,7 @@
   };
   var myDialog = {
     open: (e) => {
-      e.preventDefault();
+      e && e.preventDefault();
       const nodeDialog = domById("CTZ_DIALOG");
       nodeDialog && (nodeDialog.style.display = "flex");
       myScroll.stop();
@@ -944,7 +946,7 @@
   var myVersion = {
     init: async function() {
       const config = await myStorage.getConfig();
-      fnInitDomStyle("CTZ_STYLE_VERSION", this.vQuestionTitleTag(config));
+      fnInitDomStyle("CTZ_STYLE_VERSION", this.vQuestionTitleTag(config) + this.openButtonInvisible(config));
     },
     change: function() {
       this.init();
@@ -956,6 +958,10 @@
         `.AnswerItem .ContentItem-title::before{content:'问答';background:#ec7259}.TopstoryItem .PinItem::before{content:'想法';background:#9c27b0;${cssTag}}.PinItem>.ContentItem-title{margin-top:4px;}.ZvideoItem .ContentItem-title::before{content:'视频';background:#12c2e9}.ZVideoItem .ContentItem-title::before{content:'视频';background:#12c2e9}.ArticleItem .ContentItem-title::before{content:'文章';background:#00965e}.ContentItem .ContentItem-title::before{margin-right:6px;font-weight:normal;display:inline;padding:2px 4px;border-radius:4px;font-size:12px;color:#ffffff}.TopstoryQuestionAskItem .ContentItem-title::before{content:'提问';background:#533b77}`,
         questionTitleTag
       );
+    },
+    /** 隐藏修改器唤起按钮 */
+    openButtonInvisible: function({ openButtonInvisible }) {
+      return fnReturnStr("#CTZ_OPEN_BUTTON{display: none!important;}", openButtonInvisible);
     }
   };
   var onInitStyleExtra = () => {
@@ -1028,7 +1034,7 @@
     onUseThemeDark();
   };
   var fnChanger = async (ev) => {
-    const doCssVersion = ["questionTitleTag"];
+    const doCssVersion = ["questionTitleTag", "openButtonInvisible"];
     const { name, value, checked, type } = ev;
     const changeBackground = () => {
       myVersion.change();
@@ -1131,6 +1137,9 @@
   (function() {
     const { hostname, host } = location;
     let isHaveHeadWhenInit = true;
+    GM_registerMenuCommand("⚙️ 设置", () => {
+      myDialog.open();
+    });
     async function onDocumentStart() {
       if (!HTML_HOOTS.includes(hostname) || window.frameElement)
         return;

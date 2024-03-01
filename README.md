@@ -2,6 +2,10 @@
 
 ![样式](https://pic.imgdb.cn/item/65ded2999f345e8d0394c926.png)
 
+**隐藏修改器唤起按钮仍可以在脚本菜单处打开**
+
+![open](https://pic.imgdb.cn/item/65e186e49f345e8d03a4e38a.jpg)
+
 基于 `知乎修改器` 制作[Github](https://github.com/liuyubing233/zhihu-custom/tree/main) ｜ [GreasyFork](https://greasyfork.org/zh-CN/scripts/423404-%E7%9F%A5%E4%B9%8E%E6%A0%B7%E5%BC%8F%E4%BF%AE%E6%94%B9%E5%99%A8)。
 
 [更新日志](https://github.com/liuyubing233/zhihu-custom-mobile/blob/main/CHANGELOG.md) ｜ [问题解答](https://github.com/liuyubing233/zhihu-custom-mobile/blob/main/Q%26A.md)

@@ -6,7 +6,7 @@ import { IConfig } from '../types';
 export const myVersion = {
   init: async function () {
     const config = await myStorage.getConfig();
-    fnInitDomStyle('CTZ_STYLE_VERSION', this.vQuestionTitleTag(config));
+    fnInitDomStyle('CTZ_STYLE_VERSION', this.vQuestionTitleTag(config) + this.openButtonInvisible(config));
   },
   change: function () {
     this.init();
@@ -23,5 +23,9 @@ export const myVersion = {
         `.TopstoryQuestionAskItem .ContentItem-title::before{content:'提问';background:#533b77}`,
       questionTitleTag
     );
+  },
+  /** 隐藏修改器唤起按钮 */
+  openButtonInvisible: function ({ openButtonInvisible }: IConfig) {
+    return fnReturnStr('#CTZ_OPEN_BUTTON{display: none!important;}', openButtonInvisible);
   },
 };

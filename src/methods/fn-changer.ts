@@ -10,7 +10,7 @@ import { myVersion } from './version';
 /** 更改编辑器方法 */
 export const fnChanger = async (ev: HTMLInputElement) => {
   // onchange 时只调用 myVersion 的 name
-  const doCssVersion = ['questionTitleTag'];
+  const doCssVersion = ['questionTitleTag', 'openButtonInvisible'];
   const { name, value, checked, type } = ev;
   const changeBackground = () => {
     myVersion.change();

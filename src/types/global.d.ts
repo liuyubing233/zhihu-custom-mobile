@@ -8,6 +8,8 @@ declare const unsafeWindow: Window & {
 };
 declare const GM_info: ScriptGetInfo;
 
+declare const GM_registerMenuCommand: (menuName: string, callback?: () => void, options?: Record<string, any>) => void;
+
 type ScriptGetInfo = {
   downloadMode: string;
   isFirstPartyIsolation?: boolean;

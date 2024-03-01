@@ -6,6 +6,7 @@ import { initResizeObserver } from './init/init-observer-resize';
 import { initOperate } from './init/init-operate';
 import { onInitStyleExtra } from './init/init-style-extra';
 import { loadBackground, myCustomStyle } from './methods/background';
+import { myDialog } from './methods/dialog-open-close';
 import { echoData } from './methods/echo-data';
 import { addHistoryView, echoHistory } from './methods/history';
 import { myListenAnswerItem } from './methods/listen-answer-item';
@@ -19,6 +20,10 @@ import { INNER_CSS } from './web-resources';
   const { hostname, host } = location;
   /** 挂载脚本时 document.head 是否渲染 */
   let isHaveHeadWhenInit = true;
+
+  GM_registerMenuCommand('⚙️ 设置', () => {
+    myDialog.open()
+  });
 
   /** 在启动时注入的内容 */
   async function onDocumentStart() {

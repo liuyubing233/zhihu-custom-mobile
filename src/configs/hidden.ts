@@ -25,6 +25,7 @@ export const HIDDEN_ARRAY: IOptionItem[][] = [
     { value: 'hiddenLogo', label: '隐藏LOGO' },
     { value: 'hiddenHeader', label: '隐藏顶部悬浮模块' },
     { value: 'hiddenBottomSticky', label: '隐藏底部悬浮操作栏' },
+    { value: 'hiddenCommitImg', label: '隐藏评论区图片' },
   ],
   [
     { value: 'hiddenAnswers', label: '隐藏列表回答内容' },
@@ -57,6 +58,7 @@ export const HIDDEN_ARRAY: IOptionItem[][] = [
     { value: 'hiddenZhuanlanAuthorInfoDetail', label: '隐藏文章作者简介' },
     { value: 'hiddenZhuanlanFollowButton', label: '隐藏文章作者关注按钮' },
     { value: 'hiddenZhuanlanTitleImage', label: '隐藏文章标题图片' },
+    { value: 'hiddenZhuanlanImage', label: '隐藏文章内容图片' },
     { value: 'hiddenZhuanlanActions', label: '隐藏文章底部悬浮操作栏' },
   ],
 ];

@@ -29,7 +29,6 @@ import { INNER_CSS } from './web-resources';
   /** 在启动时注入的内容 */
   async function onDocumentStart() {
     if (!HTML_HOOTS.includes(hostname) || window.frameElement) return;
-
     if (!document.head) {
       fnLog('not find document.head, waiting for reload...');
       isHaveHeadWhenInit = false;

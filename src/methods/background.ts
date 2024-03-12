@@ -100,7 +100,7 @@ const myBackground = {
     `#CTZ_DIALOG,#CTZ_BASIS_SHOW label b,.ctz-suspension-pickup,.ctz-content-top a.target,.ctz-message,#CTZ_DIALOG textarea,#CTZ_DIALOG .ctz-button` +
     `,body,.App,.MobileAppHeader-searchBox,.Input-wrapper,.VideoAnswerPlayer-stateBar,.ColumnHomeColumnCard,.Toast-root-tU3yo,.AuthorsSection-author-tFZJF` +
     `,.editable,textarea.zg-form-text-input,.zg-form-text-input>textarea,.ac-active,.PagingButton,[data-tooltip="回到顶部"]` +
-    `,.css-d1dtt9,.css-k8i00s,.css-41c1px,.zm-editable-editor-field-wrap,.zu-question-suggest-topic-input,.zg-form-text-input,.zg-form-select`,
+    `,.css-d1dtt9,.css-k8i00s,.css-41c1px,.zm-editable-editor-field-wrap,.zu-question-suggest-topic-input,.zg-form-text-input,.zg-form-select,.css-4lspwd`,
   /** 使用背景色2的元素名称 */
   cssNamesBackground2:
     `.ctz-content,.ctz-menu>a.target` +
@@ -110,7 +110,7 @@ const myBackground = {
     `,.Favlists-mobileActions,[data-za-detail-view-path-module="SearchResultList"]>div,[data-za-detail-view-path-module="SearchResultList"]>div>a` +
     `,.SearchSubTabs,.KfeCollection-PcCollegeCard-root,.modal-dialog,.ac-renderer,.css-hplpcn,.zh-add-question-form .add-question-splash-page .ac-renderer .ac-row.ac-last` +
     `,.HeaderInfo-infoCard-orDxs,.Common-content-893LU,.ContentModule-module-9gTaH,.NewBottomBar-root-dVXzD,.AuthorModule-root-rxFMb,.css-w0m1iq` +
-    `,.zu-autocomplete-row-label,.ac-row.zu-autocomplete-row-search-link,.PostItem,.Recommendations-Main` +
+    `,.zu-autocomplete-row-label,.ac-row.zu-autocomplete-row-search-link,.PostItem,.Recommendations-Main,.ErrorPage` +
     `,.css-1e7fksk,.css-1gfesro,.css-ud510h,.css-vb0amv,.css-t89z5u,.css-u3vsx3>div,.css-5k4zcx,.css-13heq6w,.css-13heq6w>a,.css-1eltcns,.css-yoby3j,.css-l63y2t,.css-173civf,.css-1nalx0p,.css-mn9570` +
     `,.css-4r7szo,.css-vkey2q,.css-ugzr12,.css-6v1k3,.css-1xj1964,.css-ggid2,.css-rhbxt0,.css-1j23ebo,.css-7wvdjh,.css-kt4t4n`,
   /** 背景色透明的元素名称 */

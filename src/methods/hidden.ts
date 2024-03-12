@@ -25,8 +25,8 @@ export const myHidden: IMyHidden = {
   },
   hiddenItem: {
     hiddenOpenApp: `.OpenInAppButton{${DN}}.css-183aq3r{${VH}}`,
-    hiddenLogo: `.MobileAppHeader-logo{${VH}}`,
-    hiddenHeader: `.MobileAppHeader{${DN}}`,
+    hiddenLogo: `.MobileAppHeader-logo,a[aria-label="知乎"]{${VH}}`,
+    hiddenHeader: `.MobileAppHeader,.ColumnPageHeader.Sticky{${DN}}`,
     hiddenItemActions: `.TopstoryItem .ContentItem-actions:not(.Sticky),.SearchMain .ContentItem-actions{${DN}}`,
     hiddenBottomSticky: `.ContentItem-actions.Sticky{${DN}}`,
     hiddenReward: `.Reward{${DN}}`,
@@ -51,6 +51,8 @@ export const myHidden: IMyHidden = {
     hiddenAnswerItemActions: `.Question-main .ContentItem-actions{${DN}}`,
     hiddenAnswerItemTime: `.Question-main .ContentItem-time{${DN}margin: 0;}`,
     hiddenAnswerItemTimeButHaveIP: `.Question-main .ContentItem-time>a{${DN}}.Question-main .ContentItem-time:empty{${DN}margin: 0;}`,
+    hiddenZhuanlanImage: `.zhuanlan .origin_image{${DN}}`,
+    hiddenCommitImg: `.comment_img{${DN}}`
   },
   hiddenArray: [],
 };

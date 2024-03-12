@@ -2,6 +2,9 @@ import { IOptionItem } from '../types';
 
 export const HTML_HOOTS = ['www.zhihu.com', 'zhuanlan.zhihu.com'];
 
+/** 需要修改 navigator.userAgent 的页面路径 */
+export const NEED_CHANGE_NAVIGATOR_URL = ['www.zhihu.com/question/', 'zhuanlan.zhihu.com/p/'];
+
 /** id: 同步黑名单按钮 */
 export const ID_BUTTON_SYNC_BLOCK = 'CTZ-BUTTON-SYNC-BLOCK';
 /** class: INPUT 点击元素类名 */

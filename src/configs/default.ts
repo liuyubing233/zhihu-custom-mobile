@@ -35,6 +35,7 @@ export const CONFIG_DEFAULT: IConfig = {
   themeDark: EThemeDark.夜间护眼一,
   copyAnswerLink: true,
   showQuestionLog: true,
+  showAllContent: true,
 };
 
 /** 缓存的历史记录数量 */

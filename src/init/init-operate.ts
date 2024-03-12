@@ -34,4 +34,14 @@ export const initOperate = () => {
   domById('CTZ_OPEN_BUTTON')!.onclick = myDialog.open;
   domById('CTZ_CLOSE_DIALOG')!.onclick = myDialog.hide;
   initTopStoryRecommendEvent();
+
+  document.body.addEventListener('click', function (event: MouseEvent) {
+    const { target } = event;
+    // console.log(event, target);
+    if ((target as HTMLElement).classList.contains('css-hzocic')) {
+      // 点击到了手动添加的关闭伪元素
+      const nodeClose = dom('[aria-label="关闭"]');
+      nodeClose && nodeClose.click();
+    }
+  });
 };

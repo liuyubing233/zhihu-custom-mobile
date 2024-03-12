@@ -54,6 +54,10 @@ export interface IConfigHidden {
   hiddenAnswerItemTime?: boolean;
   /** 回答底部发布编辑时间（保留IP） */
   hiddenAnswerItemTimeButHaveIP?: boolean;
+  /** 隐藏文章内容图片 */
+  hiddenZhuanlanImage?: boolean;
+  /** 隐藏评论区图片 */
+  hiddenCommitImg?: boolean;
 }
 
 /** 自定义黑名单列表内容 */
@@ -241,4 +245,6 @@ export interface IConfig extends IConfigHidden, IConfigFilter {
   copyAnswerLink?: boolean;
   /** 时间戳 */
   t?: number;
+  /** 回答、文章显示完整内容和评论 */
+  showAllContent?: boolean;
 }

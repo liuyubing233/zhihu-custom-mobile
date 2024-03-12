@@ -71,7 +71,8 @@
     themeLight: "0" /* 默认 */,
     themeDark: "1" /* 夜间护眼一 */,
     copyAnswerLink: true,
-    showQuestionLog: true
+    showQuestionLog: true,
+    showAllContent: true
   };
   var SAVE_HISTORY_NUMBER = 500;
   var HTML_HOOTS = ["www.zhihu.com", "zhuanlan.zhihu.com"];
@@ -293,7 +294,10 @@
   var hexToRgba = (hex, opacity) => {
     return "rgba(" + parseInt("0x" + hex.slice(1, 3)) + "," + parseInt("0x" + hex.slice(3, 5)) + "," + parseInt("0x" + hex.slice(5, 7)) + "," + opacity + ")";
   };
-  var initChangeNavigator = () => {
+  var initChangeNavigator = async () => {
+    const { showAllContent } = await myStorage.getConfig();
+    if (!showAllContent)
+      return;
     const isNeedChange = (() => {
       const { href } = location;
       for (let i = 0, len = NEED_CHANGE_NAVIGATOR_URL.length; i < len; i++) {
@@ -314,6 +318,7 @@
   };
   var BASIC_SHOW_CONTENT = [
     { label: "隐藏修改器唤起按钮，可在脚本菜单<b>⚙️ 设置</b>打开", value: "openButtonInvisible" },
+    { label: "<b>回答、文章</b>显示完整内容和评论", value: "showAllContent" },
     {
       label: `<b>列表</b>标题类别显示<span class="ctz-label-tag ctz-label-tag-Answer">问答</span><span class="ctz-label-tag ctz-label-tag-Article">文章</span><span class="ctz-label-tag ctz-label-tag-ZVideo">视频</span><span class="ctz-label-tag ctz-label-tag-Pin">想法</span>`,
       value: "questionTitleTag",

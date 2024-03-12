@@ -245,4 +245,6 @@ export interface IConfig extends IConfigHidden, IConfigFilter {
   copyAnswerLink?: boolean;
   /** 时间戳 */
   t?: number;
+  /** 回答、文章显示完整内容和评论 */
+  showAllContent?: boolean;
 }

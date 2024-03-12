@@ -1,7 +1,11 @@
+import { myStorage } from '../commons/storage';
 import { NEED_CHANGE_NAVIGATOR_URL } from '../configs';
 
 /** 修改 navigator.userAgent 以显示 PC 端回答和专栏内容，用于显示完整的回答和评论 */
-export const initChangeNavigator = () => {
+export const initChangeNavigator = async () => {
+  const { showAllContent } = await myStorage.getConfig();
+  if (!showAllContent) return;
+
   const isNeedChange = (() => {
     const { href } = location;
     for (let i = 0, len = NEED_CHANGE_NAVIGATOR_URL.length; i < len; i++) {

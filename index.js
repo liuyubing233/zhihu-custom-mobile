@@ -75,6 +75,7 @@
   };
   var SAVE_HISTORY_NUMBER = 500;
   var HTML_HOOTS = ["www.zhihu.com", "zhuanlan.zhihu.com"];
+  var NEED_CHANGE_NAVIGATOR_URL = ["www.zhihu.com/question/", "zhuanlan.zhihu.com/p/"];
   var CLASS_INPUT_CLICK = "ctz-i";
   var CLASS_INPUT_CHANGE = "ctz-i-change";
   var CLASS_TIME_ITEM = "ctz-list-item-time";
@@ -289,6 +290,25 @@
   };
   var hexToRgba = (hex, opacity) => {
     return "rgba(" + parseInt("0x" + hex.slice(1, 3)) + "," + parseInt("0x" + hex.slice(3, 5)) + "," + parseInt("0x" + hex.slice(5, 7)) + "," + opacity + ")";
+  };
+  var initChangeNavigator = () => {
+    const isNeedChange = (() => {
+      const { href } = location;
+      for (let i = 0, len = NEED_CHANGE_NAVIGATOR_URL.length; i < len; i++) {
+        const item = NEED_CHANGE_NAVIGATOR_URL[i];
+        if (href.includes(item)) {
+          return true;
+        }
+      }
+      return false;
+    })();
+    if (!isNeedChange)
+      return;
+    const customUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
+    Object.defineProperty(navigator, "userAgent", {
+      value: customUserAgent,
+      writable: false
+    });
   };
   var BASIC_SHOW_CONTENT = [
     { label: "隐藏修改器唤起按钮，可在脚本菜单<b>⚙️ 设置</b>打开", value: "openButtonInvisible" },
@@ -1137,6 +1157,7 @@
   (function() {
     const { hostname, host } = location;
     let isHaveHeadWhenInit = true;
+    initChangeNavigator();
     GM_registerMenuCommand("⚙️ 设置", () => {
       myDialog.open();
     });

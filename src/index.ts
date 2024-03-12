@@ -1,6 +1,7 @@
 import { myStorage } from './commons/storage';
 import { dom, domA, fnInitDomStyle, fnLog, pathnameHasFn, throttle } from './commons/tools';
 import { EXTRA_CLASS_HTML, HTML_HOOTS } from './configs/dom-name';
+import { initChangeNavigator } from './init/init-change-navigator';
 import { initHTML } from './init/init-html';
 import { initResizeObserver } from './init/init-observer-resize';
 import { initOperate } from './init/init-operate';
@@ -20,14 +21,15 @@ import { INNER_CSS } from './web-resources';
   const { hostname, host } = location;
   /** 挂载脚本时 document.head 是否渲染 */
   let isHaveHeadWhenInit = true;
-
+  initChangeNavigator();
   GM_registerMenuCommand('⚙️ 设置', () => {
-    myDialog.open()
+    myDialog.open();
   });
 
   /** 在启动时注入的内容 */
   async function onDocumentStart() {
     if (!HTML_HOOTS.includes(hostname) || window.frameElement) return;
+
     if (!document.head) {
       fnLog('not find document.head, waiting for reload...');
       isHaveHeadWhenInit = false;

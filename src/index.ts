@@ -88,25 +88,25 @@ import { INNER_CSS } from './web-resources';
   window.addEventListener('popstate', changeHistory);
   window.addEventListener('pushState', changeHistory);
 
-  // /** 页面资源加载完成 */
-  // window.addEventListener('load', () => {
-  //   // 如果存在登录弹窗则移除
-  //   // const nodeSignModal = dom('.signFlowModal');
-  //   // const nodeSignClose = nodeSignModal && (nodeSignModal.querySelector('.Modal-closeButton') as HTMLButtonElement);
-  //   // nodeSignClose && nodeSignClose.click();
-  //   // if (host === 'zhuanlan.zhihu.com') {
-  //   //   const nodeArticle = dom('.Post-content');
-  //   //   if (nodeArticle) {
-  //   //     initVideoDownload(nodeArticle);
-  //   //   }
-  //   // }
-  //   // pathnameHasFn({
-  //   //   zvideo: () => {
-  //   //     const domFind = dom('.ZVideo-mainColumn');
-  //   //     domFind && initVideoDownload(domFind);
-  //   //   },
-  //   // });
-  // });
+  /** 页面资源加载完成 */
+  window.addEventListener('load', () => {
+    // 如果存在登录弹窗则移除
+    const nodeSignModal = dom('.signFlowModal');
+    const nodeSignClose = nodeSignModal && (nodeSignModal.querySelector('.Modal-closeButton') as HTMLButtonElement);
+    nodeSignClose && nodeSignClose.click();
+    // if (host === 'zhuanlan.zhihu.com') {
+    //   const nodeArticle = dom('.Post-content');
+    //   if (nodeArticle) {
+    //     initVideoDownload(nodeArticle);
+    //   }
+    // }
+    // pathnameHasFn({
+    //   zvideo: () => {
+    //     const domFind = dom('.ZVideo-mainColumn');
+    //     domFind && initVideoDownload(domFind);
+    //   },
+    // });
+  });
 
   // 复制代码块删除版权信息
   document.addEventListener('copy', function (event) {

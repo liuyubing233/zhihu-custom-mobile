@@ -29,7 +29,7 @@ export const EXTRA_CLASS_HTML: Record<string, string> = {
 export const HEADER = [
   { href: '#CTZ_BASIS', value: '基础设置' },
   { href: '#CTZ_HIDDEN', value: '隐藏模块' },
-  // { href: '#CTZ_FILTER', value: '屏蔽内容' },
+  { href: '#CTZ_FILTER', value: '屏蔽内容' },
   // { href: '#CTZ_BLOCK_WORD', value: '屏蔽词' },
   // { href: '#CTZ_BLACKLIST', value: '黑名单' },
   { href: '#CTZ_HISTORY', value: '历史记录' },
@@ -50,3 +50,9 @@ export const FONT_SIZE_INPUT: IOptionItem[][] = [
     { value: 'fontSizeForArticle', label: '文章内容文字大小' },
   ],
 ];
+
+/** 回答收起展开插入的类名 */
+export const OB_CLASS_FOLD = {
+  on: 'ctz-fold-open',
+  off: 'ctz-fold-close',
+};

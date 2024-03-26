@@ -71,56 +71,56 @@ export interface IBlockUserItem {
 
 /** 屏蔽内容模块默认配置 */
 export interface IConfigFilter {
-  // /** 屏蔽知乎官方账号回答 */
-  // removeZhihuOfficial?: boolean;
-  // /** 屏蔽故事档案局回答 */
-  // removeStoryAnswer?: boolean;
-  // /** 屏蔽盐选科普回答 */
-  // removeYanxuanAnswer?: boolean;
-  // /** 屏蔽盐选推荐 */
-  // removeYanxuanRecommend?: boolean;
-  // /** 屏蔽盐选测评室 */
-  // removeYanxuanCPRecommend?: boolean;
-  // /** 屏蔽选自盐选专栏的回答 */
-  // removeFromYanxuan?: boolean;
-  // /** 屏蔽带有虚构内容的回答 */
-  // removeUnrealAnswer?: boolean;
-  // /** 屏蔽关注人赞同回答 */
-  // removeFollowVoteAnswer?: boolean;
-  // /** 屏蔽关注人赞同文章 */
-  // removeFollowVoteArticle?: boolean;
-  // /** 屏蔽关注人关注问题 */
-  // removeFollowFQuestion?: boolean;
-  // /** 屏蔽不再显示黑名单用户发布的内容 */
-  // removeBlockUserContent?: boolean;
-  // /** 屏蔽已屏蔽用户列表 */
-  // removeBlockUserContentList?: IBlockUserItem[];
-  // /** 屏蔽商业推广 */
-  // removeItemAboutAD?: boolean;
-  // /** 屏蔽文章 */
-  // removeItemAboutArticle?: boolean;
-  // /** 屏蔽视频 */
-  // removeItemAboutVideo?: boolean;
-  // /** 列表屏蔽想法 */
-  // removeItemAboutPin?: boolean;
-  // /** 屏蔽列表提问 */
-  // removeItemQuestionAsk?: boolean;
-  // /** 关注列表过滤低于以下赞的内容 */
-  // removeLessVote?: boolean;
-  // /** 关注列表过滤低于以下赞的内容 */
-  // lessVoteNumber?: number;
-  // /** 回答低赞内容屏蔽 */
-  // removeLessVoteDetail?: boolean;
-  // /** 回答详情屏蔽以下赞的内容 */
-  // lessVoteNumberDetail?: number;
-  // /** 屏蔽匿名用户回答 */
-  // removeAnonymousAnswer?: boolean;
-  // /** 关注列表屏蔽自己的操作 */
-  // removeMyOperateAtFollow?: boolean;
-  // /** 屏蔽顶部活动推广 */
-  // removeTopAD?: boolean;
-  // /** 屏蔽标签选自电子书的回答 */
-  // removeFromEBook?: boolean;
+  /** 屏蔽知乎官方账号回答 */
+  removeZhihuOfficial?: boolean;
+  /** 屏蔽故事档案局回答 */
+  removeStoryAnswer?: boolean;
+  /** 屏蔽盐选科普回答 */
+  removeYanxuanAnswer?: boolean;
+  /** 屏蔽盐选推荐 */
+  removeYanxuanRecommend?: boolean;
+  /** 屏蔽盐选测评室 */
+  removeYanxuanCPRecommend?: boolean;
+  /** 屏蔽选自盐选专栏的回答 */
+  removeFromYanxuan?: boolean;
+  /** 屏蔽带有虚构内容的回答 */
+  removeUnrealAnswer?: boolean;
+  /** 屏蔽关注人赞同回答 */
+  removeFollowVoteAnswer?: boolean;
+  /** 屏蔽关注人赞同文章 */
+  removeFollowVoteArticle?: boolean;
+  /** 屏蔽关注人关注问题 */
+  removeFollowFQuestion?: boolean;
+  /** 屏蔽不再显示黑名单用户发布的内容 */
+  removeBlockUserContent?: boolean;
+  /** 屏蔽已屏蔽用户列表 */
+  removeBlockUserContentList?: IBlockUserItem[];
+  /** 屏蔽商业推广 */
+  removeItemAboutAD?: boolean;
+  /** 屏蔽文章 */
+  removeItemAboutArticle?: boolean;
+  /** 屏蔽视频 */
+  removeItemAboutVideo?: boolean;
+  /** 列表屏蔽想法 */
+  removeItemAboutPin?: boolean;
+  /** 屏蔽列表提问 */
+  removeItemQuestionAsk?: boolean;
+  /** 关注列表过滤低于以下赞的内容 */
+  removeLessVote?: boolean;
+  /** 关注列表过滤低于以下赞的内容 */
+  lessVoteNumber?: number;
+  /** 回答低赞内容屏蔽 */
+  removeLessVoteDetail?: boolean;
+  /** 回答详情屏蔽以下赞的内容 */
+  lessVoteNumberDetail?: number;
+  /** 屏蔽匿名用户回答 */
+  removeAnonymousAnswer?: boolean;
+  /** 关注列表屏蔽自己的操作 */
+  removeMyOperateAtFollow?: boolean;
+  /** 屏蔽顶部活动推广 */
+  removeTopAD?: boolean;
+  /** 屏蔽标签选自电子书的回答 */
+  removeFromEBook?: boolean;
 }
 
 /** 配置参数 */

@@ -53,7 +53,7 @@ export const myHidden: IMyHidden = {
     hiddenAnswerItemTimeButHaveIP: `.Question-main .ContentItem-time>a{${DN}}.Question-main .ContentItem-time:empty{${DN}margin: 0;}`,
     hiddenZhuanlanImage: `.zhuanlan .origin_image{${DN}}`,
     hiddenCommitImg: `.comment_img{${DN}}`,
-    hiddenAD: `.TopstoryItem--advertCard,.Pc-card,.Pc-word,.RichText-ADLinkCardContainer{${DN}}`,
+    hiddenAD: `.TopstoryItem--advertCard,.Pc-card,.Pc-word,.RichText-ADLinkCardContainer,#div-gpt-ad-bannerAd{${DN}}`,
   },
   hiddenArray: [],
 };

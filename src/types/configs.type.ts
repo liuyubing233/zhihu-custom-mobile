@@ -58,6 +58,8 @@ export interface IConfigHidden {
   hiddenZhuanlanImage?: boolean;
   /** 隐藏评论区图片 */
   hiddenCommitImg?: boolean;
+  /** 隐藏广告 */
+  hiddenAD?: boolean;
 }
 
 /** 自定义黑名单列表内容 */

@@ -17,6 +17,7 @@ export const HIDDEN_ANSWER_ACCOUNT: Record<string, string> = {
 
 // 勾选隐藏对应内容
 export const HIDDEN_ARRAY: IOptionItem[][] = [
+  [{ value: 'hiddenAD', label: '广告' }],
   [
     { value: 'hiddenOpenApp', label: '隐藏跳转APP的提示和按钮' },
     { value: 'hiddenReward', label: '隐藏赞赏按钮' },

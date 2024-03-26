@@ -54,7 +54,8 @@
   var CONFIG_HIDDEN_DEFAULT = {
     hiddenOpenApp: true,
     hiddenReadMoreText: true,
-    hiddenReward: true
+    hiddenReward: true,
+    hiddenAD: true
   };
   var CONFIG_FILTER_DEFAULT = {
     removeZhihuOfficial: true,
@@ -115,6 +116,7 @@
     removeYanxuanCPRecommend: "盐选测评室"
   };
   var HIDDEN_ARRAY = [
+    [{ value: "hiddenAD", label: "广告" }],
     [
       { value: "hiddenOpenApp", label: "隐藏跳转APP的提示和按钮" },
       { value: "hiddenReward", label: "隐藏赞赏按钮" }
@@ -1033,7 +1035,8 @@
       hiddenAnswerItemTime: `.Question-main .ContentItem-time{${DN}margin: 0;}`,
       hiddenAnswerItemTimeButHaveIP: `.Question-main .ContentItem-time>a{${DN}}.Question-main .ContentItem-time:empty{${DN}margin: 0;}`,
       hiddenZhuanlanImage: `.zhuanlan .origin_image{${DN}}`,
-      hiddenCommitImg: `.comment_img{${DN}}`
+      hiddenCommitImg: `.comment_img{${DN}}`,
+      hiddenAD: `.TopstoryItem--advertCard,.Pc-card,.Pc-word,.RichText-ADLinkCardContainer{${DN}}`
     },
     hiddenArray: []
   };

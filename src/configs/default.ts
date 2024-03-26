@@ -14,10 +14,21 @@ export const CONFIG_HIDDEN_DEFAULT: IConfigHidden = {
   hiddenOpenApp: true,
   hiddenReadMoreText: true,
   hiddenReward: true,
+  hiddenAD: true,
 };
 
 /** 屏蔽内容模块默认配置 */
-export const CONFIG_FILTER_DEFAULT: IConfigFilter = {};
+export const CONFIG_FILTER_DEFAULT: IConfigFilter = {
+  removeZhihuOfficial: true,
+  removeAnonymousAnswer: false,
+  removeFromYanxuan: true,
+  removeUnrealAnswer: true,
+  removeFromEBook: true,
+  removeStoryAnswer: true,
+  removeYanxuanAnswer: true,
+  removeYanxuanRecommend: true,
+  removeYanxuanCPRecommend: true,
+};
 
 /** 默认配置 */
 export const CONFIG_DEFAULT: IConfig = {

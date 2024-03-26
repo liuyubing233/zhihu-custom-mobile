@@ -41,7 +41,7 @@
             <div>自定义样式</div>
             <textarea name="textStyleCustom" placeholder="示例: body{background: #ffffff;}"></textarea>
             <div class="ctz-btn-box">
-              <button class="ctz-button" name="styleCustom" style="margin-right: 12px;">确 定</button>
+              <button class="ctz-button" name="styleCustom" style="margin-right: 12px">确 定</button>
               <button class="ctz-button" name="styleCustomReset">清 空</button>
             </div>
           </div>
@@ -54,8 +54,37 @@
     </div>
 
     <div id="CTZ_FILTER" style="display: none">
-      <div class="ctz-content-top"></div>
-      <div class="ctz-content-center">CTZ_FILTER</div>
+      <!-- <div class="ctz-content-top"></div> -->
+      <div class="ctz-content-center">
+        <div class="ctz-filter-defail-who">
+          <div class="ctz-label">屏蔽以下官方账号的回答</div>
+          <div style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px">
+            <label><input class="ctz-i" name="removeZhihuOfficial" type="checkbox" value="on" />所有知乎官方账号</label>
+          </div>
+          <div class="ctz-flex-wrap" style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px">
+            <label><input class="ctz-i" name="removeStoryAnswer" type="checkbox" value="on" />故事档案局</label>
+            <label><input class="ctz-i" name="removeYanxuanAnswer" type="checkbox" value="on" />盐选科普</label>
+            <label><input class="ctz-i" name="removeYanxuanRecommend" type="checkbox" value="on" />盐选推荐</label>
+            <label><input class="ctz-i" name="removeYanxuanCPRecommend" type="checkbox" value="on" />盐选测评室</label>
+          </div>
+        </div>
+
+        <div class="ctz-flex-wrap" style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px">
+          <label>
+            <span class="ctz-label">屏蔽「匿名用户」回答</span>
+            <input class="ctz-i" name="removeAnonymousAnswer" type="checkbox" value="on" />
+          </label>
+        </div>
+
+        <div class="ctz-filter-defail-tag">
+          <div class="ctz-label">屏蔽带有以下标签的回答</div>
+          <div class="ctz-flex-wrap">
+            <label><input class="ctz-i" name="removeFromYanxuan" type="checkbox" value="on" />选自盐选专栏</label>
+            <label><input class="ctz-i" name="removeUnrealAnswer" type="checkbox" value="on" />带有虚构创作</label>
+            <label><input class="ctz-i" name="removeFromEBook" type="checkbox" value="on" />选自电子书</label>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="CTZ_BLACKLIST" style="display: none">

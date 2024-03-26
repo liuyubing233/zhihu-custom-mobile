@@ -62,4 +62,9 @@ export const HIDDEN_ARRAY: IOptionItem[][] = [
     { value: 'hiddenZhuanlanImage', label: '隐藏文章内容图片' },
     { value: 'hiddenZhuanlanActions', label: '隐藏文章底部悬浮操作栏' },
   ],
+  [
+    {value: 'hiddenAnswerYanxuanRecommend', label: '隐藏回答页盐选推荐'},
+    {value: 'hiddenAnswerRelatedRecommend', label: '隐藏回答页相关推荐'},
+    {value: 'hiddenAnswerHotRecommend', label: '隐藏回答页热门推荐'},
+  ]
 ];

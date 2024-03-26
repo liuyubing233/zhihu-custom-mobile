@@ -123,6 +123,12 @@ export interface IConfigFilter {
   removeTopAD?: boolean;
   /** 屏蔽标签选自电子书的回答 */
   removeFromEBook?: boolean;
+  /** 隐藏盐选推荐 */
+  hiddenAnswerYanxuanRecommend?: boolean;
+  /** 隐藏回答页相关推荐 */
+  hiddenAnswerRelatedRecommend?: boolean;
+  /** 隐藏回答页热门推荐 */
+  hiddenAnswerHotRecommend?: boolean;
 }
 
 /** 配置参数 */

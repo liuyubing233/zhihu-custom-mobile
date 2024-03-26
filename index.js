@@ -66,7 +66,8 @@
     removeStoryAnswer: true,
     removeYanxuanAnswer: true,
     removeYanxuanRecommend: true,
-    removeYanxuanCPRecommend: true
+    removeYanxuanCPRecommend: true,
+    hiddenAnswerYanxuanRecommend: true
   };
   var CONFIG_DEFAULT = {
     ...CONFIG_HIDDEN_DEFAULT,
@@ -160,6 +161,11 @@
       { value: "hiddenZhuanlanTitleImage", label: "隐藏文章标题图片" },
       { value: "hiddenZhuanlanImage", label: "隐藏文章内容图片" },
       { value: "hiddenZhuanlanActions", label: "隐藏文章底部悬浮操作栏" }
+    ],
+    [
+      { value: "hiddenAnswerYanxuanRecommend", label: "隐藏回答页盐选推荐" },
+      { value: "hiddenAnswerRelatedRecommend", label: "隐藏回答页相关推荐" },
+      { value: "hiddenAnswerHotRecommend", label: "隐藏回答页热门推荐" }
     ]
   ];
   var myStorage = {
@@ -1036,7 +1042,10 @@
       hiddenAnswerItemTimeButHaveIP: `.Question-main .ContentItem-time>a{${DN}}.Question-main .ContentItem-time:empty{${DN}margin: 0;}`,
       hiddenZhuanlanImage: `.zhuanlan .origin_image{${DN}}`,
       hiddenCommitImg: `.comment_img{${DN}}`,
-      hiddenAD: `.TopstoryItem--advertCard,.Pc-card,.Pc-word,.RichText-ADLinkCardContainer,#div-gpt-ad-bannerAd{${DN}}`
+      hiddenAnswerYanxuanRecommend: `.Question-mainEntity .KfeCollection-VipRecommendCard{${DN}}`,
+      hiddenAD: `.TopstoryItem--advertCard,.Pc-card,.Pc-word,.RichText-ADLinkCardContainer,#div-gpt-ad-bannerAd,#div-gpt-ad-hotFeedAd,.MRelateFeedAd,.MHotFeedAd{${DN}}`,
+      hiddenAnswerRelatedRecommend: `.Question-mainEntity .RelatedReadings{${DN}}`,
+      hiddenAnswerHotRecommend: `.Question-mainEntity .HotQuestions{${DN}}`
     },
     hiddenArray: []
   };

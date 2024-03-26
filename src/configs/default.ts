@@ -28,6 +28,7 @@ export const CONFIG_FILTER_DEFAULT: IConfigFilter = {
   removeYanxuanAnswer: true,
   removeYanxuanRecommend: true,
   removeYanxuanCPRecommend: true,
+  hiddenAnswerYanxuanRecommend: true,
 };
 
 /** 默认配置 */

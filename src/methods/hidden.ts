@@ -53,7 +53,10 @@ export const myHidden: IMyHidden = {
     hiddenAnswerItemTimeButHaveIP: `.Question-main .ContentItem-time>a{${DN}}.Question-main .ContentItem-time:empty{${DN}margin: 0;}`,
     hiddenZhuanlanImage: `.zhuanlan .origin_image{${DN}}`,
     hiddenCommitImg: `.comment_img{${DN}}`,
-    hiddenAD: `.TopstoryItem--advertCard,.Pc-card,.Pc-word,.RichText-ADLinkCardContainer,#div-gpt-ad-bannerAd{${DN}}`,
+    hiddenAnswerYanxuanRecommend: `.Question-mainEntity .KfeCollection-VipRecommendCard{${DN}}`,
+    hiddenAD: `.TopstoryItem--advertCard,.Pc-card,.Pc-word,.RichText-ADLinkCardContainer,#div-gpt-ad-bannerAd,#div-gpt-ad-hotFeedAd,.MRelateFeedAd,.MHotFeedAd{${DN}}`,
+    hiddenAnswerRelatedRecommend: `.Question-mainEntity .RelatedReadings{${DN}}`,
+    hiddenAnswerHotRecommend: `.Question-mainEntity .HotQuestions{${DN}}`,
   },
   hiddenArray: [],
 };

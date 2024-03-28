@@ -1,0 +1,27 @@
+@import './common.less';
+
+.Question-main {
+  .ContentItem.AnswerItem {
+    .ContentItem-expandButton {
+      display: none !important;
+    }
+  }
+
+  .ctz-n-button-expend {
+    color: @blue1;
+    position: absolute;
+    border: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    top: 0;
+    left: 0;
+  }
+
+  .ctz-n-button-close {
+    margin-left: 12px;
+  }
+}

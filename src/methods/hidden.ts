@@ -54,7 +54,7 @@ export const myHidden: IMyHidden = {
     hiddenZhuanlanImage: `.zhuanlan .origin_image{${DN}}`,
     hiddenCommitImg: `.comment_img{${DN}}`,
     hiddenAnswerYanxuanRecommend: `.Question-mainEntity .KfeCollection-VipRecommendCard{${DN}}`,
-    hiddenAD: `.TopstoryItem--advertCard,.Pc-card,.Pc-word,.RichText-ADLinkCardContainer,#div-gpt-ad-bannerAd,#div-gpt-ad-hotFeedAd,.MRelateFeedAd,.MHotFeedAd{${DN}}`,
+    hiddenAD: `.TopstoryItem--advertCard,.Pc-card,.Pc-word,.RichText-ADLinkCardContainer,#div-gpt-ad-bannerAd,#div-gpt-ad-hotFeedAd,.MRelateFeedAd,.MHotFeedAd,.MBannerAd{${DN}}`,
     hiddenAnswerRelatedRecommend: `.Question-mainEntity .RelatedReadings{${DN}}`,
     hiddenAnswerHotRecommend: `.Question-mainEntity .HotQuestions{${DN}}`,
   },

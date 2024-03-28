@@ -1,7 +1,7 @@
 import { myStorage } from './commons/storage';
 import { dom, domA, fnInitDomStyle, fnLog, pathnameHasFn, throttle } from './commons/tools';
 import { EXTRA_CLASS_HTML, HTML_HOOTS } from './configs/dom-name';
-import { initChangeNavigator } from './init/init-change-navigator';
+import { initChangeAnswer } from './init/init-change-answer';
 import { initHTML } from './init/init-html';
 import { initResizeObserver } from './init/init-observer-resize';
 import { initOperate } from './init/init-operate';
@@ -10,6 +10,7 @@ import { loadBackground, myCustomStyle } from './methods/background';
 import { myDialog } from './methods/dialog-open-close';
 import { echoData } from './methods/echo-data';
 import { addHistoryView, echoHistory } from './methods/history';
+import { myListenAnswer } from './methods/listen-answer';
 import { myListenAnswerItem } from './methods/listen-answer-item';
 import { myListenListItem } from './methods/listen-list-item';
 import { addQuestionLogButton } from './methods/question-log';
@@ -21,7 +22,7 @@ import { INNER_CSS } from './web-resources';
   const { hostname, host } = location;
   /** 挂载脚本时 document.head 是否渲染 */
   let isHaveHeadWhenInit = true;
-  initChangeNavigator();
+  // initChangeNavigator();
   GM_registerMenuCommand('⚙️ 设置', () => {
     myDialog.open();
   });
@@ -45,6 +46,7 @@ import { INNER_CSS } from './web-resources';
   window.addEventListener(
     'DOMContentLoaded',
     async () => {
+      initChangeAnswer();
       // 如果脚本注入时 document.head 未加载完成则在页面渲染后重新进行加载
       if (!isHaveHeadWhenInit) {
         await onDocumentStart();
@@ -131,6 +133,7 @@ import { INNER_CSS } from './web-resources';
         fnSuspensionPickup(domA('.TopstoryItem'));
         fnSuspensionPickup(domA('.AnswerCard'));
       }
+      myListenAnswer.scroll()
     }, 100),
     false
   );

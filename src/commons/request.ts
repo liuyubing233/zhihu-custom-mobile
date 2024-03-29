@@ -45,3 +45,15 @@ export const requestComment = async ({ url, answerId, orderBy = 'score', offset 
     headers: createCommentHeaders(nUrl),
   }).then((res) => res.json());
 };
+
+/** 获取知乎评论区子评论内容 */
+export const requestCommentChild = async ({ url, answerId, orderBy = 'ts', offset = '' }: IRequestCommentParams): Promise<IZhihuCommentResponse | undefined> => {
+  // order_by: ts, score
+  if (!answerId && !url) return undefined;
+  const nUrl = url || `/api/v4/comment_v5/comment/${answerId}/child_comment?order_by=${orderBy}&limit=20&offset=${offset}`;
+  return fetch(nUrl, {
+    method: 'GET',
+    headers: createCommentHeaders(nUrl),
+  }).then((res) => res.json());
+};
+

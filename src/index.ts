@@ -11,7 +11,6 @@ import { myDialog } from './methods/dialog-open-close';
 import { echoData } from './methods/echo-data';
 import { addHistoryView, echoHistory } from './methods/history';
 import { myListenAnswer } from './methods/listen-answer';
-import { myListenAnswerItem } from './methods/listen-answer-item';
 import { myListenListItem } from './methods/listen-list-item';
 import { addQuestionLogButton } from './methods/question-log';
 import { fnSuspensionPickup } from './methods/suspension';
@@ -84,7 +83,7 @@ import { INNER_CSS } from './web-resources';
     historyToChangePathname();
     // 重置监听起点
     myListenListItem.reset();
-    myListenAnswerItem.reset();
+    // myListenAnswerItem.reset();
   };
   /** history 变化 */
   window.addEventListener('popstate', changeHistory);

@@ -108,17 +108,6 @@
     { href: "#CTZ_HISTORY", value: "历史记录" }
     // { href: '#CTZ_DEFAULT', value: '默认功能' },
   ];
-  var HIDDEN_ANSWER_TAG = {
-    removeFromYanxuan: "盐选专栏",
-    removeUnrealAnswer: "虚构创作",
-    removeFromEBook: "电子书"
-  };
-  var HIDDEN_ANSWER_ACCOUNT = {
-    removeStoryAnswer: "故事档案局",
-    removeYanxuanAnswer: "盐选科普",
-    removeYanxuanRecommend: "盐选推荐",
-    removeYanxuanCPRecommend: "盐选测评室"
-  };
   var HIDDEN_ARRAY = [
     [{ value: "hiddenAD", label: "广告" }],
     [
@@ -799,7 +788,12 @@
       headers: createCommentHeaders(nUrl)
     }).then((res) => res.json());
   };
-  var requestCommentChild = async ({ url, answerId, orderBy = "ts", offset = "" }) => {
+  var requestCommentChild = async ({
+    url,
+    answerId,
+    orderBy = "ts",
+    offset = ""
+  }) => {
     if (!answerId && !url)
       return void 0;
     const nUrl = url || `/api/v4/comment_v5/comment/${answerId}/child_comment?order_by=${orderBy}&limit=20&offset=${offset}`;
@@ -807,6 +801,11 @@
       method: "GET",
       headers: createCommentHeaders(nUrl)
     }).then((res) => res.json());
+  };
+  var commonRequest = async (url, method = "GET", headers = new Headers()) => {
+    if (!url)
+      return void 0;
+    return fetch(url, { method, headers }).then((res) => res.json());
   };
   var myScroll = {
     stop: () => dom("body").classList.add("ctz-stop-scroll"),
@@ -1111,10 +1110,25 @@
   var CLASS_BTN_CLOSE = "ctz-n-button-close";
   var CLASS_BTN_COMMENT = "ctz-n-button-comment";
   var myListenAnswer = {
-    // index: 0,
+    next: "",
+    end: false,
     init: async function() {
       dom(".Question-main").addEventListener("click", eventListenerQuestionMain);
       nodesStopPropagation([".RichContent-inner", ".Question-main figure img", ".Question-main a"]);
+      this.formatInitAnswers();
+      const nodeJsonData = domById("js-initialData");
+      if (!nodeJsonData) {
+        fnLog("cannot find script #js-initialData");
+        return;
+      }
+      const pageJsData = JSON.parse(nodeJsonData.innerText || "{}");
+      const questionId = location.pathname.replace("/question/", "");
+      const next = pageJsData.initialState.question.answers[questionId].next;
+      this.next = next;
+      this.end = !next;
+    },
+    /** 处理初始页面数据 */
+    formatInitAnswers: async function() {
       const nodeAnswers = domA(".ContentItem.AnswerItem");
       console.log("nodeAnswers", nodeAnswers);
       for (let i2 = 0, len = nodeAnswers.length; i2 < len; i2++) {
@@ -1150,9 +1164,9 @@
         const nodeClose = nodeItem.querySelector(`.${CLASS_BTN_CLOSE}`);
         if (!nodeClose || nodeClose.style.display === "none")
           continue;
-        const bounding = nodeItem.getBoundingClientRect();
+        const bounding2 = nodeItem.getBoundingClientRect();
         const nodeActions = nodeItem.querySelector(".ContentItem-actions");
-        if (bounding.bottom < windowHeight || bounding.top > windowHeight) {
+        if (bounding2.bottom < windowHeight || bounding2.top > windowHeight) {
           if (nodeActions.style.cssText) {
             nodeActions.style.cssText = "";
           }
@@ -1160,7 +1174,48 @@
         }
         nodeActions.style.cssText += `position: fixed; bottom: 0; left: 0; width: 100%!important; margin: 0;box-shadow: 0 -1px 3px rgba(25,27,31,0.1);`;
       }
+      const nodeLists = domA(".Question-main .List");
+      const nodeListContent = nodeLists[nodeLists.length - 1];
+      const bounding = nodeListContent.getBoundingClientRect();
+      if (bounding.bottom - 200 <= window.innerHeight && !this.end) {
+        openLoading(nodeListContent);
+        const res = await commonRequest(this.next);
+        console.log(res);
+        if (!res)
+          return;
+        const { paging, data } = res;
+        if (paging.next === this.next)
+          return;
+        paging.is_end && openEnd(nodeListContent);
+        this.end = paging.is_end;
+        this.next = paging.next;
+        const config = await myStorage.getConfig();
+        nodeListContent.innerHTML += createListHTML(data, config);
+        hideLoading(nodeListContent);
+      }
     }
+  };
+  var openLoading = (box) => {
+    if (box.querySelector(".ctz-answer-loading"))
+      return;
+    const nNode = domC("div", {
+      innerHTML: "<span>↻</span>",
+      className: "ctz-answer-loading"
+    });
+    box.appendChild(nNode);
+  };
+  var hideLoading = (box) => {
+    const nodeFind = box.querySelector(".ctz-answer-loading");
+    nodeFind && nodeFind.remove();
+  };
+  var openEnd = (box) => {
+    if (box.querySelector(".ctz-answer-end"))
+      return;
+    const nNode = domC("div", {
+      innerText: "----- 没有更多了 -----",
+      className: "ctz-answer-end"
+    });
+    box.appendChild(nNode);
   };
   var nodesStopPropagation = (classNames) => {
     let nodeArray = [];
@@ -1216,6 +1271,71 @@
       className: `${CLASS_BTN_COMMENT} Button Button--plain Button--withIcon Button--withLabel`,
       innerHTML: `评论 ${count}`
     });
+  };
+  var createListHTML = (data, config) => data.map((i2) => createListItemHTML(i2, config)).join("");
+  var createListItemHTML = (data, config) => {
+    const { target_type, target } = data;
+    const questionId = location.pathname.replace("/question/", "");
+    const isMore = target.content.length > 400;
+    return `<div class="List-item ctz-answer-item" tabindex="0">
+  <div
+    class="ContentItem AnswerItem"
+    data-za-index="0"
+    data-zop='{"authorName":"${target.author.name}","itemId":${target.id},"title":"${target.question.title}","type":"${target_type}"}'
+    name="${target.id}"
+    itemprop="suggestedAnswer"
+    itemtype="http://schema.org/Answer"
+    itemscope=""
+    data-za-detail-view-path-module="AnswerItem"
+    data-za-detail-view-path-index="0"
+    data-za-extra-module='{"card":{"has_image":false,"has_video":false,"content":{"type":"${target_type}","token":"${target.id}","upvote_num":${target.voteup_count},"comment_num":${target.comment_count},"publish_timestamp":null,"parent_token":"${target.question.id}","author_member_hash_id":"${target.author.id}"}}}'
+  >
+    <div class="ContentItem-meta">
+      <div class="AuthorInfo AnswerItem-authorInfo AnswerItem-authorInfo--related" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <div class="AuthorInfo AuthorInfo--mobile">
+          <meta itemprop="name" content="${target.author.name}" />
+          <meta itemprop="image" content="${target.author.avatar_url}" />
+          <meta itemprop="url" content="https://www.zhihu.com/people/${target.author.id}" />
+          <meta itemprop="zhihu:followerCount" content="${target.author.follower_count}" />
+          <span class="UserLink AuthorInfo-avatarWrapper">
+            <a href="//www.zhihu.com/people/${target.author.id}" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">
+              <img class="Avatar AuthorInfo-avatar" src="${target.author.avatar_url}" srcset="${target.author.avatar_url} 2x" alt="${target.author.name}" />
+            </a>
+          </span>
+          <div class="AuthorInfo-content">
+            <div class="AuthorInfo-head">
+              <span class="UserLink AuthorInfo-name">
+                <a href="//www.zhihu.com/people/${target.author.id}" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">
+                  ${target.author.name}
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <meta itemprop="image" />
+    <meta itemprop="upvoteCount" content="${target.voteup_count}" />
+    <meta itemprop="url" content="https://www.zhihu.com/question/${questionId}/answer/${target.id}" />
+    <meta itemprop="dateCreated" content="${target.created_time}000" />
+    <meta itemprop="dateModified" content="${target.updated_time}000" />
+    <meta itemprop="commentCount" content="${target.comment_count}" />
+    <div class="RichContent ${isMore ? "is-collapsed" : ""} RichContent--unescapable">
+      <div class="RichContent-inner RichContent-inner--collapsed" style="${isMore ? "max-height: 180px" : ""}">${target.content}</div>
+      <div class="ContentItem-actions">
+        <button aria-label="赞同 ${target.voteup_count}" aria-live="polite" type="button" class="Button VoteButton VoteButton--up">
+          ▲ 赞同 ${target.voteup_count}
+        </button>
+        <button   aria-label="反对" aria-live="polite" type="button" class="Button VoteButton VoteButton--down VoteButton--mobileDown">
+          ▼
+        </button>
+        <button class="ctz-n-button-comment Button Button--plain Button--withIcon Button--withLabel">评论 ${target.comment_count}</button>
+        ${isMore ? '<button class="ctz-n-button-close Button" style="display: none">收起 ▲</button>' : ""}
+      </div>
+      ${isMore ? '<button class="ctz-n-button-expend">展开更多 ▼</button>' : ""}
+    </div>
+  </div>
+</div>`;
   };
   var initChangeAnswer = () => {
     if (!location.href.includes("www.zhihu.com/question"))
@@ -1469,7 +1589,7 @@
     });
   };
   var INNER_HTML = `<div id="CTZ_DIALOG" style="display: none"><div class="ctz-header"><span class="ctz-version"></span><div class="ctz-top-operate"><!-- <span id="CTZ_FETCH_STATUS">状态获取中...</span><button class="ctz-button" id="CTZ_CHANGE_FETCH" size="small">切换接口拦截</button> --></div><button id="CTZ_CLOSE_DIALOG">✕</button></div><div class="ctz-menu"></div><div class="ctz-content"><div id="CTZ_BASIS" style="display: none"><div class="ctz-content-top"><a href="#CTZ_BASIS_SHOW">显示</a><a href="#CTZ_BASIS_BACKGROUND">颜色</a><a href="#CTZ_BASIS_SETTING">配置</a></div><div class="ctz-content-center"><div id="CTZ_BASIS_SHOW" style="display: none"></div><div id="CTZ_BASIS_BACKGROUND" style="display: none"><div class="ctz-set-background"><div class="fwb mt8 ctz-background-title">外观</div><div id="CTZ_BACKGROUND" class="ctz-background-content"></div><div class="fwb mt8 ctz-background-title">浅色设置</div><div id="CTZ_BACKGROUND_LIGHT" class="ctz-background-content"></div><div class="fwb mt8 ctz-background-title">深色设置</div><div id="CTZ_BACKGROUND_DARK" class="ctz-background-content"></div></div></div><div id="CTZ_BASIS_SETTING" style="display: none"><button class="ctz-button" name="configExport" style="margin-right: 8px">获取当前配置</button><button class="ctz-button" name="configReset">恢复默认配置</button><div class="ctz-hidden-item-br"></div><div class="ctz-config-import-box"><div>配置导入</div><textarea name="textConfigImport" placeholder="配置参考获取的格式"></textarea><button class="ctz-button" name="configImport">确 定</button></div><div class="ctz-hidden-item-br"></div><div class="ctz-config-import-box"><div>自定义样式</div><textarea name="textStyleCustom" placeholder="示例: body{background: #ffffff;}"></textarea><div class="ctz-btn-box"><button class="ctz-button" name="styleCustom" style="margin-right: 12px">确 定</button><button class="ctz-button" name="styleCustomReset">清 空</button></div></div></div></div></div><div id="CTZ_HIDDEN" style="display: none"><div class="ctz-content-center"></div></div><div id="CTZ_FILTER" style="display: none"><!-- <div class="ctz-content-top"></div> --><div class="ctz-content-center"><div class="ctz-filter-defail-who"><div class="ctz-label">屏蔽以下官方账号的回答</div><div style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px"><label><input class="ctz-i" name="removeZhihuOfficial" type="checkbox" value="on" />所有知乎官方账号</label></div><div class="ctz-flex-wrap" style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px"><label><input class="ctz-i" name="removeStoryAnswer" type="checkbox" value="on" />故事档案局</label><label><input class="ctz-i" name="removeYanxuanAnswer" type="checkbox" value="on" />盐选科普</label><label><input class="ctz-i" name="removeYanxuanRecommend" type="checkbox" value="on" />盐选推荐</label><label><input class="ctz-i" name="removeYanxuanCPRecommend" type="checkbox" value="on" />盐选测评室</label></div></div><div class="ctz-flex-wrap" style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px"><label><span class="ctz-label">屏蔽「匿名用户」回答</span><input class="ctz-i" name="removeAnonymousAnswer" type="checkbox" value="on" /></label></div><div class="ctz-filter-defail-tag"><div class="ctz-label">屏蔽带有以下标签的回答</div><div class="ctz-flex-wrap"><label><input class="ctz-i" name="removeFromYanxuan" type="checkbox" value="on" />选自盐选专栏</label><label><input class="ctz-i" name="removeUnrealAnswer" type="checkbox" value="on" />带有虚构创作</label><label><input class="ctz-i" name="removeFromEBook" type="checkbox" value="on" />选自电子书</label></div></div></div></div><div id="CTZ_BLACKLIST" style="display: none"><div class="ctz-content-top"></div><div class="ctz-content-center">CTZ_BLACKLIST</div></div><div id="CTZ_HISTORY" style="display: none"><div class="ctz-content-top"><a href="#CTZ_HISTORY_LIST">推荐列表缓存</a><a href="#CTZ_HISTORY_VIEW">浏览历史记录</a></div><div class="ctz-content-center"><div id="CTZ_HISTORY_LIST" style="display: none"><button class="ctz-button" name="buttonHistoryClear" data-id="list">清空列表缓存</button><div class="ctz-set-content"></div><div class="ctz-commit ta-c mt8">--- 最多缓存500条，包含已过滤项 ---</div></div><div id="CTZ_HISTORY_VIEW" style="display: none"><button class="ctz-button" name="buttonHistoryClear" data-id="view">清空历史记录</button><div class="ctz-set-content"></div><div class="ctz-commit ta-c mt8">--- 最多缓存500条 ---</div></div></div></div></div></div><div id="CTZ_OPEN_BUTTON">⚙︎</div><div id="CTZ_MESSAGE_BOX"></div><div id="CTZ_LOADING_TOAST" style="display: none;"><div class="ctz-loading-toast-icon"><span>↻</span></div><div class="ctz-loading-toast-text">加载中...</div></div><div id="CTZ_COMMENT" style="display: none"><div class="ctz-comment-header"><div class="ctz-comment-header-left"><div class="ctz-comment-count"><span>0</span>条评论</div><div class="ctz-comment-sort"><button name="score">默认</button><button name="ts">最新</button></div></div><button class="ctz-comment-btn" id="CTZ_BUTTON_COMMENT_CLOSE">✕</button></div><div class="ctz-comment-content"><div class="ctz-comment-list"></div><div class="ctz-comment-loading" style="display: none"><span>↻</span></div><div class="ctz-comment-end" style="display: none">----- 没有更多了 -----</div></div></div><div id="CTZ_COMMENT_CHILD" style="display: none"><div class="ctz-comment-header"><button class="ctz-comment-btn" id="CTZ_BOTTOM_COMMENT_BACK">◀︎ 评论回复</button></div><div class="ctz-comment-content"><div class="ctz-comment-list"></div><div class="ctz-comment-loading" style="display: none"><span>↻</span></div><div class="ctz-comment-end" style="display: none">----- 没有更多了 -----</div></div></div>`;
-  var INNER_CSS = `@keyframes rotate{from{transform:translate(-50%, -50%) rotate(0deg)}to{transform:translate(-50%, -50%) rotate(360deg)}}.hover-style{cursor:pointer}.hover-style:hover{color:#1677ff !important}.ctz-btn-box{display:flex}.ctz-btn-box button{flex:1;margin-right:12px}.ctz-btn-box button:last-child{margin:0}.ctz-desc,.ctz-commit{font-size:14px;color:#999}.ctz-desc b,.ctz-commit b{color:#e55353}.ctz-desc{padding-left:4px}.dis-if-c{display:inline-flex;align-items:center}.ta-c{text-align:center}.fwb{font-weight:bold}.mt8{margin-top:8px}.bg-ec7259{background:#ec7259}.bg-12c2e9{background:#12c2e9}.bg-00965e{background:#00965e}.bg-9c27b0{background:#9c27b0}.c-ec7259{color:#ec7259}.c-12c2e9{color:#12c2e9}.c-00965e{color:#00965e}.c-9c27b0{color:#9c27b0}.ctz-button{outline:none;position:relative;display:inline-block;font-weight:400;white-space:nowrap;text-align:center;border:1px solid transparent;cursor:pointer;transition:all .3s;user-select:none;touch-action:manipulation;line-height:1.5;font-size:14px;height:32px;padding:4px 15px;border-radius:6px;background-color:#ffffff;border-color:#d9d9d9;color:rgba(0,0,0,0.88);box-shadow:0 2px 0 rgba(0,0,0,0.02)}.ctz-button:hover{color:#1677ff;border-color:#1677ff}.ctz-button:active{background:rgba(0,0,0,0.08) !important}.ctz-button[size='small'],.ctz-button.ctz-button-small{padding:2px 6px;font-size:12px;height:24px}.ctz-button.ctz-button-transparent{background:transparent}.ctz-button-red{color:#e55353 !important;border:1px solid #e55353 !important}.ctz-button-red:hover{color:#ec7259 !important;border:1px solid #ec7259 !important}.ctz-button:disabled{border-color:#d0d0d0;background-color:rgba(0,0,0,0.08);color:#b0b0b0;cursor:not-allowed}[name='buttonHistoryClear']{margin-bottom:12px}#CTZ_BACKGROUND,#CTZ_BACKGROUND_LIGHT,#CTZ_BACKGROUND_DARK{display:grid;gap:8px}#CTZ_BACKGROUND>label,#CTZ_BACKGROUND_LIGHT>label,#CTZ_BACKGROUND_DARK>label{position:relative;cursor:pointer}#CTZ_BACKGROUND>label input,#CTZ_BACKGROUND_LIGHT>label input,#CTZ_BACKGROUND_DARK>label input{position:absolute;pointer-events:none;width:20px;height:20px;top:18px;left:20px}#CTZ_BACKGROUND>label input:checked+div,#CTZ_BACKGROUND_LIGHT>label input:checked+div,#CTZ_BACKGROUND_DARK>label input:checked+div{border:4px solid #1677ff}#CTZ_BACKGROUND>label div,#CTZ_BACKGROUND_LIGHT>label div,#CTZ_BACKGROUND_DARK>label div{pointer-events:none;border:4px double #eee;font-size:14px;border-radius:12px;line-height:56px;padding-left:60px}#CTZ_BACKGROUND_LIGHT{color:#000}.ctz-set-background{margin:-12px}.ctz-set-background .ctz-background-title{padding:12px 12px 0}.ctz-set-background .ctz-background-content{padding:12px;border-bottom:1px solid #d9d9d9}.ctz-set-background .ctz-background-content:last-of-type{border:none}.zhuanlan .ColumnPageHeader,.Recommendations-List,.ContentItem-actions,.AnswerItem-authorInfo{overflow-x:auto}.Modal--large,.css-1aq8hf9,.css-5ijnlw,.css-1mnl0vg,.RichContent-actions,.zhuanlan .ColumnPageHeader-content{width:auto !important}.css-1aq8hf9{height:100% !important;max-height:100% !important}.css-hzocic{pointer-events:none}.css-hzocic .css-97fdvh,.css-hzocic .css-r4op92{pointer-events:auto}.css-hzocic::after{content:'❌';margin-left:10px;font-size:14px;pointer-events:auto}.ErrorPage-text::after{content:'这是知乎因为移动端加载了电脑端网页导致（移动网页端想查看完整的评论和回答内容只能用此方法），会在部分回答中出现这个问题。不是修改器问题，暂时无法解决，刷新或后退返回回答页面。';padding:24px}.css-nk32ej{display:none}.Question-main .ContentItem.AnswerItem .ContentItem-expandButton{display:none !important}.Question-main .ctz-n-button-expend{color:#1677ff;position:absolute;border:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;z-index:10;top:0;left:0}.Question-main .ctz-n-button-close{margin-left:12px;border:0!important}.Question-main .ctz-n-button-comment{margin-left:12px}#CTZ_COMMENT,#CTZ_COMMENT_CHILD{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:2000;font-size:16px;transition:all .2s;flex-direction:column}#CTZ_COMMENT button,#CTZ_COMMENT_CHILD button{padding:0;margin:0;border:0}#CTZ_COMMENT button.ctz-comment-button,#CTZ_COMMENT_CHILD button.ctz-comment-button{display:inline-block;font-size:14px;line-height:32px;text-align:center;cursor:pointer;background:rgba(132,145,165,0.1);border:1px solid transparent;border-radius:3px;margin:10px 0px 10px 54px;padding:0px 6px 0px 12px;height:32px;color:#8491a5;font-weight:500}.ctz-comment-header{height:48px;display:flex;padding:0 24px;align-items:center;border-bottom:1px solid #ebeced}.ctz-comment-header-left{flex:1;display:flex;align-items:center}.ctz-comment-content{flex:1;overflow-y:auto}.ctz-ci{display:flex;padding:10px 20px 14px}.ctz-ci-child{padding:10px 20px 14px 54px}.ctz-ci-avatar img{box-sizing:border-box;margin:0px;min-width:0px;max-width:100%;width:24px;height:24px;border-radius:2px;filter:brightness(.95);display:block;position:relative;background-color:#f8f8fa;flex:0 0 auto;text-indent:-9999px;overflow:hidden}.ctz-ci-right{flex:1;padding-left:10px}.ctz-ci-user a,.ctz-ci-user div{display:inline-block}.ctz-ci-user a{font-size:15px;font-weight:bold}.ctz-ci-user .ctz-tag{padding:0px 4px;color:#999;height:16px;line-height:16px;box-sizing:border-box;margin-left:4px;font-size:12px;border-radius:4px}.ctz-ci-user span{margin:0 6px;font-size:16px;color:#9196a1}.ctz-ci-content{margin:4px 0px 0px;min-width:0px;overflow:hidden;overflow-wrap:break-word;font-size:15px;line-height:21px}.ctz-ci-content>p{display:inline}.ctz-ci-info{display:flex;justify-content:space-between;padding-top:4px;color:#75849a;font-size:14px}.ctz-ci-info-left span{margin-right:6px}.ctz-comment-list{padding:10px 0}.ctz-comment-loading{text-align:center;font-size:24px;color:#1677ff;position:relative;padding:0 0 12px;height:24px}.ctz-comment-loading span{position:absolute;top:50%;left:50%;animation:rotate 1.5s infinite}.ctz-comment-end{text-align:center;padding:0 0 12px;color:#75849a}.ctz-comment-child-count{padding:0 20px;height:50px;line-height:50px;font-size:16px;font-weight:bold;border-bottom:1px solid #ebeced;border-top:20px solid rgba(132,145,165,0.1)}.ctz-comment-count{font-size:16px;font-weight:bold;padding-right:16px}.ctz-comment-sort{border:2px solid #f8f8fa;background:#f8f8fa}.ctz-comment-sort button{box-sizing:border-box;margin:0px;min-width:0px;border-radius:2px;text-align:center;cursor:pointer;width:50px;height:24px;font-size:12px;line-height:24px;font-weight:600;background:transparent;color:#81858f}.ctz-stop-scroll{height:100% !important;overflow:hidden !important}#CTZ_OPEN_BUTTON{position:fixed;font-size:48px;background:#e1e1e1;color:#000;opacity:.6;width:48px;height:48px;line-height:46px;border-radius:8px;z-index:2000;text-align:center}#CTZ_DIALOG{position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f5f5;z-index:2001;font-size:16px;transition:all .2s;flex-direction:column}#CTZ_DIALOG input[type='checkbox']{width:16px;height:16px}#CTZ_DIALOG textarea{box-sizing:border-box;margin:0;padding:4px 11px;font-size:14px;line-height:1.5;list-style:none;position:relative;display:inline-block;min-width:0;border-width:1px;border-style:solid;border-color:#d9d9d9;border-radius:6px;transition:all .2s}#CTZ_DIALOG a{color:inherit}.ctz-header{font-size:16px;display:flex;align-items:center;height:48px;padding:0 12px}.ctz-top-operate{flex:1;padding:0 12px;font-size:12px}.ctz-version{font-size:16px}#CTZ_CLOSE_DIALOG{font-weight:bold;width:40px;height:40px;color:rgba(0,0,0,0.45);background:transparent;border:none;font-size:18px}#CTZ_CLOSE_DIALOG i{font-size:12px}.ctz-menu{height:36px;display:flex}.ctz-menu>a{border-radius:12px 12px 0 0;flex:1;text-align:center;cursor:pointer;transition:initial !important;position:relative;display:flex;align-items:center;justify-content:center}.ctz-menu>a span{border-radius:8px;transition:all .3s;margin:0 4px;flex:1;box-sizing:border-box;align-items:center;line-height:26px}.ctz-menu>a.target{background:#fff}.ctz-menu>a.target::after,.ctz-menu>a.target::before{position:absolute;bottom:-12px;content:' ';background:radial-gradient(circle at top left, transparent 12px, #fff 0) top left,radial-gradient(circle at top right, transparent 12px, #fff 0) top right,radial-gradient(circle at bottom right, transparent 12px, #fff 0) bottom right,radial-gradient(circle at bottom left, transparent 12px, #fff 0) bottom left;background-size:50% 50%;background-repeat:no-repeat;width:24px;height:24px}.ctz-menu>a.target::before{left:-12px;z-index:-1}.ctz-menu>a.target::after{right:-12px;z-index:-1}.ctz-content{flex:1;overflow:hidden;background:#fff;border-radius:12px;padding:8px 0}.ctz-content>div{height:100%;flex-direction:column}.ctz-content-top{height:28px;display:flex;padding-bottom:8px}.ctz-content-top a{flex:1;text-align:center;line-height:28px;margin:0 8px;border-radius:8px}.ctz-content-top a.target{background-color:#f5f5f5}.ctz-content-top~.ctz-content-center{padding-top:0}.ctz-content-center{flex:1;overflow-y:auto;padding:12px}.ctz-content-center ::-webkit-scrollbar{width:8px;height:8px}.ctz-content-center ::-webkit-scrollbar-track{border-radius:0}.ctz-content-center ::-webkit-scrollbar-thumb{background:#bbb;transition:all .2s;border-radius:8px}.ctz-content-center ::-webkit-scrollbar-thumb:hover{background-color:rgba(95,95,95,0.7)}.ctz-hidden-item-br{margin:12px 0;width:100%;height:1px;position:relative}.ctz-hidden-item-br::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:65%;height:1px;background:#d9d9d9}#CTZ_HIDDEN .ctz-content-center label{margin-right:12px;margin-bottom:4px}#CTZ_BASIS_SHOW label{margin:8px 0}#CTZ_BASIS_SHOW label b{display:inline-block;padding:0 4px;background:#f5f5f5;border-radius:2px;margin-right:2px}.ctz-suspension-pickup{position:fixed;bottom:60px;right:14px;text-align:center;height:40px;line-height:40px;width:68px;border-radius:4px;font-size:14px;background:#fff}.ctz-label{font-size:14px;line-height:24px}.ctz-label::after{content:'：'}.ctz-flex-wrap{display:flex;flex-wrap:wrap;line-height:24px}.ctz-flex-wrap label{margin-right:4px;display:flex;align-items:center}.ctz-flex-wrap label input[type='radio']{margin:0 4px 0 0}.ctz-label-tag{font-weight:normal;padding:2px 4px;border-radius:4px;font-size:12px;color:#ffffff;margin:0 2px}.ctz-label-tag-Answer{background:#ec7259}.ctz-label-tag-ZVideo{background:#12c2e9}.ctz-label-tag-Article{background:#00965e}.ctz-label-tag-Pin{background:#9c27b0}#CTZ_HISTORY_LIST .ctz-set-content a,#CTZ_HISTORY_VIEW .ctz-set-content a{word-break:break-all;display:block;margin-bottom:12px;padding:6px 12px;border:1px solid #eee;border-radius:4px}.ctz-fetch-intercept .ctz-need-fetch{display:none}.ctz-fetch-intercept.ctz-fetch-intercept-close{color:#b0b0b0 !important;cursor:not-allowed}.ctz-fetch-intercept.ctz-fetch-intercept-close span.ctz-need-fetch{display:inline}.ctz-fetch-intercept.ctz-fetch-intercept-close div.ctz-need-fetch{display:block}.ctz-fetch-intercept.ctz-fetch-intercept-close .ctz-remove-block{cursor:not-allowed !important}.ctz-fetch-intercept.ctz-fetch-intercept-close .ctz-black-item .ctz-remove-block:hover,.ctz-fetch-intercept.ctz-fetch-intercept-close .ctz-black-item a:hover{background:transparent !important;color:#b0b0b0 !important}#CTZ_MESSAGE_BOX{position:fixed;left:0;top:10px;width:100%;z-index:2002}.ctz-message{margin:20px auto;width:70%;height:48px;display:flex;align-items:center;justify-content:center;font-size:14px;border-radius:8px;box-shadow:0 0 8px #d0d4d6,0 0 8px #e6eaec;margin-bottom:12px;background:#fff}.ctz-config-import-box{display:flex;flex-direction:column}.ctz-config-import-box>div,.ctz-config-import-box>textarea{margin-bottom:12px !important}.ctz-config-import-box textarea{height:120px;resize:vertical}#CTZ_LOADING_TOAST{position:fixed;top:50%;left:50%;width:100px;height:100px;background:rgba(0,0,0,0.25);color:#fff;transform:translate(-50%, -50%);border-radius:16px;z-index:2002;display:flex;flex-direction:column;align-items:center}#CTZ_LOADING_TOAST .ctz-loading-toast-text{padding-bottom:12px}#CTZ_LOADING_TOAST .ctz-loading-toast-icon{flex:1;position:relative;font-size:34px}#CTZ_LOADING_TOAST .ctz-loading-toast-icon span{position:absolute;top:50%;left:50%;animation:rotate 1.5s infinite}`;
+  var INNER_CSS = `@keyframes rotate{from{transform:translate(-50%, -50%) rotate(0deg)}to{transform:translate(-50%, -50%) rotate(360deg)}}.hover-style{cursor:pointer}.hover-style:hover{color:#1677ff !important}.ctz-btn-box{display:flex}.ctz-btn-box button{flex:1;margin-right:12px}.ctz-btn-box button:last-child{margin:0}.ctz-desc,.ctz-commit{font-size:14px;color:#999}.ctz-desc b,.ctz-commit b{color:#e55353}.ctz-desc{padding-left:4px}.dis-if-c{display:inline-flex;align-items:center}.ta-c{text-align:center}.fwb{font-weight:bold}.mt8{margin-top:8px}.bg-ec7259{background:#ec7259}.bg-12c2e9{background:#12c2e9}.bg-00965e{background:#00965e}.bg-9c27b0{background:#9c27b0}.c-ec7259{color:#ec7259}.c-12c2e9{color:#12c2e9}.c-00965e{color:#00965e}.c-9c27b0{color:#9c27b0}.ctz-button{outline:none;position:relative;display:inline-block;font-weight:400;white-space:nowrap;text-align:center;border:1px solid transparent;cursor:pointer;transition:all .3s;user-select:none;touch-action:manipulation;line-height:1.5;font-size:14px;height:32px;padding:4px 15px;border-radius:6px;background-color:#ffffff;border-color:#d9d9d9;color:rgba(0,0,0,0.88);box-shadow:0 2px 0 rgba(0,0,0,0.02)}.ctz-button:hover{color:#1677ff;border-color:#1677ff}.ctz-button:active{background:rgba(0,0,0,0.08) !important}.ctz-button[size='small'],.ctz-button.ctz-button-small{padding:2px 6px;font-size:12px;height:24px}.ctz-button.ctz-button-transparent{background:transparent}.ctz-button-red{color:#e55353 !important;border:1px solid #e55353 !important}.ctz-button-red:hover{color:#ec7259 !important;border:1px solid #ec7259 !important}.ctz-button:disabled{border-color:#d0d0d0;background-color:rgba(0,0,0,0.08);color:#b0b0b0;cursor:not-allowed}[name='buttonHistoryClear']{margin-bottom:12px}#CTZ_BACKGROUND,#CTZ_BACKGROUND_LIGHT,#CTZ_BACKGROUND_DARK{display:grid;gap:8px}#CTZ_BACKGROUND>label,#CTZ_BACKGROUND_LIGHT>label,#CTZ_BACKGROUND_DARK>label{position:relative;cursor:pointer}#CTZ_BACKGROUND>label input,#CTZ_BACKGROUND_LIGHT>label input,#CTZ_BACKGROUND_DARK>label input{position:absolute;pointer-events:none;width:20px;height:20px;top:18px;left:20px}#CTZ_BACKGROUND>label input:checked+div,#CTZ_BACKGROUND_LIGHT>label input:checked+div,#CTZ_BACKGROUND_DARK>label input:checked+div{border:4px solid #1677ff}#CTZ_BACKGROUND>label div,#CTZ_BACKGROUND_LIGHT>label div,#CTZ_BACKGROUND_DARK>label div{pointer-events:none;border:4px double #eee;font-size:14px;border-radius:12px;line-height:56px;padding-left:60px}#CTZ_BACKGROUND_LIGHT{color:#000}.ctz-set-background{margin:-12px}.ctz-set-background .ctz-background-title{padding:12px 12px 0}.ctz-set-background .ctz-background-content{padding:12px;border-bottom:1px solid #d9d9d9}.ctz-set-background .ctz-background-content:last-of-type{border:none}.zhuanlan .ColumnPageHeader,.Recommendations-List,.ContentItem-actions,.AnswerItem-authorInfo{overflow-x:auto}.Modal--large,.css-1aq8hf9,.css-5ijnlw,.css-1mnl0vg,.RichContent-actions,.zhuanlan .ColumnPageHeader-content{width:auto !important}.css-1aq8hf9{height:100% !important;max-height:100% !important}.css-hzocic{pointer-events:none}.css-hzocic .css-97fdvh,.css-hzocic .css-r4op92{pointer-events:auto}.css-hzocic::after{content:'❌';margin-left:10px;font-size:14px;pointer-events:auto}.ErrorPage-text::after{content:'这是知乎因为移动端加载了电脑端网页导致（移动网页端想查看完整的评论和回答内容只能用此方法），会在部分回答中出现这个问题。不是修改器问题，暂时无法解决，刷新或后退返回回答页面。';padding:24px}.css-nk32ej{display:none}.Question-main .ContentItem.AnswerItem .ContentItem-expandButton{display:none !important}.Question-main .ctz-n-button-expend{color:#1677ff;position:absolute;border:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;z-index:10;top:0;left:0}.Question-main .ctz-n-button-close{margin-left:12px;border:0 !important}.Question-main .ctz-n-button-comment{margin-left:12px}.ctz-answer-item .AuthorInfo-avatarWrapper .AuthorInfo-avatar{box-sizing:border-box;margin:0;min-width:0;max-width:100%;background-color:#ffffff;width:38px;height:38px;border-radius:2px}#CTZ_COMMENT,#CTZ_COMMENT_CHILD{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:2000;font-size:16px;transition:all .2s;flex-direction:column}#CTZ_COMMENT button,#CTZ_COMMENT_CHILD button{padding:0;margin:0;border:0}#CTZ_COMMENT button.ctz-comment-button,#CTZ_COMMENT_CHILD button.ctz-comment-button{display:inline-block;font-size:14px;line-height:32px;text-align:center;cursor:pointer;background:rgba(132,145,165,0.1);border:1px solid transparent;border-radius:3px;margin:10px 0px 10px 54px;padding:0px 6px 0px 12px;height:32px;color:#8491a5;font-weight:500}.ctz-comment-header{height:48px;display:flex;padding:0 24px;align-items:center;border-bottom:1px solid #ebeced}.ctz-comment-header-left{flex:1;display:flex;align-items:center}.ctz-comment-content{flex:1;overflow-y:auto}.ctz-ci{display:flex;padding:10px 20px 14px}.ctz-ci-child{padding:10px 20px 14px 54px}.ctz-ci-avatar img{box-sizing:border-box;margin:0px;min-width:0px;max-width:100%;width:24px;height:24px;border-radius:2px;filter:brightness(.95);display:block;position:relative;background-color:#f8f8fa;flex:0 0 auto;text-indent:-9999px;overflow:hidden}.ctz-ci-right{flex:1;padding-left:10px}.ctz-ci-user a,.ctz-ci-user div{display:inline-block}.ctz-ci-user a{font-size:15px;font-weight:bold}.ctz-ci-user .ctz-tag{padding:0px 4px;color:#999;height:16px;line-height:16px;box-sizing:border-box;margin-left:4px;font-size:12px;border-radius:4px}.ctz-ci-user span{margin:0 6px;font-size:16px;color:#9196a1}.ctz-ci-content{margin:4px 0px 0px;min-width:0px;overflow:hidden;overflow-wrap:break-word;font-size:15px;line-height:21px}.ctz-ci-content>p{display:inline}.ctz-ci-info{display:flex;justify-content:space-between;padding-top:4px;color:#75849a;font-size:14px}.ctz-ci-info-left span{margin-right:6px}.ctz-comment-list{padding:10px 0}.ctz-comment-loading,.ctz-answer-loading{text-align:center;font-size:24px;color:#1677ff;position:relative;padding:0 0 12px;height:24px}.ctz-comment-loading span,.ctz-answer-loading span{position:absolute;top:50%;left:50%;animation:rotate 1.5s infinite}.ctz-comment-end,.ctz-answer-end{text-align:center;padding:0 0 12px;color:#75849a}.ctz-comment-child-count{padding:0 20px;height:50px;line-height:50px;font-size:16px;font-weight:bold;border-bottom:1px solid #ebeced;border-top:20px solid rgba(132,145,165,0.1)}.ctz-comment-count{font-size:16px;font-weight:bold;padding-right:16px}.ctz-comment-sort{border:2px solid #f8f8fa;background:#f8f8fa}.ctz-comment-sort button{box-sizing:border-box;margin:0px;min-width:0px;border-radius:2px;text-align:center;cursor:pointer;width:50px;height:24px;font-size:12px;line-height:24px;font-weight:600;background:transparent;color:#81858f}.ctz-stop-scroll{height:100% !important;overflow:hidden !important}#CTZ_OPEN_BUTTON{position:fixed;font-size:48px;background:#e1e1e1;color:#000;opacity:.6;width:48px;height:48px;line-height:46px;border-radius:8px;z-index:2000;text-align:center}#CTZ_DIALOG{position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f5f5;z-index:2001;font-size:16px;transition:all .2s;flex-direction:column}#CTZ_DIALOG input[type='checkbox']{width:16px;height:16px}#CTZ_DIALOG textarea{box-sizing:border-box;margin:0;padding:4px 11px;font-size:14px;line-height:1.5;list-style:none;position:relative;display:inline-block;min-width:0;border-width:1px;border-style:solid;border-color:#d9d9d9;border-radius:6px;transition:all .2s}#CTZ_DIALOG a{color:inherit}.ctz-header{font-size:16px;display:flex;align-items:center;height:48px;padding:0 12px}.ctz-top-operate{flex:1;padding:0 12px;font-size:12px}.ctz-version{font-size:16px}#CTZ_CLOSE_DIALOG{font-weight:bold;width:40px;height:40px;color:rgba(0,0,0,0.45);background:transparent;border:none;font-size:18px}#CTZ_CLOSE_DIALOG i{font-size:12px}.ctz-menu{height:36px;display:flex}.ctz-menu>a{border-radius:12px 12px 0 0;flex:1;text-align:center;cursor:pointer;transition:initial !important;position:relative;display:flex;align-items:center;justify-content:center}.ctz-menu>a span{border-radius:8px;transition:all .3s;margin:0 4px;flex:1;box-sizing:border-box;align-items:center;line-height:26px}.ctz-menu>a.target{background:#fff}.ctz-menu>a.target::after,.ctz-menu>a.target::before{position:absolute;bottom:-12px;content:' ';background:radial-gradient(circle at top left, transparent 12px, #fff 0) top left,radial-gradient(circle at top right, transparent 12px, #fff 0) top right,radial-gradient(circle at bottom right, transparent 12px, #fff 0) bottom right,radial-gradient(circle at bottom left, transparent 12px, #fff 0) bottom left;background-size:50% 50%;background-repeat:no-repeat;width:24px;height:24px}.ctz-menu>a.target::before{left:-12px;z-index:-1}.ctz-menu>a.target::after{right:-12px;z-index:-1}.ctz-content{flex:1;overflow:hidden;background:#fff;border-radius:12px;padding:8px 0}.ctz-content>div{height:100%;flex-direction:column}.ctz-content-top{height:28px;display:flex;padding-bottom:8px}.ctz-content-top a{flex:1;text-align:center;line-height:28px;margin:0 8px;border-radius:8px}.ctz-content-top a.target{background-color:#f5f5f5}.ctz-content-top~.ctz-content-center{padding-top:0}.ctz-content-center{flex:1;overflow-y:auto;padding:12px}.ctz-content-center ::-webkit-scrollbar{width:8px;height:8px}.ctz-content-center ::-webkit-scrollbar-track{border-radius:0}.ctz-content-center ::-webkit-scrollbar-thumb{background:#bbb;transition:all .2s;border-radius:8px}.ctz-content-center ::-webkit-scrollbar-thumb:hover{background-color:rgba(95,95,95,0.7)}.ctz-hidden-item-br{margin:12px 0;width:100%;height:1px;position:relative}.ctz-hidden-item-br::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:65%;height:1px;background:#d9d9d9}#CTZ_HIDDEN .ctz-content-center label{margin-right:12px;margin-bottom:4px}#CTZ_BASIS_SHOW label{margin:8px 0}#CTZ_BASIS_SHOW label b{display:inline-block;padding:0 4px;background:#f5f5f5;border-radius:2px;margin-right:2px}.ctz-suspension-pickup{position:fixed;bottom:60px;right:14px;text-align:center;height:40px;line-height:40px;width:68px;border-radius:4px;font-size:14px;background:#fff}.ctz-label{font-size:14px;line-height:24px}.ctz-label::after{content:'：'}.ctz-flex-wrap{display:flex;flex-wrap:wrap;line-height:24px}.ctz-flex-wrap label{margin-right:4px;display:flex;align-items:center}.ctz-flex-wrap label input[type='radio']{margin:0 4px 0 0}.ctz-label-tag{font-weight:normal;padding:2px 4px;border-radius:4px;font-size:12px;color:#ffffff;margin:0 2px}.ctz-label-tag-Answer{background:#ec7259}.ctz-label-tag-ZVideo{background:#12c2e9}.ctz-label-tag-Article{background:#00965e}.ctz-label-tag-Pin{background:#9c27b0}#CTZ_HISTORY_LIST .ctz-set-content a,#CTZ_HISTORY_VIEW .ctz-set-content a{word-break:break-all;display:block;margin-bottom:12px;padding:6px 12px;border:1px solid #eee;border-radius:4px}.ctz-fetch-intercept .ctz-need-fetch{display:none}.ctz-fetch-intercept.ctz-fetch-intercept-close{color:#b0b0b0 !important;cursor:not-allowed}.ctz-fetch-intercept.ctz-fetch-intercept-close span.ctz-need-fetch{display:inline}.ctz-fetch-intercept.ctz-fetch-intercept-close div.ctz-need-fetch{display:block}.ctz-fetch-intercept.ctz-fetch-intercept-close .ctz-remove-block{cursor:not-allowed !important}.ctz-fetch-intercept.ctz-fetch-intercept-close .ctz-black-item .ctz-remove-block:hover,.ctz-fetch-intercept.ctz-fetch-intercept-close .ctz-black-item a:hover{background:transparent !important;color:#b0b0b0 !important}#CTZ_MESSAGE_BOX{position:fixed;left:0;top:10px;width:100%;z-index:2002}.ctz-message{margin:20px auto;width:70%;height:48px;display:flex;align-items:center;justify-content:center;font-size:14px;border-radius:8px;box-shadow:0 0 8px #d0d4d6,0 0 8px #e6eaec;margin-bottom:12px;background:#fff}.ctz-config-import-box{display:flex;flex-direction:column}.ctz-config-import-box>div,.ctz-config-import-box>textarea{margin-bottom:12px !important}.ctz-config-import-box textarea{height:120px;resize:vertical}#CTZ_LOADING_TOAST{position:fixed;top:50%;left:50%;width:100px;height:100px;background:rgba(0,0,0,0.25);color:#fff;transform:translate(-50%, -50%);border-radius:16px;z-index:2002;display:flex;flex-direction:column;align-items:center}#CTZ_LOADING_TOAST .ctz-loading-toast-text{padding-bottom:12px}#CTZ_LOADING_TOAST .ctz-loading-toast-icon{flex:1;position:relative;font-size:34px}#CTZ_LOADING_TOAST .ctz-loading-toast-icon span{position:absolute;top:50%;left:50%;animation:rotate 1.5s infinite}`;
   var INNER_VERSION = `1.4.2`;
   var initHTML = () => {
     document.body.appendChild(domC("div", { id: "CTZ_MAIN", innerHTML: INNER_HTML }));
@@ -1489,120 +1609,6 @@
     ev.style.display = "none";
     fnLog(log);
     return ++lessNum;
-  };
-  var fnIndexMath = (index, i2, len, lessNum) => {
-    return i2 + 1 === len ? i2 - lessNum >= 0 ? i2 - lessNum : 0 : index;
-  };
-  var CLASS_COPY_LINK = "ctz-copy-answer-link";
-  var addAnswerCopyLink = async (nodeItem) => {
-    const { copyAnswerLink } = await myStorage.getConfig();
-    if (!copyAnswerLink)
-      return;
-    const prevButton = nodeItem.querySelector(`.${CLASS_COPY_LINK}`);
-    prevButton && prevButton.remove();
-    const nodeUser = nodeItem.querySelector(".AnswerItem-authorInfo>.AuthorInfo") || nodeItem.querySelector(".ContentItem-meta");
-    if (!nodeUser)
-      return;
-    const nDomButton = createBtnTr("获取链接", CLASS_COPY_LINK);
-    nDomButton.onclick = function() {
-      const metaUrl = nodeItem.querySelector('.ContentItem>[itemprop="url"]');
-      if (!metaUrl)
-        return;
-      const link = metaUrl.getAttribute("content") || "";
-      if (link) {
-        copy(link);
-        message("链接复制成功");
-        return;
-      }
-    };
-    nodeUser.appendChild(nDomButton);
-  };
-  var myListenAnswerItem = {
-    index: 0,
-    init: async function() {
-      const conf = await myStorage.getConfig();
-      const {
-        releaseTimeForAnswer,
-        removeLessVoteDetail,
-        lessVoteNumberDetail = 0,
-        answerOpen,
-        removeZhihuOfficial,
-        removeBlockUserContent,
-        removeBlockUserContentList,
-        showBlockUser,
-        removeAnonymousAnswer,
-        topExportContent,
-        blockWordsAnswer = [],
-        fetchInterceptStatus,
-        answerItemCreatedAndModifiedTime
-      } = conf;
-      const addFnInNodeItem = (nodeItem, initThis) => {
-        if (!nodeItem)
-          return;
-        releaseTimeForAnswer && updateItemTime(nodeItem);
-        addAnswerCopyLink(nodeItem);
-      };
-      addFnInNodeItem(dom(".QuestionAnswer-content"));
-      const hiddenTags = Object.keys(HIDDEN_ANSWER_TAG);
-      let hiddenUsers = [];
-      for (let i2 in HIDDEN_ANSWER_ACCOUNT) {
-        conf[i2] && hiddenUsers.push(HIDDEN_ANSWER_ACCOUNT[i2]);
-      }
-      const elements = domA(".Question-main .List-item");
-      let lessNum = 0;
-      for (let i2 = this.index, len = elements.length; i2 < len; i2++) {
-        let message2 = "";
-        const nodeItem = elements[i2];
-        const nodeItemContent = nodeItem.querySelector(".ContentItem");
-        if (!nodeItemContent)
-          continue;
-        let dataZop = {};
-        let dataCardContent = {};
-        try {
-          dataZop = JSON.parse(nodeItemContent.getAttribute("data-zop") || "{}");
-          dataCardContent = JSON.parse(nodeItemContent.getAttribute("data-za-extra-module") || "{}").card.content;
-        } catch {
-        }
-        if (removeZhihuOfficial && !message2) {
-          const labelE = nodeItem.querySelector(".AuthorInfo-name .css-n99yhz");
-          const label = labelE ? labelE.getAttribute("aria-label") || "" : "";
-          /知乎[\s]*官方帐号/.test(label) && (message2 = "已删除一条知乎官方帐号的回答");
-        }
-        let isHiddenTag = false;
-        hiddenTags.forEach((i3) => conf[i3] && (isHiddenTag = true));
-        if (isHiddenTag && !message2) {
-          const nodeTag1 = nodeItem.querySelector(".KfeCollection-AnswerTopCard-Container");
-          const nodeTag2 = nodeItem.querySelector(".LabelContainer-wrapper");
-          const text1 = nodeTag1 ? nodeTag1.innerText : "";
-          const text2 = nodeTag2 ? nodeTag2.innerText : "";
-          const tagText = text1 + text2;
-          hiddenTags.forEach((i3) => {
-            if (conf[i3]) {
-              const nReg = new RegExp(HIDDEN_ANSWER_TAG[i3]);
-              nReg.test(tagText) && (message2 = `已删除一条标签${HIDDEN_ANSWER_TAG[i3]}的回答`);
-            }
-          });
-        }
-        hiddenUsers.length && !message2 && hiddenUsers.includes(dataZop.authorName || "") && (message2 = `已删除${dataZop.authorName}的回答`);
-        if (removeAnonymousAnswer && !message2) {
-          const userName = nodeItem.querySelector('[itemprop="name"]').content;
-          userName === "匿名用户" && (message2 = `已屏蔽一条「匿名用户」回答`);
-        }
-        if (message2) {
-          lessNum = fnHiddenDom(lessNum, nodeItem, message2);
-        } else {
-          addFnInNodeItem(nodeItem, this);
-        }
-        this.index = fnIndexMath(this.index, i2, len, lessNum);
-      }
-    },
-    reset: function() {
-      this.index = 0;
-    },
-    restart: function() {
-      this.reset();
-      this.init();
-    }
   };
   var myListenListItem = {
     index: 0,
@@ -1668,6 +1674,30 @@
     }
   };
   var store = new Store();
+  var CLASS_COPY_LINK = "ctz-copy-answer-link";
+  var addAnswerCopyLink = async (nodeItem) => {
+    const { copyAnswerLink } = await myStorage.getConfig();
+    if (!copyAnswerLink)
+      return;
+    const prevButton = nodeItem.querySelector(`.${CLASS_COPY_LINK}`);
+    prevButton && prevButton.remove();
+    const nodeUser = nodeItem.querySelector(".AnswerItem-authorInfo>.AuthorInfo") || nodeItem.querySelector(".ContentItem-meta");
+    if (!nodeUser)
+      return;
+    const nDomButton = createBtnTr("获取链接", CLASS_COPY_LINK);
+    nDomButton.onclick = function() {
+      const metaUrl = nodeItem.querySelector('.ContentItem>[itemprop="url"]');
+      if (!metaUrl)
+        return;
+      const link = metaUrl.getAttribute("content") || "";
+      if (link) {
+        copy(link);
+        message("链接复制成功");
+        return;
+      }
+    };
+    nodeUser.appendChild(nDomButton);
+  };
   var initTopStoryRecommendEvent = () => {
     const nodeTopStoryRecommend = dom(".TopstoryMain") || dom(".NotLoggedInTopstory");
     if (!nodeTopStoryRecommend)
@@ -1716,7 +1746,6 @@
       heightTopStoryContent < window.innerHeight && windowResize();
       setPageHeight(heightTopStoryContent);
     }
-    myListenAnswerItem.init();
   }
   var echoData = async () => {
     const pfConfig = await myStorage.getConfig();
@@ -2105,7 +2134,6 @@
     const changeHistory = () => {
       historyToChangePathname();
       myListenListItem.reset();
-      myListenAnswerItem.reset();
     };
     window.addEventListener("popstate", changeHistory);
     window.addEventListener("pushState", changeHistory);

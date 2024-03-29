@@ -1,264 +1,173 @@
-export interface IResponseZhihuAnswer {
-  paging: IZhihuAnswerPaging;
+export interface IZhihuAnswerResponse {
   data: IZhihuAnswerDataItem[];
+  session: IZhihuAnswerSession;
+  paging: IZhihuPaging;
 }
 
 export interface IZhihuAnswerDataItem {
-  suggest_edit: SuggestEdit;
-  editable_content: string;
-  mark_infos: any[];
-  excerpt: string;
+  type: string;
+  target_type: string;
+  target: Target;
+  skip_count: boolean;
+  position: number;
+  cursor: string;
+  is_jump_native: boolean;
+}
+
+export interface Target {
   admin_closed_comment: boolean;
-  biz_ext: BizEXT;
-  created_time: number;
-  id: number;
-  voteup_count: number;
-  collapse_reason: string;
-  is_labeled: boolean;
+  annotation_action: null;
+  answer_type: string;
+  attached_info: string;
   author: Author;
-  question: Question;
-  content: string;
-  comment_count: number;
-  reshipment_settings: ReshipmentSettings;
-  attachment: Attachment;
-  answer_type: Type;
-  reward_info: RewardInfo;
-  type: AttachmentType;
-  thumbnail: string;
-  relationship: Relationship;
-  vessay_info: VessayInfo;
-  annotation_action: any[];
-  collapsed_by: CollapsedBy;
-  is_copyable: boolean;
-  is_collapsed: boolean;
-  url: string;
-  comment_permission: CommentPermission;
-  reaction_instruction: ReactionInstruction;
-  updated_time: number;
-  extras: string;
-  same_video_answers: any[];
   can_comment: CanComment;
-  is_normal: boolean;
-}
-
-export enum Type {
-  Normal = 'normal',
-}
-
-export interface Attachment {
-  attachment_id: Record<string, string>;
-  type: AttachmentType;
-  video?: Video;
-}
-
-export enum AttachmentType {
-  Answer = 'answer',
-  Video = 'video',
-}
-
-export interface Video {
-  zvideo_id: string;
-  title: string;
-  start_time: number;
-  play_count: number;
-  video_info: VideoInfo;
-  parent_video_id: Record<string, string>;
-  end_time: number;
-  sub_video_id: Record<string, string>;
-  voteup_count: number;
-}
-
-export interface VideoInfo {
-  status: string;
-  playlist: Playlist;
-  is_deleted: boolean;
-  created_at: number;
-  has_related_videos: boolean;
-  updated_at: number;
-  play_count: number;
-  width: number;
+  collapse_reason: string;
+  collapsed_by: string;
+  comment_count: number;
+  comment_permission: string;
+  content: string;
+  content_mark: ContentMark;
+  created_time: number;
+  decorative_labels: any[];
+  editable_content: string;
+  excerpt: string;
+  extras: string;
   id: number;
-  duration: number;
-  height: number;
-  thumbnail: string;
-}
-
-export interface Playlist {
-  ld: HD;
-  hd: HD;
-  sd: HD;
-}
-
-export interface HD {
-  width: number;
-  format: string;
-  play_url: string;
-  duration: number;
-  height: number;
-  size: number;
+  is_collapsed: boolean;
+  is_copyable: boolean;
+  is_jump_native: boolean;
+  is_labeled: boolean;
+  is_mine: boolean;
+  is_normal: boolean;
+  is_sticky: boolean;
+  is_visible: boolean;
+  question: Question;
+  reaction_instruction: ContentMark;
+  relationship: Relationship;
+  relevant_info: RelevantInfo;
+  reshipment_settings: string;
+  reward_info: RewardInfo;
+  sticky_info: string;
+  suggest_edit: SuggestEdit;
+  thanks_count: number;
+  thumbnail_info: ThumbnailInfo;
+  type: string;
+  updated_time: number;
+  url: string;
+  visible_only_to_author: boolean;
+  voteup_count: number;
+  zhi_plus_extra_info: string;
 }
 
 export interface Author {
+  avatar_url: string;
   avatar_url_template: string;
-  badge: Badge[];
+  badge: any[];
   badge_v2: BadgeV2;
-  name: Record<string, string>;
-  headline: Record<string, string>;
-  url_token: Record<string, string>;
-  user_type: Record<string, string>;
-  vip_info: VipInfo;
-  is_advertiser: boolean;
-  avatar_url: string;
-  url: string;
+  exposed_medal: ExposedMedal;
+  follower_count: number;
   gender: number;
-  type: Record<string, string>;
-  id: Record<string, string>;
-  is_org: boolean;
-}
-
-export interface Badge {
-  topics: Topic[];
-  type: DetailTypeEnum;
-  description: Record<string, string>;
-}
-
-export interface Topic {
-  introduction: string;
-  avatar_url: string;
-  name: Record<string, string>;
-  url: string;
-  type: Record<string, string>;
-  excerpt: string;
+  headline: string;
   id: string;
-}
-
-export enum DetailTypeEnum {
-  Best = 'best',
-  BestAnswerer = 'best_answerer',
+  is_advertiser: boolean;
+  is_followed: boolean;
+  is_following: boolean;
+  is_org: boolean;
+  is_privacy: boolean;
+  name: string;
+  type: string;
+  url: string;
+  url_token: string;
+  user_type: string;
 }
 
 export interface BadgeV2 {
+  detail_badges: any[];
   icon: string;
-  detail_badges: DetailBadgeElement[];
+  merged_badges: any[];
   night_icon: string;
-  merged_badges: DetailBadgeElement[];
-  title: Record<string, string>;
+  title: string;
 }
 
-export interface DetailBadgeElement {
-  description: Record<string, string>;
-  title: Record<string, string>;
-  url: string;
-  sources: Source[];
-  night_icon: string;
-  detail_type: DetailTypeEnum;
-  type: DetailTypeEnum;
-  icon: string;
-}
-
-export interface Source {
-  avatar_path: Record<string, string>;
-  name: Record<string, string>;
-  url: string;
-  priority: number;
-  token: string;
+export interface ExposedMedal {
   avatar_url: string;
-  type: Record<string, string>;
-  id: string;
   description: string;
+  medal_id: string;
+  medal_name: string;
+  medal_avatar_frame?: string;
+  mini_avatar_url?: string;
 }
-
-export interface VipInfo {
-  is_vip: boolean;
-}
-
-export interface BizEXT {
-  creation_relationship: CreationRelationship;
-}
-
-export interface CreationRelationship {}
 
 export interface CanComment {
+  reason: string;
   status: boolean;
-  reason: Reason;
 }
 
-export enum Reason {
-  Empty = '',
-  你的评论将会由作者筛选后显示 = '你的评论将会由作者筛选后显示',
-}
-
-export enum CollapsedBy {
-  Nobody = 'nobody',
-}
-
-export enum CommentPermission {
-  All = 'all',
-  Censor = 'censor',
-}
+export interface ContentMark {}
 
 export interface Question {
-  relationship: CreationRelationship;
   created: number;
-  url: string;
-  title: string;
-  updated_time: number;
-  has_publishing_draft: boolean;
-  question_type: Type;
-  type: QuestionType;
   id: number;
-}
-
-export enum QuestionType {
-  Question = 'question',
-}
-
-export interface ReactionInstruction {
-  REACTION_CONTENT_SEGMENT_LIKE?: string;
+  question_type: string;
+  relationship: ContentMark;
+  title: string;
+  type: string;
+  updated_time: number;
+  url: string;
 }
 
 export interface Relationship {
-  is_authorized: boolean;
   is_author: boolean;
-  is_thanked: boolean;
+  is_authorized: boolean;
   is_nothelp: boolean;
+  is_thanked: boolean;
+  upvoted_followees: any[];
   voting: number;
 }
 
-export enum ReshipmentSettings {
-  Allowed = 'allowed',
+export interface RelevantInfo {
+  is_relevant: boolean;
+  relevant_text: string;
+  relevant_type: string;
 }
 
 export interface RewardInfo {
-  reward_member_count: number;
-  is_rewardable: boolean;
-  reward_total_money: number;
   can_open_reward: boolean;
-  tagline: Tagline;
-}
-
-export enum Tagline {
-  Empty = '',
-  真诚赞赏手留余香 = '真诚赞赏，手留余香',
+  is_rewardable: boolean;
+  reward_member_count: number;
+  reward_total_money: number;
+  tagline: string;
 }
 
 export interface SuggestEdit {
-  status: boolean;
   reason: string;
-  title: string;
-  url: string;
-  unnormal_details: CreationRelationship;
+  status: boolean;
   tip: string;
+  title: string;
+  unnormal_details: UnnormalDetails;
+  url: string;
 }
 
-export interface VessayInfo {
-  enable_video_translate: boolean;
+export interface UnnormalDetails {
+  description: string;
+  note: string;
+  reason: string;
+  reason_id: number;
+  status: string;
 }
 
-export interface IZhihuAnswerPaging {
+export interface ThumbnailInfo {
+  count: number;
+  thumbnails: any[];
+  type: string;
+}
+
+export interface IZhihuPaging {
+  page: number;
   is_end: boolean;
-  totals: number;
-  previous: string;
-  is_start: boolean;
   next: string;
+}
+
+export interface IZhihuAnswerSession {
+  id: string;
 }

@@ -1,6 +1,5 @@
 import { dom, throttle, windowResize } from '../commons/tools';
 import { HTML_HOOTS } from '../configs';
-import { myListenAnswerItem } from '../methods/listen-answer-item';
 import { myListenListItem } from '../methods/listen-list-item';
 import { store } from '../store';
 import { initTopStoryRecommendEvent } from './init-top-event-listener';
@@ -30,5 +29,5 @@ function resizeFun() {
     setPageHeight(heightTopStoryContent);
   }
 
-  myListenAnswerItem.init();
+  // myListenAnswerItem.init();
 }

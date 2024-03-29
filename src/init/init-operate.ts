@@ -3,6 +3,7 @@ import { dom, domA, domById } from '../commons/tools';
 import { CLASS_INPUT_CHANGE, CLASS_INPUT_CLICK } from '../configs';
 import { myButtonOperate } from '../methods/dialog-button-operate';
 import { fnChanger } from '../methods/fn-changer';
+import { myListenComment } from '../methods/listen-comment';
 import { myMenu, myMenu2 } from '../methods/menu';
 import { initTopStoryRecommendEvent } from './init-top-event-listener';
 
@@ -34,6 +35,7 @@ export const initOperate = () => {
   domById('CTZ_OPEN_BUTTON')!.onclick = myDialog.open;
   domById('CTZ_CLOSE_DIALOG')!.onclick = myDialog.hide;
   initTopStoryRecommendEvent();
+  myListenComment.initListen()
 
   document.body.addEventListener('click', function (event: MouseEvent) {
     const { target } = event;

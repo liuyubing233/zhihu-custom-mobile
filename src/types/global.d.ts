@@ -111,3 +111,6 @@ type WebRequestRule = {
           | string;
       };
 };
+
+// declare module '*/third/zhihu-enc.js';
+declare module '*.js'

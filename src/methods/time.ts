@@ -4,7 +4,7 @@ import { CLASS_TIME_ITEM } from '../configs';
 import { IMyElement } from '../types';
 
 /** 时间格式化 */
-export const timeFormatter = (time: string, formatter = 'YYYY-MM-DD HH:mm:ss') => {
+export const timeFormatter = (time: string | number, formatter = 'YYYY-MM-DD HH:mm:ss') => {
   if (!time) return '';
   const date = new Date(time);
   const year = date.getFullYear();

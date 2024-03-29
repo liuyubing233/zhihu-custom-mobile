@@ -20,6 +20,15 @@ export const CLASS_TO_QUESTION = 'ctz-to-question';
 /** class: 自定义的时间元素名称 */
 export const CLASS_TIME_ITEM = 'ctz-list-item-time';
 
+/** id: 评论弹窗 */
+export const ID_CTZ_COMMENT = 'CTZ_COMMENT';
+/** id: 子评论弹窗（评论回复） */
+export const ID_CTZ_COMMENT_CHILD = 'CTZ_COMMENT_CHILD';
+/** id: 关闭评论弹窗按钮 */
+export const ID_CTZ_COMMENT_CLOSE = 'CTZ_BUTTON_COMMENT_CLOSE';
+/** id: 关闭子评论弹窗（评论回复弹窗按钮 */
+export const ID_CTZ_COMMENT_BACK = 'CTZ_BOTTOM_COMMENT_BACK';
+
 /** html 添加额外的类名 */
 export const EXTRA_CLASS_HTML: Record<string, string> = {
   'zhuanlan.zhihu.com': 'zhuanlan',

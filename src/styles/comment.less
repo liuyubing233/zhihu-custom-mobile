@@ -1,0 +1,162 @@
+@import './common.less';
+
+#CTZ_COMMENT,
+#CTZ_COMMENT_CHILD {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  z-index: 2000;
+  font-size: 16px;
+  transition: all 0.2s;
+  flex-direction: column;
+  button {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    &.ctz-comment-button {
+      display: inline-block;
+      font-size: 14px;
+      line-height: 32px;
+      text-align: center;
+      cursor: pointer;
+      background: rgba(132, 145, 165, 0.1);
+      border: 1px solid transparent;
+      border-radius: 3px;
+      margin: 10px 0px 10px 54px;
+      padding: 0px 6px 0px 12px;
+      height: 32px;
+      color: rgb(132, 145, 165);
+      font-weight: 500;
+    }
+  }
+}
+
+.ctz-comment-header {
+  height: 48px;
+  display: flex;
+  padding: 0 24px;
+  align-items: center;
+  border-bottom: 1px solid rgb(235, 236, 237);
+  &-left {
+    flex: 1;
+    display: flex;
+  }
+}
+
+.ctz-comment-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.ctz-ci {
+  display: flex;
+  padding: 10px 20px 14px;
+}
+
+.ctz-ci-child {
+  padding: 10px 20px 14px 54px;
+}
+
+.ctz-ci-avatar {
+  img {
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    max-width: 100%;
+    width: 24px;
+    height: 24px;
+    border-radius: 2px;
+    filter: brightness(0.95);
+    display: block;
+    position: relative;
+    background-color: rgb(248, 248, 250);
+    flex: 0 0 auto;
+    text-indent: -9999px;
+    overflow: hidden;
+  }
+}
+
+.ctz-ci-right {
+  flex: 1;
+  padding-left: 10px;
+}
+
+.ctz-ci-user {
+  a,
+  div {
+    display: inline-block;
+  }
+  a {
+    font-size: 15px;
+    font-weight: bold;
+  }
+  .ctz-tag {
+    padding: 0px 4px;
+    color: rgb(153, 153, 153);
+    height: 16px;
+    line-height: 16px;
+    box-sizing: border-box;
+    margin-left: 4px;
+    font-size: 12px;
+    border-radius: 4px;
+  }
+  span {
+    margin: 0 6px;
+    font-size: 12px;
+    color: rgb(145, 150, 161);
+  }
+}
+
+.ctz-ci-content {
+  margin: 4px 0px 0px;
+  min-width: 0px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  font-size: 15px;
+  line-height: 21px;
+  & > p {
+    display: inline;
+  }
+}
+
+.ctz-ci-info {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 4px;
+  color: #75849a;
+  font-size: 14px;
+}
+
+.ctz-ci-info-left {
+  span {
+    margin-right: 6px;
+  }
+}
+
+.ctz-comment-list {
+  padding: 10px 0;
+}
+
+.ctz-comment-loading {
+  text-align: center;
+  font-size: 24px;
+  color: #1677ff;
+  position: relative;
+  padding: 0 0 12px;
+  height: 24px;
+  span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    animation: rotate 1.5s infinite;
+  }
+}
+
+.ctz-comment-end {
+  text-align: center;
+  padding: 0 0 12px;
+  color: #75849a;
+}

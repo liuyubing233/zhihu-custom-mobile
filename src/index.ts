@@ -133,7 +133,7 @@ import { INNER_CSS } from './web-resources';
         fnSuspensionPickup(domA('.TopstoryItem'));
         fnSuspensionPickup(domA('.AnswerCard'));
       }
-      myListenAnswer.scroll()
+      myListenAnswer.scroll();
     }, 100),
     false
   );

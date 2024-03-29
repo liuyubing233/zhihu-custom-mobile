@@ -5,7 +5,7 @@
       <!-- <span id="CTZ_FETCH_STATUS">状态获取中...</span>
       <button class="ctz-button" id="CTZ_CHANGE_FETCH" size="small">切换接口拦截</button> -->
     </div>
-    <button id="CTZ_CLOSE_DIALOG"><i class="ctz-icon">&#xe61b;</i></button>
+    <button id="CTZ_CLOSE_DIALOG">✕</button>
   </div>
   <div class="ctz-menu"></div>
   <div class="ctz-content">
@@ -113,6 +113,42 @@
   </div>
 </div>
 
-<div id="CTZ_OPEN_BUTTON" class="ctz-icon">&#xe612;</div>
+<div id="CTZ_OPEN_BUTTON">⚙︎</div>
 
 <div id="CTZ_MESSAGE_BOX"></div>
+
+<div id="CTZ_LOADING_TOAST" style="display: none;">
+  <div class="ctz-loading-toast-icon"><span>↻</span></div>
+  <div class="ctz-loading-toast-text">加载中...</div>
+</div>
+
+<!-- 自定义的评论弹窗 -->
+<div id="CTZ_COMMENT" style="display: none">
+  <div class="ctz-comment-header">
+    <div class="ctz-comment-header-left">
+      <div class="ctz-comment-count"><span>0</span>条评论</div>
+      <div class="ctz-comment-sort">
+        <button name="score">默认</button>
+        <button name="ts">最新</button>
+      </div>
+    </div>
+    <button class="ctz-comment-btn" id="CTZ_BUTTON_COMMENT_CLOSE">✕</button>
+  </div>
+  <div class="ctz-comment-content">
+    <div class="ctz-comment-list"></div>
+    <div class="ctz-comment-loading" style="display: none"><span>↻</span></div>
+    <div class="ctz-comment-end" style="display: none">----- 没有更多了 -----</div>
+  </div>
+</div>
+
+<!-- 评论回复弹窗 -->
+<div id="CTZ_COMMENT_CHILD" style="display: none">
+  <div class="ctz-comment-header">
+    <button class="ctz-comment-btn" id="CTZ_BOTTOM_COMMENT_BACK">◀︎ 评论回复</button>
+  </div>
+  <div class="ctz-comment-content">
+    <div class="ctz-comment-list"></div>
+    <div class="ctz-comment-loading" style="display: none"><span>↻</span></div>
+    <div class="ctz-comment-end" style="display: none">----- 没有更多了 -----</div>
+  </div>
+</div>

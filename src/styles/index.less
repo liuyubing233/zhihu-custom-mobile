@@ -3,22 +3,7 @@
 @import './background-box.less';
 @import './zhihu.less';
 @import './answer.less';
-
-@font-face {
-  font-family: 'tp-icon';
-  src: url('//at.alicdn.com/t/c/font_2324733_3w6h6fk5917.woff2?t=1670580424651') format('woff2'),
-    url('//at.alicdn.com/t/c/font_2324733_3w6h6fk5917.woff?t=1670580424651') format('woff'),
-    url('//at.alicdn.com/t/c/font_2324733_3w6h6fk5917.ttf?t=1670580424651') format('truetype');
-}
-
-.ctz-icon {
-  font-family: 'tp-icon' !important;
-  font-size: 16px;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-  -webkit-text-stroke-width: 0.2px;
-  -moz-osx-font-smoothing: grayscale;
-}
+@import './comment.less';
 
 // 页面禁止滚动
 .ctz-stop-scroll {
@@ -29,13 +14,13 @@
 // 弹窗唤起按钮
 #CTZ_OPEN_BUTTON {
   position: fixed;
-  font-size: 34px;
+  font-size: 48px;
   background: rgba(225, 225, 225, 1);
   color: rgba(0, 0, 0, 1);
   opacity: 0.6;
   width: 48px;
   height: 48px;
-  line-height: 48px;
+  line-height: 46px;
   border-radius: 8px;
   z-index: 2000;
   text-align: center;
@@ -104,6 +89,7 @@
   color: rgba(0, 0, 0, 0.45);
   background: transparent;
   border: none;
+  font-size: 18px;
   i {
     font-size: 12px;
   }
@@ -372,5 +358,35 @@
   textarea {
     height: 120px;
     resize: vertical;
+  }
+}
+
+#CTZ_LOADING_TOAST {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  transform: translate(-50%, -50%);
+  border-radius: 16px;
+  z-index: 2002;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .ctz-loading-toast-text {
+    padding-bottom: 12px;
+  }
+  .ctz-loading-toast-icon {
+    flex: 1;
+    position: relative;
+    font-size: 34px;
+    span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      animation: rotate 1.5s infinite;
+    }
   }
 }

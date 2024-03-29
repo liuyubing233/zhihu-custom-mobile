@@ -4,7 +4,7 @@ import { dom, domById, throttle } from '../commons/tools';
 import { ID_CTZ_COMMENT, ID_CTZ_COMMENT_BACK, ID_CTZ_COMMENT_CHILD, ID_CTZ_COMMENT_CLOSE } from '../configs';
 import { IMyElement } from '../types';
 import { myLoadingToast } from '../types/loading-toast';
-import { IAuthorTag, ICommentData, ICommentPaging, IZhihuCommentResponse } from '../types/zhihu-comment.type';
+import { IAuthorTag, ICommentData, ICommentPaging } from '../types/zhihu-comment.type';
 import { timeFormatter } from './time';
 
 /** 查找插入列表元素 */
@@ -13,6 +13,21 @@ const QUERY_LIST = '.ctz-comment-list';
 const QUERY_LOADING = '.ctz-comment-loading';
 /** 查找评论没有更多了 */
 const QUERY_END = '.ctz-comment-end';
+
+const ACTIVE_STYLE = 'color: rgb(25, 27, 31);background: #fff;';
+
+const myChangeCommentSort: Record<string, () => void> = {
+  /** 默认排序 */
+  score: () => {
+    dom('.ctz-comment-sort>button[name="score"]')!.style.cssText = ACTIVE_STYLE;
+    dom('.ctz-comment-sort>button[name="ts"]')!.style.cssText = '';
+  },
+  /** 时间排序 */
+  ts: () => {
+    dom('.ctz-comment-sort>button[name="ts"]')!.style.cssText = ACTIVE_STYLE;
+    dom('.ctz-comment-sort>button[name="score"]')!.style.cssText = '';
+  },
+};
 
 /** 评论处理方式 */
 export const myListenComment: myListenComment = {
@@ -24,25 +39,30 @@ export const myListenComment: myListenComment = {
     totals: 0,
   },
   commentData: [],
+  answerId: undefined,
   initOperate: function () {
     const me = this;
     domById(ID_CTZ_COMMENT)!.onclick = async (event) => {
       const nodeCurrent = event.target as IMyElement;
       console.log('event.target', event.target);
+      const { id, name } = nodeCurrent;
       // 关闭弹窗按钮
-      if (nodeCurrent.id === ID_CTZ_COMMENT_CLOSE) {
+      if (id === ID_CTZ_COMMENT_CLOSE) {
         domById(ID_CTZ_COMMENT)!.style.display = 'none';
         myScroll.on();
       }
 
       // 加载子评论
-      if (nodeCurrent.name === 'comment-more') {
-        myLoadingToast.open();
+      if (name === 'comment-more') {
         const idComment = nodeCurrent.getAttribute('data-id') || undefined;
         const parentComment = me.commentData.find((i) => `${i.id}` === `${idComment}`);
-        const res = await requestCommentChild({ answerId: idComment });
-        res && myListenCommentChild.create(res, parentComment);
-        myLoadingToast.hide();
+        myListenCommentChild.create(idComment, parentComment);
+      }
+
+      if (name === 'score' || name === 'ts') {
+        if (nodeCurrent.style.cssText) return;
+        myChangeCommentSort[name] && myChangeCommentSort[name]();
+        me.create(me.answerId, undefined, name);
       }
     };
 
@@ -58,10 +78,16 @@ export const myListenComment: myListenComment = {
     }, 300);
   },
   /** 打开｜创建评论弹窗 */
-  create: function (res: IZhihuCommentResponse) {
+  create: async function (answerId, _, orderBy = 'score') {
+    myLoadingToast.open();
+    this.answerId = answerId;
+    const res = await requestComment({ answerId, orderBy });
+    myLoadingToast.hide();
+    if (!res) return;
     const nodeComment = domById(ID_CTZ_COMMENT)!;
     nodeComment.querySelector('.ctz-comment-count>span')!.innerHTML = `${res.paging.totals}`;
     nodeComment.querySelector(QUERY_LIST)!.innerHTML = createCommentHTML(res.data);
+    myChangeCommentSort[orderBy]();
     this.hideEnd();
     this.hideLoading();
     nodeComment.style.display = 'flex';
@@ -101,6 +127,7 @@ export const myListenCommentChild: myListenComment = {
     totals: 0,
   },
   commentData: [],
+  answerId: undefined,
   initOperate: function () {
     const me = this;
     domById(ID_CTZ_COMMENT_CHILD)!.onclick = (event) => {
@@ -122,7 +149,12 @@ export const myListenCommentChild: myListenComment = {
       }
     }, 300);
   },
-  create: function (res: IZhihuCommentResponse, parentData?: ICommentData) {
+  create: async function (answerId, parentData) {
+    myLoadingToast.open();
+    this.answerId = answerId;
+    const res = await requestCommentChild({ answerId });
+    myLoadingToast.hide();
+    if (!res) return;
     const nodeComment = domById(ID_CTZ_COMMENT_CHILD)!;
     const parentCommentHTML = parentData ? createCommentHTMLItem(parentData, false, false) : '';
     nodeComment.querySelector(QUERY_LIST)!.innerHTML =
@@ -219,8 +251,9 @@ const createUserTagHTML = (item: IAuthorTag) => {
 interface myListenComment {
   page: ICommentPaging;
   commentData: ICommentData[];
+  answerId?: string | number;
   initOperate: () => void;
-  create: (res: IZhihuCommentResponse, parentData?: ICommentData) => void;
+  create: (answerId?: string | number, parentData?: ICommentData, sort?: string) => Promise<void>;
   commentLoadMore: () => Promise<void>;
   openLoading: () => void;
   hideLoading: () => void;

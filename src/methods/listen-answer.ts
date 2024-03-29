@@ -1,7 +1,5 @@
-import { requestComment } from '../commons/request';
 import { dom, domA, domC, domP } from '../commons/tools';
 import { IZhihuDataZop } from '../types';
-import { myLoadingToast } from '../types/loading-toast';
 import { myListenComment } from './listen-comment';
 
 /** 自定义展开按钮类名 */
@@ -107,13 +105,10 @@ const eventQuestionMain: Record<string, Function> = {
     currentNode.style.display = 'none';
   },
   [CLASS_BTN_COMMENT]: async (currentNode: HTMLElement) => {
-    myLoadingToast.open()
     const nodeAnswerItem = domP(currentNode, 'class', 'AnswerItem')!;
     const dataZopJson = nodeAnswerItem.getAttribute('data-zop') || '{}';
     const dataZop: IZhihuDataZop = JSON.parse(dataZopJson);
-    const res = await requestComment({ answerId: dataZop.itemId });
-    res && myListenComment.create(res);
-    myLoadingToast.hide()
+    myListenComment.create(dataZop.itemId);
   },
 };
 

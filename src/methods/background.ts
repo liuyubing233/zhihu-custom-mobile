@@ -44,7 +44,7 @@ const myBackground = {
     const linkText =
       `.RelevantQuery li,.modal-dialog a` +
       `,.ContentItem-more,.QuestionMainAction,a.UserLink-link,.RichContent--unescapable.is-collapsed .ContentItem-rightButton,.ContentItem-title a:hover` +
-      `,.css-b7erz1,.css-1vbwaf6,.css-1jj6qre,.css-jf1cpf,.css-vphnkw` +
+      `,.css-b7erz1,.css-1vbwaf6,.css-1jj6qre,.css-jf1cpf,.css-vphnkw,.css-1icigob` +
       `{color: deepskyblue!important;}`;
 
     // 添加 html[data-theme=dark] 前缀

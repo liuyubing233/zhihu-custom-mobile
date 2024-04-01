@@ -38,7 +38,7 @@ export const initOperate = () => {
   initTopStoryRecommendEvent();
   myListenComment.initOperate();
   myListenCommentChild.initOperate();
-  domById('CTZ_PREVIEW_VIDEO')!.onclick = function () {
+  domById('CTZ_PREVIEW_IMAGE')!.onclick = function () {
     myPreview.hide(this);
   };
 

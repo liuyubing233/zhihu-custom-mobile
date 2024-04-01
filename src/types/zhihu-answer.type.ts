@@ -57,6 +57,19 @@ export interface Target {
   visible_only_to_author: boolean;
   voteup_count: number;
   zhi_plus_extra_info: string;
+  label_info: ILabelInfo;
+}
+
+export interface ILabelInfo {
+  foreground_color: ForegroundColor;
+  icon_url: string;
+  text: string;
+  type: string;
+}
+
+export interface ForegroundColor {
+  alpha: number;
+  group: string;
 }
 
 export interface Author {

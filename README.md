@@ -14,7 +14,9 @@
 
 ## 功能简介
 
-1.X 版本的详细更新内容在 [更新日志](https://github.com/liuyubing233/zhihu-custom-mobile/blob/main/CHANGELOG.md)。
+2.X 版本的详细更新内容在 [更新日志](https://github.com/liuyubing233/zhihu-custom-mobile/blob/main/CHANGELOG.md)。
+
+### 回答可以查看全部回答和评论
 
 ### 历史记录
 

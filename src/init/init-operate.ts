@@ -5,6 +5,7 @@ import { myButtonOperate } from '../methods/dialog-button-operate';
 import { fnChanger } from '../methods/fn-changer';
 import { myListenComment, myListenCommentChild } from '../methods/listen-comment';
 import { myMenu, myMenu2 } from '../methods/menu';
+import { myPreview } from '../methods/preview';
 import { initTopStoryRecommendEvent } from './init-top-event-listener';
 
 /** 加载设置弹窗绑定方法 */
@@ -35,8 +36,11 @@ export const initOperate = () => {
   domById('CTZ_OPEN_BUTTON')!.onclick = myDialog.open;
   domById('CTZ_CLOSE_DIALOG')!.onclick = myDialog.hide;
   initTopStoryRecommendEvent();
-  myListenComment.initOperate()
-  myListenCommentChild.initOperate()
+  myListenComment.initOperate();
+  myListenCommentChild.initOperate();
+  domById('CTZ_PREVIEW_VIDEO')!.onclick = function () {
+    myPreview.hide(this);
+  };
 
   document.body.addEventListener('click', function (event: MouseEvent) {
     const { target } = event;

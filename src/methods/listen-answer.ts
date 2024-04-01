@@ -1,9 +1,10 @@
 import { commonRequest } from '../commons/request';
 import { myStorage } from '../commons/storage';
 import { dom, domA, domById, domC, domP, fnLog } from '../commons/tools';
-import { IConfig, IZhihuDataZop } from '../types';
+import { IConfig, IMyElement, IZhihuDataZop } from '../types';
 import { IZhihuAnswerDataItem, IZhihuAnswerResponse } from '../types/zhihu-answer.type';
 import { myListenComment } from './listen-comment';
+import { myPreview } from './preview';
 
 /** 自定义展开按钮类名 */
 const CLASS_BTN_EXPEND = 'ctz-n-button-expend';
@@ -31,6 +32,8 @@ export const myListenAnswer = {
     }
     const pageJsData = JSON.parse(nodeJsonData.innerText || '{}');
     const questionId = location.pathname.replace('/question/', '');
+    const currentQuestion = pageJsData.initialState.question.answers[questionId];
+    if (!currentQuestion) return;
     const next = pageJsData.initialState.question.answers[questionId].next;
     this.next = next;
     this.end = !next;
@@ -87,6 +90,7 @@ export const myListenAnswer = {
       nodeActions.style.cssText += `position: fixed; bottom: 0; left: 0; width: 100%!important; margin: 0;box-shadow: 0 -1px 3px rgba(25,27,31,0.1);`;
     }
     const nodeLists = domA('.Question-main .List');
+    if (!nodeLists.length) return;
     const nodeListContent = nodeLists[nodeLists.length - 1];
     const bounding = nodeListContent.getBoundingClientRect();
     if (bounding.bottom - 200 <= window.innerHeight && !this.end && !this.loading) {
@@ -131,29 +135,23 @@ const openEnd = (box: HTMLElement) => {
   box.appendChild(nNode);
 };
 
-/** 批量阻止事件传递 */
-const nodesStopPropagation = (classNames: string[]) => {
-  let nodeArray: HTMLElement[] = [];
-  classNames.forEach((item) => {
-    nodeArray = nodeArray.concat(Array.prototype.slice.call(domA(item)));
-  });
-  for (let i = 0, len = nodeArray.length; i < len; i++) {
-    nodeArray[i].addEventListener('click', (event) => {
-      event.stopPropagation();
-    });
-  }
-};
-
 const eventQuestionMain: Record<string, Function> = {
+  /** 展开更多 */
   [CLASS_BTN_EXPEND]: (currentNode: HTMLElement) => {
     const nodeRich = domP(currentNode, 'class', 'RichContent')!;
     const nodeRichInner = nodeRich.querySelector('.RichContent-inner') as HTMLElement;
     const nodeBTNOther = nodeRich.querySelector(`.${CLASS_BTN_CLOSE}`) as HTMLElement;
+    const nodeImgs = nodeRichInner.querySelectorAll('img');
+    for (let i = 0, len = nodeImgs.length; i < len; i++) {
+      const item = nodeImgs[i];
+      item.src = item.getAttribute('data-original') || '';
+    }
     nodeRich.classList.remove('is-collapsed');
     nodeRichInner.style.maxHeight = 'max-content';
     nodeBTNOther.style.display = 'block';
     currentNode.style.display = 'none';
   },
+  /** 收起 */
   [CLASS_BTN_CLOSE]: (currentNode: HTMLElement) => {
     const nodeRich = domP(currentNode, 'class', 'RichContent')!;
     const nodeRichInner = nodeRich.querySelector('.RichContent-inner') as HTMLElement;
@@ -165,6 +163,7 @@ const eventQuestionMain: Record<string, Function> = {
     nodeBTNOther.style.display = 'block';
     currentNode.style.display = 'none';
   },
+  /** 评论 */
   [CLASS_BTN_COMMENT]: async (currentNode: HTMLElement) => {
     const nodeAnswerItem = domP(currentNode, 'class', 'AnswerItem')!;
     const dataZopJson = nodeAnswerItem.getAttribute('data-zop') || '{}';
@@ -175,7 +174,8 @@ const eventQuestionMain: Record<string, Function> = {
 
 /** 监听问答详情最顶层 */
 const eventListenerQuestionMain = (event: MouseEvent) => {
-  const target = event.target as HTMLElement;
+  const target = event.target as IMyElement;
+  addListenImage(event);
   Object.keys(eventQuestionMain).forEach((key) => {
     if (target.classList.contains(key)) {
       event.preventDefault();
@@ -183,6 +183,34 @@ const eventListenerQuestionMain = (event: MouseEvent) => {
       eventQuestionMain[key](target);
     }
   });
+};
+
+/** 监听图片操作 */
+const addListenImage = (event: MouseEvent) => {
+  const target = event.target as IMyElement;
+  if (target.nodeName === 'IMG') {
+    let src = target.src;
+    if (target.classList.contains('ztext-gif')) {
+      // 动图
+      src = src.replace('.jpg', '.webp');
+    }
+    myPreview.open(src);
+    return;
+  }
+};
+
+/** 批量阻止事件传递 & 添加自定义方法 */
+const nodesStopPropagation = (classNames: string[]) => {
+  let nodeArray: HTMLElement[] = [];
+  classNames.forEach((item) => {
+    nodeArray = nodeArray.concat(Array.prototype.slice.call(domA(item)));
+  });
+  for (let i = 0, len = nodeArray.length; i < len; i++) {
+    nodeArray[i].addEventListener('click', (event) => {
+      event.stopPropagation();
+      addListenImage(event);
+    });
+  }
 };
 
 /** 创建元素：评论按钮 */
@@ -199,9 +227,7 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
   const { target_type, target } = data;
   const questionId = location.pathname.replace('/question/', '');
   const isMore = target.content.length > 400;
-
   const vDomContent = domC('div', { innerHTML: target.content });
-
   vDomContent.querySelectorAll('img').forEach((item) => {
     item.src = item.getAttribute('data-original') || '';
   });
@@ -209,7 +235,7 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
     const nItem = item as HTMLAnchorElement;
     const nFrame = domC('iframe', {
       style: `border:none;width: calc(100vw - 32px);height: calc((100vw - 32px)/1.8);`,
-      src: nItem.href
+      src: nItem.href,
     });
     nItem.insertAdjacentElement('afterend', nFrame);
     nItem.style.display = 'none';

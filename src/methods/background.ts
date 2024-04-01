@@ -42,7 +42,7 @@ const myBackground = {
       `,.css-10u695f,.css-r4op92` +
       `{color: ${color}!important}`;
     const linkText =
-      `.RelevantQuery li,.modal-dialog a` +
+      `.RelevantQuery li,.modal-dialog a,.zhi a,.ctz-n-button-expend,.VoteButton` +
       `,.ContentItem-more,.QuestionMainAction,a.UserLink-link,.RichContent--unescapable.is-collapsed .ContentItem-rightButton,.ContentItem-title a:hover` +
       `,.css-b7erz1,.css-1vbwaf6,.css-1jj6qre,.css-jf1cpf,.css-vphnkw,.css-1icigob` +
       `{color: deepskyblue!important;}`;
@@ -74,12 +74,13 @@ const myBackground = {
   },
   /** 知乎内元素样式设置 */
   doSetCSS: function (background: string, background2: string) {
-    const cssBg = `${this.cssNamesBackground1}{background-color: ${background}!important;}`;
+    const cssBg = `${this.cssNamesBackground1}{background-color: ${background}!important;background:${background}!important;}`;
     const cssBg2 = `${this.cssNamesBackground2}{background-color:${background2}!important;background:${background2}!important;}`;
+    const cssJustBGC2 = `${this.useCSSJustBGC2}{background-color: ${background2}!important;}`
     const cssBgTransparent = `${this.cssNamesBackgroundTransparent}{background-color: transparent!important;background: transparent!important;}`;
     const loadingStyle = `.css-w2vj5n{background: ${background}!important;color: ${background2}!important;}`;
     const borderBg = `.KfeCollection-VipRecommendCard-article{border-color: ${background}!important;}`;
-    return cssBg + cssBg2 + cssBgTransparent + loadingStyle + borderBg;
+    return cssBg + cssBg2 + cssBgTransparent + loadingStyle + borderBg + cssJustBGC2;
   },
   /** 修改器样式设置（不需要添加前缀） */
   doSetCSSInCTZ: function (background: string, background2: string) {
@@ -92,7 +93,8 @@ const myBackground = {
     `#CTZ_DIALOG,#CTZ_BASIS_SHOW label b,.ctz-suspension-pickup,.ctz-content-top a.target,.ctz-message,#CTZ_DIALOG textarea,#CTZ_DIALOG .ctz-button` +
     `,body,.App,.MobileAppHeader-searchBox,.Input-wrapper,.VideoAnswerPlayer-stateBar,.ColumnHomeColumnCard,.Toast-root-tU3yo,.AuthorsSection-author-tFZJF` +
     `,.editable,textarea.zg-form-text-input,.zg-form-text-input>textarea,.ac-active,.PagingButton,[data-tooltip="回到顶部"]` +
-    `,.css-d1dtt9,.css-k8i00s,.css-41c1px,.zm-editable-editor-field-wrap,.zu-question-suggest-topic-input,.zg-form-text-input,.zg-form-select,.css-4lspwd`,
+    `,.css-d1dtt9,.css-k8i00s,.css-41c1px,.zm-editable-editor-field-wrap,.zu-question-suggest-topic-input,.zg-form-text-input,.zg-form-select,.css-4lspwd` +
+    `,.zu-top`,
   /** 使用背景色2的元素名称 */
   cssNamesBackground2:
     `.ctz-content,.ctz-menu>a.target` +
@@ -105,7 +107,9 @@ const myBackground = {
     `,.zu-autocomplete-row-label,.ac-row.zu-autocomplete-row-search-link,.PostItem,.Recommendations-Main,.ErrorPage` +
     `,.css-1e7fksk,.css-1gfesro,.css-ud510h,.css-vb0amv,.css-t89z5u,.css-u3vsx3>div,.css-5k4zcx,.css-13heq6w,.css-13heq6w>a,.css-1eltcns,.css-yoby3j,.css-l63y2t,.css-173civf,.css-1nalx0p,.css-mn9570` +
     `,.css-4r7szo,.css-vkey2q,.css-ugzr12,.css-6v1k3,.css-1xj1964,.css-ggid2,.css-rhbxt0,.css-1j23ebo,.css-7wvdjh,.css-kt4t4n` +
-    `,#CTZ_COMMENT,#CTZ_COMMENT_CHILD`,
+    `,#CTZ_COMMENT,#CTZ_COMMENT_CHILD` +
+    `,.mobile-top-nav-popup .top-nav-dropdown,.zm-item-tag,.mobile-top-nav-popup .top-nav-dropdown a`,
+  useCSSJustBGC2: `.slide-up`,
   /** 背景色透明的元素名称 */
   cssNamesBackgroundTransparent: `.ContentItem-more:before`,
   cssNamesColorUserBackground1: ``,

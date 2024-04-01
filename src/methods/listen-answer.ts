@@ -131,7 +131,6 @@ export const myListenAnswer = {
     this.loading = true;
     openLoading(nodeListContent);
     const res = await commonRequest(this.next);
-    console.log(res);
     if (!res) return;
     const { paging, data } = res as IZhihuAnswerResponse;
     if (paging.next === this.next) return;

@@ -19,6 +19,7 @@ const CLASS_BTN_COMMENT = 'ctz-n-button-comment';
 export const myListenAnswer = {
   next: '',
   end: false,
+  loading: false,
   init: async function () {
     dom('.Question-main')!.addEventListener('click', eventListenerQuestionMain);
     nodesStopPropagation(['.RichContent-inner', '.Question-main figure img', '.Question-main a']);
@@ -88,7 +89,8 @@ export const myListenAnswer = {
     const nodeLists = domA('.Question-main .List');
     const nodeListContent = nodeLists[nodeLists.length - 1];
     const bounding = nodeListContent.getBoundingClientRect();
-    if (bounding.bottom - 200 <= window.innerHeight && !this.end) {
+    if (bounding.bottom - 200 <= window.innerHeight && !this.end && !this.loading) {
+      this.loading = true;
       openLoading(nodeListContent);
       const res = await commonRequest(this.next);
       console.log(res);
@@ -101,6 +103,7 @@ export const myListenAnswer = {
       const config = await myStorage.getConfig();
       nodeListContent.innerHTML += createListHTML(data, config);
       hideLoading(nodeListContent);
+      this.loading = false;
     }
   },
 };
@@ -197,6 +200,23 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
   const questionId = location.pathname.replace('/question/', '');
   const isMore = target.content.length > 400;
 
+  const vDomContent = domC('div', { innerHTML: target.content });
+
+  vDomContent.querySelectorAll('img').forEach((item) => {
+    item.src = item.getAttribute('data-original') || '';
+  });
+  vDomContent.querySelectorAll('a.video-box').forEach((item) => {
+    const nItem = item as HTMLAnchorElement;
+    const nFrame = domC('iframe', {
+      style: `border:none;width: calc(100vw - 32px);height: calc((100vw - 32px)/1.8);`,
+      src: nItem.href
+    });
+    nItem.insertAdjacentElement('afterend', nFrame);
+    nItem.style.display = 'none';
+  });
+
+  const contentHTML = vDomContent.innerHTML;
+  vDomContent.remove();
   return `<div class="List-item ctz-answer-item" tabindex="0">
   <div
     class="ContentItem AnswerItem"
@@ -243,7 +263,7 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
     <meta itemprop="dateModified" content="${target.updated_time}000" />
     <meta itemprop="commentCount" content="${target.comment_count}" />
     <div class="RichContent ${isMore ? 'is-collapsed' : ''} RichContent--unescapable">
-      <div class="RichContent-inner RichContent-inner--collapsed" style="${isMore ? 'max-height: 180px' : ''}">${target.content}</div>
+      <div class="RichContent-inner RichContent-inner--collapsed" style="${isMore ? 'max-height: 180px' : ''}">${contentHTML}</div>
       <div class="ContentItem-actions">
         <button aria-label="赞同 ${target.voteup_count}" aria-live="polite" type="button" class="Button VoteButton VoteButton--up">
           ▲ 赞同 ${target.voteup_count}

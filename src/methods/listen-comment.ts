@@ -44,7 +44,6 @@ export const myListenComment: myListenComment = {
     const me = this;
     domById(ID_CTZ_COMMENT)!.onclick = async (event) => {
       const nodeCurrent = event.target as IMyElement;
-      console.log('event.target', event.target);
       const { id, name } = nodeCurrent;
       // 关闭弹窗按钮
       if (id === ID_CTZ_COMMENT_CLOSE) {
@@ -131,7 +130,6 @@ export const myListenCommentChild: myListenComment = {
   initOperate: function () {
     const me = this;
     domById(ID_CTZ_COMMENT_CHILD)!.onclick = (event) => {
-      console.log('ID_CTZ_COMMENT_CHILD', event, event.target);
       const currentTarget = event.target as IMyElement;
       if (currentTarget.id === ID_CTZ_COMMENT_BACK) {
         domById(ID_CTZ_COMMENT_CHILD)!.style.display = 'none';

@@ -108,6 +108,17 @@
     { href: "#CTZ_HISTORY", value: "历史记录" }
     // { href: '#CTZ_DEFAULT', value: '默认功能' },
   ];
+  var HIDDEN_ANSWER_TAG = {
+    removeFromYanxuan: "盐选专栏",
+    removeUnrealAnswer: "虚构创作",
+    removeFromEBook: "电子书"
+  };
+  var HIDDEN_ANSWER_ACCOUNT = {
+    removeStoryAnswer: "故事档案局",
+    removeYanxuanAnswer: "盐选科普",
+    removeYanxuanRecommend: "盐选推荐",
+    removeYanxuanCPRecommend: "盐选测评室"
+  };
   var HIDDEN_ARRAY = [
     [{ value: "hiddenAD", label: "广告" }],
     [
@@ -807,6 +818,41 @@
       return void 0;
     return fetch(url, { method, headers }).then((res) => res.json());
   };
+  var Store = class {
+    constructor() {
+      /** 页面高度 */
+      this.pageHeight = 0;
+      /** 回答屏蔽的标签 */
+      this.hiddenTags = [];
+      /** 回答屏蔽的用户 */
+      this.hiddenUsers = [];
+      this.setPageHeight = this.setPageHeight.bind(this);
+      this.getPageHeight = this.getPageHeight.bind(this);
+      this.initSetHidden = this.initSetHidden.bind(this);
+      this.getHidden = this.getHidden.bind(this);
+    }
+    setPageHeight(height) {
+      this.pageHeight = height;
+    }
+    getPageHeight() {
+      return this.pageHeight;
+    }
+    async initSetHidden() {
+      const config = await myStorage.getConfig();
+      const nHiddenTags = Object.keys(HIDDEN_ANSWER_TAG).filter((i2) => !!config[i2]).map((i2) => HIDDEN_ANSWER_TAG[i2]);
+      this.hiddenTags = nHiddenTags;
+      const nHiddenUsers = Object.keys(HIDDEN_ANSWER_ACCOUNT).filter((i2) => !!config[i2]).map((i2) => HIDDEN_ANSWER_ACCOUNT[i2]);
+      config.removeAnonymousAnswer && nHiddenUsers.push("匿名用户");
+      this.hiddenUsers = nHiddenUsers;
+    }
+    getHidden() {
+      return {
+        hiddenTags: this.hiddenTags,
+        hiddenUsers: this.hiddenUsers
+      };
+    }
+  };
+  var store = new Store();
   var myScroll = {
     stop: () => dom("body").classList.add("ctz-stop-scroll"),
     on: () => dom("body").classList.remove("ctz-stop-scroll")
@@ -1165,12 +1211,35 @@
     /** 处理初始页面数据 */
     formatInitAnswers: async function() {
       const nodeAnswers = domA(".ContentItem.AnswerItem");
-      console.log("nodeAnswers", nodeAnswers);
+      const { hiddenTags, hiddenUsers } = store.getHidden();
       for (let i2 = 0, len = nodeAnswers.length; i2 < len; i2++) {
         const nodeItem = nodeAnswers[i2];
         const nodeRich = nodeItem.querySelector(".RichContent");
         const nodeActions = nodeItem.querySelector(".ContentItem-actions");
         setTimeout(() => {
+          const check = () => {
+            len === i2 + 1 && this.checkListHeight();
+          };
+          const nodeAnswerTopCard = nodeItem.querySelector(".KfeCollection-AnswerTopCard-Container");
+          const nodeAnswerLabel = nodeItem.querySelector(".LabelContainer-wrapper");
+          const topCardInnerText = nodeAnswerTopCard ? nodeAnswerTopCard.innerText : "";
+          const topLabelInnerText = nodeAnswerLabel ? nodeAnswerLabel.innerText : "";
+          for (let indexTag = 0, lenTag = hiddenTags.length; indexTag < lenTag; indexTag++) {
+            const itemTag = hiddenTags[indexTag];
+            if (topCardInnerText.includes(itemTag) || topLabelInnerText.includes(itemTag)) {
+              domP(nodeItem, "class", "List-item").style.display = "none";
+              check();
+              return;
+            }
+          }
+          const username = nodeItem.querySelector(".AuthorInfo-head .UserLink-link").innerText;
+          for (let indexName = 0, lenName = hiddenUsers.length; indexName < lenName; indexName++) {
+            if (hiddenUsers[indexName] === username) {
+              domP(nodeItem, "class", "List-item").style.display = "none";
+              check();
+            }
+          }
+          check();
           const count = nodeItem.querySelector('[itemprop="commentCount"]').content;
           const nCommentBtn = cDomCommentBtn(count);
           nodeActions.appendChild(nCommentBtn);
@@ -1215,22 +1284,36 @@
       const nodeListContent = nodeLists[nodeLists.length - 1];
       const bounding = nodeListContent.getBoundingClientRect();
       if (bounding.bottom - 200 <= window.innerHeight && !this.end && !this.loading) {
-        this.loading = true;
-        openLoading(nodeListContent);
-        const res = await commonRequest(this.next);
-        console.log(res);
-        if (!res)
-          return;
-        const { paging, data } = res;
-        if (paging.next === this.next)
-          return;
-        paging.is_end && openEnd(nodeListContent);
-        this.end = paging.is_end;
-        this.next = paging.next;
-        const config = await myStorage.getConfig();
-        nodeListContent.innerHTML += createListHTML(data, config);
-        hideLoading(nodeListContent);
-        this.loading = false;
+        this.requestData(nodeListContent);
+      }
+    },
+    requestData: async function(nodeListContent) {
+      this.loading = true;
+      openLoading(nodeListContent);
+      const res = await commonRequest(this.next);
+      console.log(res);
+      if (!res)
+        return;
+      const { paging, data } = res;
+      if (paging.next === this.next)
+        return;
+      paging.is_end && openEnd(nodeListContent);
+      this.end = paging.is_end;
+      this.next = paging.next;
+      const config = await myStorage.getConfig();
+      nodeListContent.innerHTML += createListHTML(data, config);
+      hideLoading(nodeListContent);
+      this.loading = false;
+      this.checkListHeight();
+    },
+    /** 检测元素高度 */
+    checkListHeight: function() {
+      const nodeLists = domA(".Question-main .List");
+      if (!nodeLists.length)
+        return;
+      const nodeListContent = nodeLists[nodeLists.length - 1];
+      if (nodeListContent.offsetHeight < window.innerHeight) {
+        this.requestData(nodeListContent);
       }
     }
   };
@@ -1335,6 +1418,7 @@
   var createListHTML = (data, config) => data.map((i2) => createListItemHTML(i2, config)).join("");
   var createListItemHTML = (data, config) => {
     const { target_type, target } = data;
+    const { hiddenTags, hiddenUsers } = store.getHidden();
     const questionId = location.pathname.replace("/question/", "");
     const isMore = target.content.length > 400;
     const vDomContent = domC("div", { innerHTML: target.content });
@@ -1352,6 +1436,17 @@
     });
     const contentHTML = vDomContent.innerHTML;
     vDomContent.remove();
+    const answerTopCard = [];
+    target.label_info && answerTopCard.push(`本回答节选自${target.label_info.text}`);
+    target.reward_info.is_rewardable && answerTopCard.push("内容包含虚构创作");
+    for (let i2 = 0, len = hiddenTags.length; i2 < len; i2++) {
+      if (answerTopCard.join().includes(hiddenTags[i2]))
+        return "";
+    }
+    for (let i2 = 0, len = hiddenUsers.length; i2 < len; i2++) {
+      if (target.author.name === hiddenUsers[i2])
+        return "";
+    }
     return `<div class="List-item ctz-answer-item" tabindex="0">
   <div
     class="ContentItem AnswerItem"
@@ -1389,6 +1484,9 @@
         </div>
       </div>
     </div>
+    ${answerTopCard.length ? `<div class="KfeCollection-AnswerTopCard-Container">` + answerTopCard.map(
+      (i2) => `<div class="KfeCollection-OrdinaryLabel-newStyle-mobile" style="margin-right: 6px;"><div class="KfeCollection-OrdinaryLabel-content">${i2}</div></div>`
+    ).join("") + `</div>` : ""}
     <meta itemprop="image" />
     <meta itemprop="upvoteCount" content="${target.voteup_count}" />
     <meta itemprop="url" content="https://www.zhihu.com/question/${questionId}/answer/${target.id}" />
@@ -1467,7 +1565,7 @@
     dark: function(darkKey) {
       const { background, background2, color } = THEME_CONFIG_DARK[darkKey];
       const whiteText = `#CTZ_DIALOG,.ctz-message,#CTZ_MAIN input,#CTZ_MAIN textarea,.ctz-footer,#CTZ_CLOSE_DIALOG,.ctz-commit,#CTZ_OPEN_BUTTON,.KfeCollection-VipRecommendCard-content,.KfeCollection-VipRecommendCard-title,#CTZ_DIALOG textarea,#CTZ_DIALOG .ctz-button,.ctz-button.ctz-button-transparent,body,.zu-top-nav-link,.CommentContent,[data-za-detail-view-path-module="CommentList"] div,.CommentsForOia div,.ctz-suspension-pickup,.zm-ac-link,.css-10noe4n,.css-3ny988,.css-hmd01z,.css-z0cc58,.css-7aa3bk,.css-1965tpd,.css-b574el,.css-1jg6wq6,textarea.zg-form-text-input,.zg-form-text-input>textarea,.css-1eglonx,.css-1tip2bd,.css-1symrae,.css-u3vsx3>div,.zm-editable-editor-field-wrap,.zu-question-suggest-topic-input,.zg-form-text-input,.zg-form-select,.css-10u695f,.css-r4op92{color: ${color}!important}`;
-      const linkText = `.RelevantQuery li,.modal-dialog a,.ContentItem-more,.QuestionMainAction,a.UserLink-link,.RichContent--unescapable.is-collapsed .ContentItem-rightButton,.ContentItem-title a:hover,.css-b7erz1,.css-1vbwaf6,.css-1jj6qre,.css-jf1cpf,.css-vphnkw{color: deepskyblue!important;}`;
+      const linkText = `.RelevantQuery li,.modal-dialog a,.ContentItem-more,.QuestionMainAction,a.UserLink-link,.RichContent--unescapable.is-collapsed .ContentItem-rightButton,.ContentItem-title a:hover,.css-b7erz1,.css-1vbwaf6,.css-1jj6qre,.css-jf1cpf,.css-vphnkw,.css-1icigob{color: deepskyblue!important;}`;
       const addPrefix = (i2) => {
         return i2.split(",").map((i3) => `html[data-theme=dark] ${i3}`).join(",");
       };
@@ -1734,21 +1832,6 @@
       this.init();
     }
   };
-  var Store = class {
-    constructor() {
-      /** 页面高度 */
-      this.pageHeight = 0;
-      this.setPageHeight = this.setPageHeight.bind(this);
-      this.getPageHeight = this.getPageHeight.bind(this);
-    }
-    setPageHeight(height) {
-      this.pageHeight = height;
-    }
-    getPageHeight() {
-      return this.pageHeight;
-    }
-  };
-  var store = new Store();
   var CLASS_COPY_LINK = "ctz-copy-answer-link";
   var addAnswerCopyLink = async (nodeItem) => {
     const { copyAnswerLink } = await myStorage.getConfig();
@@ -2101,7 +2184,7 @@
     initTopStoryRecommendEvent();
     myListenComment.initOperate();
     myListenCommentChild.initOperate();
-    domById("CTZ_PREVIEW_VIDEO").onclick = function() {
+    domById("CTZ_PREVIEW_IMAGE").onclick = function() {
       myPreview.hide(this);
     };
     document.body.addEventListener("click", function(event) {
@@ -2164,6 +2247,7 @@
     GM_registerMenuCommand("⚙️ 设置", () => {
       myDialog.open();
     });
+    store.initSetHidden();
     async function onDocumentStart() {
       if (!HTML_HOOTS.includes(hostname) || window.frameElement)
         return;

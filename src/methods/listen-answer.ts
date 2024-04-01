@@ -1,6 +1,7 @@
 import { commonRequest } from '../commons/request';
 import { myStorage } from '../commons/storage';
 import { dom, domA, domById, domC, domP, fnLog } from '../commons/tools';
+import { store } from '../store';
 import { IConfig, IMyElement, IZhihuDataZop } from '../types';
 import { IZhihuAnswerDataItem, IZhihuAnswerResponse } from '../types/zhihu-answer.type';
 import { myListenComment } from './listen-comment';
@@ -41,13 +42,42 @@ export const myListenAnswer = {
   /** 处理初始页面数据 */
   formatInitAnswers: async function () {
     const nodeAnswers = domA('.ContentItem.AnswerItem');
-    console.log('nodeAnswers', nodeAnswers);
+    const { hiddenTags, hiddenUsers } = store.getHidden();
+
     for (let i = 0, len = nodeAnswers.length; i < len; i++) {
       const nodeItem = nodeAnswers[i];
       const nodeRich = nodeItem.querySelector('.RichContent') as HTMLElement;
-      // const nodeRichInner = nodeItem.querySelector('.RichContent-inner') as HTMLElement;
       const nodeActions = nodeItem.querySelector('.ContentItem-actions') as HTMLElement;
       setTimeout(() => {
+        const check = () => {
+          len === i + 1 && this.checkListHeight();
+        };
+
+        // 过滤标签
+        const nodeAnswerTopCard = nodeItem.querySelector('.KfeCollection-AnswerTopCard-Container') as HTMLElement | null;
+        const nodeAnswerLabel = nodeItem.querySelector('.LabelContainer-wrapper') as HTMLElement | null;
+        const topCardInnerText = nodeAnswerTopCard ? nodeAnswerTopCard.innerText : '';
+        const topLabelInnerText = nodeAnswerLabel ? nodeAnswerLabel.innerText : '';
+        for (let indexTag = 0, lenTag = hiddenTags.length; indexTag < lenTag; indexTag++) {
+          const itemTag = hiddenTags[indexTag];
+          if (topCardInnerText.includes(itemTag) || topLabelInnerText.includes(itemTag)) {
+            domP(nodeItem, 'class', 'List-item')!.style.display = 'none';
+            check();
+            return;
+          }
+        }
+
+        // 过滤用户名
+        const username = (nodeItem.querySelector('.AuthorInfo-head .UserLink-link') as HTMLElement).innerText;
+        for (let indexName = 0, lenName = hiddenUsers.length; indexName < lenName; indexName++) {
+          if (hiddenUsers[indexName] === username) {
+            domP(nodeItem, 'class', 'List-item')!.style.display = 'none';
+            check();
+          }
+        }
+
+        check();
+
         // 添加评论按钮
         const count = (nodeItem.querySelector('[itemprop="commentCount"]') as HTMLMetaElement).content;
         const nCommentBtn = cDomCommentBtn(count);
@@ -94,20 +124,33 @@ export const myListenAnswer = {
     const nodeListContent = nodeLists[nodeLists.length - 1];
     const bounding = nodeListContent.getBoundingClientRect();
     if (bounding.bottom - 200 <= window.innerHeight && !this.end && !this.loading) {
-      this.loading = true;
-      openLoading(nodeListContent);
-      const res = await commonRequest(this.next);
-      console.log(res);
-      if (!res) return;
-      const { paging, data } = res as IZhihuAnswerResponse;
-      if (paging.next === this.next) return;
-      paging.is_end && openEnd(nodeListContent);
-      this.end = paging.is_end;
-      this.next = paging.next;
-      const config = await myStorage.getConfig();
-      nodeListContent.innerHTML += createListHTML(data, config);
-      hideLoading(nodeListContent);
-      this.loading = false;
+      this.requestData(nodeListContent);
+    }
+  },
+  requestData: async function (nodeListContent: HTMLElement) {
+    this.loading = true;
+    openLoading(nodeListContent);
+    const res = await commonRequest(this.next);
+    console.log(res);
+    if (!res) return;
+    const { paging, data } = res as IZhihuAnswerResponse;
+    if (paging.next === this.next) return;
+    paging.is_end && openEnd(nodeListContent);
+    this.end = paging.is_end;
+    this.next = paging.next;
+    const config = await myStorage.getConfig();
+    nodeListContent.innerHTML += createListHTML(data, config);
+    hideLoading(nodeListContent);
+    this.loading = false;
+    this.checkListHeight();
+  },
+  /** 检测元素高度 */
+  checkListHeight: function () {
+    const nodeLists = domA('.Question-main .List');
+    if (!nodeLists.length) return;
+    const nodeListContent = nodeLists[nodeLists.length - 1];
+    if (nodeListContent.offsetHeight < window.innerHeight) {
+      this.requestData(nodeListContent);
     }
   },
 };
@@ -225,6 +268,7 @@ const createListHTML = (data: IZhihuAnswerDataItem[], config: IConfig) => data.m
 
 const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
   const { target_type, target } = data;
+  const { hiddenTags, hiddenUsers } = store.getHidden();
   const questionId = location.pathname.replace('/question/', '');
   const isMore = target.content.length > 400;
   const vDomContent = domC('div', { innerHTML: target.content });
@@ -240,9 +284,20 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
     nItem.insertAdjacentElement('afterend', nFrame);
     nItem.style.display = 'none';
   });
-
   const contentHTML = vDomContent.innerHTML;
   vDomContent.remove();
+
+  const answerTopCard = [];
+  target.label_info && answerTopCard.push(`本回答节选自${target.label_info.text}`);
+  target.reward_info.is_rewardable && answerTopCard.push('内容包含虚构创作');
+
+  for (let i = 0, len = hiddenTags.length; i < len; i++) {
+    if (answerTopCard.join().includes(hiddenTags[i])) return '';
+  }
+  for (let i = 0, len = hiddenUsers.length; i < len; i++) {
+    if (target.author.name === hiddenUsers[i]) return '';
+  }
+
   return `<div class="List-item ctz-answer-item" tabindex="0">
   <div
     class="ContentItem AnswerItem"
@@ -282,6 +337,20 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
         </div>
       </div>
     </div>
+    ${
+      answerTopCard.length
+        ? `<div class="KfeCollection-AnswerTopCard-Container">` +
+          answerTopCard
+            .map(
+              (i) =>
+                `<div class="KfeCollection-OrdinaryLabel-newStyle-mobile" style="margin-right: 6px;">` +
+                `<div class="KfeCollection-OrdinaryLabel-content">${i}</div>` +
+                `</div>`
+            )
+            .join('') +
+          `</div>`
+        : ''
+    }
     <meta itemprop="image" />
     <meta itemprop="upvoteCount" content="${target.voteup_count}" />
     <meta itemprop="url" content="https://www.zhihu.com/question/${questionId}/answer/${target.id}" />

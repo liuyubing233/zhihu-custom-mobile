@@ -28,6 +28,4 @@ function resizeFun() {
     heightTopStoryContent < window.innerHeight && windowResize();
     setPageHeight(heightTopStoryContent);
   }
-
-  // myListenAnswerItem.init();
 }

@@ -15,6 +15,7 @@ import { myListenListItem } from './methods/listen-list-item';
 import { addQuestionLogButton } from './methods/question-log';
 import { fnSuspensionPickup } from './methods/suspension';
 import { addTimeForArticle, addTimeForQuestion } from './methods/time';
+import { store } from './store';
 import { INNER_CSS } from './web-resources';
 
 (function () {
@@ -25,6 +26,7 @@ import { INNER_CSS } from './web-resources';
   GM_registerMenuCommand('⚙️ 设置', () => {
     myDialog.open();
   });
+  store.initSetHidden();
 
   /** 在启动时注入的内容 */
   async function onDocumentStart() {
@@ -83,7 +85,6 @@ import { INNER_CSS } from './web-resources';
     historyToChangePathname();
     // 重置监听起点
     myListenListItem.reset();
-    // myListenAnswerItem.reset();
   };
   /** history 变化 */
   window.addEventListener('popstate', changeHistory);
@@ -95,18 +96,6 @@ import { INNER_CSS } from './web-resources';
     const nodeSignModal = dom('.signFlowModal');
     const nodeSignClose = nodeSignModal && (nodeSignModal.querySelector('.Modal-closeButton') as HTMLButtonElement);
     nodeSignClose && nodeSignClose.click();
-    // if (host === 'zhuanlan.zhihu.com') {
-    //   const nodeArticle = dom('.Post-content');
-    //   if (nodeArticle) {
-    //     initVideoDownload(nodeArticle);
-    //   }
-    // }
-    // pathnameHasFn({
-    //   zvideo: () => {
-    //     const domFind = dom('.ZVideo-mainColumn');
-    //     domFind && initVideoDownload(domFind);
-    //   },
-    // });
   });
 
   // 复制代码块删除版权信息

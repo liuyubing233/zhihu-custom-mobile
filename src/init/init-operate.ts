@@ -4,9 +4,9 @@ import { CLASS_INPUT_CHANGE, CLASS_INPUT_CLICK } from '../configs';
 import { myButtonOperate } from '../methods/dialog-button-operate';
 import { fnChanger } from '../methods/fn-changer';
 import { myListenComment, myListenCommentChild } from '../methods/listen-comment';
+import { myListenListRecommend } from '../methods/listen-list-recommend';
 import { myMenu, myMenu2 } from '../methods/menu';
 import { myPreview } from '../methods/preview';
-import { initTopStoryRecommendEvent } from './init-top-event-listener';
 
 /** 加载设置弹窗绑定方法 */
 export const initOperate = () => {
@@ -35,7 +35,8 @@ export const initOperate = () => {
   domA('.ctz-content-top').forEach((i) => (i.onclick = myMenu2.click));
   domById('CTZ_OPEN_BUTTON')!.onclick = myDialog.open;
   domById('CTZ_CLOSE_DIALOG')!.onclick = myDialog.hide;
-  initTopStoryRecommendEvent();
+  // initTopStoryRecommendEvent();
+  myListenListRecommend.initOperate()
   myListenComment.initOperate();
   myListenCommentChild.initOperate();
   domById('CTZ_PREVIEW_IMAGE')!.onclick = function () {

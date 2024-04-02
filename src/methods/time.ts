@@ -86,3 +86,18 @@ export const addTimeForArticle = async () => {
     })
   );
 };
+
+/**
+ * 创建修改时间HTML
+ * @param createTime
+ * @param updateTime
+ * @returns
+ */
+export const createTimeHTML = (createTime: string | number, updateTime: string | number) => {
+  return (
+    `<div class="${CLASS_TIME_ITEM}" style="line-height: 24px;padding-top: 2px;font-size: 14px;">` +
+    `<div>创建于：${timeFormatter(+`${createTime}`)}</div>` +
+    `${createTime !== updateTime && updateTime ? `<div>编辑于：${timeFormatter(+`${updateTime}`)}</div>` : ''}` +
+    `</div>`
+  );
+};

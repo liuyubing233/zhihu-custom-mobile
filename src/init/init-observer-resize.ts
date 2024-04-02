@@ -1,8 +1,8 @@
 import { dom, throttle, windowResize } from '../commons/tools';
 import { HTML_HOOTS } from '../configs';
 import { myListenListItem } from '../methods/listen-list-item';
+import { myListenListRecommend } from '../methods/listen-list-recommend';
 import { store } from '../store';
-import { initTopStoryRecommendEvent } from './init-top-event-listener';
 
 /** 使用 ResizeObserver 监听body高度 */
 export const initResizeObserver = () => {
@@ -20,7 +20,8 @@ function resizeFun() {
     const heightTopStoryContent = nodeTopStoryC.offsetHeight;
     if (heightTopStoryContent < heightForList) {
       myListenListItem.restart();
-      initTopStoryRecommendEvent();
+      // initTopStoryRecommendEvent();
+      myListenListRecommend.initOperate()
     } else {
       myListenListItem.init();
     }

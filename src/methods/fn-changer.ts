@@ -3,7 +3,6 @@ import { domById } from '../commons/tools';
 import { INPUT_NAME_THEME, INPUT_NAME_THEME_DARK, INPUT_NAME_ThEME_LIGHT } from '../configs';
 import { loadBackground, onUseThemeDark } from './background';
 import { myHidden } from './hidden';
-import { myListenListItem } from './listen-list-item';
 import { addTimeForArticle, addTimeForQuestion } from './time';
 import { myVersion } from './version';
 
@@ -15,7 +14,7 @@ export const fnChanger = async (ev: HTMLInputElement) => {
   const changeBackground = () => {
     myVersion.change();
     loadBackground();
-    myListenListItem.restart();
+    // myListenListItem.restart();
     onUseThemeDark();
   };
 

@@ -326,13 +326,13 @@
   var hexToRgba = (hex, opacity) => {
     return "rgba(" + parseInt("0x" + hex.slice(1, 3)) + "," + parseInt("0x" + hex.slice(3, 5)) + "," + parseInt("0x" + hex.slice(5, 7)) + "," + opacity + ")";
   };
-  var nodesStopPropagation = (names, fnArr = []) => {
+  var nodesStopPropagation = (names, fnArr = [], type = "click") => {
     let nodeArray = [];
     names.forEach((item) => {
       nodeArray = nodeArray.concat(Array.prototype.slice.call(domA(item)));
     });
     for (let i2 = 0, len = nodeArray.length; i2 < len; i2++) {
-      nodeArray[i2].addEventListener("click", (event) => {
+      nodeArray[i2].addEventListener(type, (event) => {
         event.stopPropagation();
         fnArr.forEach((fn) => {
           fn(event);
@@ -1883,6 +1883,7 @@
     init: function() {
       dom(".Question-main").addEventListener("click", eventListenerQuestionMain);
       nodesStopPropagation([".RichContent-inner", ".Question-main figure img", ".Question-main a"], [addListenImage]);
+      nodesStopPropagation([".RichContent-inner p"], [], "copy");
       this.formatInitAnswers();
       const nodeJsonData = domById("js-initialData");
       if (!nodeJsonData) {
@@ -2189,6 +2190,7 @@
   };
   var fnListenArticle = () => {
     nodesStopPropagation([".RichContent-actions .VoteButton", ".BottomActions-CommentBtn"], [clickCommit]);
+    nodesStopPropagation([".Post-content p"], [], "copy");
   };
   var clickCommit = (event) => {
     const target = event.target;
@@ -2333,5 +2335,16 @@
       }, 100),
       false
     );
+    document.addEventListener("copy", function(event) {
+      let clipboardData = event.clipboardData || window.clipboardData;
+      if (!clipboardData)
+        return;
+      const selection = window.getSelection();
+      let text = selection ? selection.toString() : "";
+      if (text) {
+        event.preventDefault();
+        clipboardData.setData("text/plain", text);
+      }
+    });
   })();
 })();

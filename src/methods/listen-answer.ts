@@ -25,6 +25,7 @@ export const myListenAnswer = {
   init: function () {
     dom('.Question-main')!.addEventListener('click', eventListenerQuestionMain);
     nodesStopPropagation(['.RichContent-inner', '.Question-main figure img', '.Question-main a'], [addListenImage]);
+    nodesStopPropagation(['.RichContent-inner p'], [], 'copy'); // 去除禁止复制
     this.formatInitAnswers();
     const nodeJsonData = domById('js-initialData');
     if (!nodeJsonData) {

@@ -189,13 +189,13 @@ export const hexToRgba = (hex: string, opacity: number | string) => {
  * @param names 查询的名称列表，用于 document.querySelectAll
  * @param fnArr 可添加的方法
  */
-export const nodesStopPropagation = (names: string[], fnArr: Function[] = []) => {
+export const nodesStopPropagation = (names: string[], fnArr: Function[] = [], type = 'click') => {
   let nodeArray: HTMLElement[] = [];
   names.forEach((item) => {
     nodeArray = nodeArray.concat(Array.prototype.slice.call(domA(item)));
   });
   for (let i = 0, len = nodeArray.length; i < len; i++) {
-    nodeArray[i].addEventListener('click', (event) => {
+    nodeArray[i].addEventListener(type, (event) => {
       event.stopPropagation();
       fnArr.forEach((fn) => {
         fn(event)

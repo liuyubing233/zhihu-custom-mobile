@@ -1,6 +1,6 @@
 import { commonRequest } from '../commons/request';
 import { myStorage } from '../commons/storage';
-import { dom, domA, domById, domC, domP, fnLog, nodesStopPropagation } from '../commons/tools';
+import { dom, domA, domById, domC, domP, nodesStopPropagation } from '../commons/tools';
 import { CLASS_TIME_ITEM } from '../configs';
 import { store } from '../store';
 import { IConfig, IMyElement, IZhihuDataZop } from '../types';
@@ -28,19 +28,22 @@ export const myListenAnswer = {
     dom('.Question-main')!.addEventListener('click', eventListenerQuestionMain);
     nodesStopPropagation(['.RichContent-inner', '.Question-main figure img', '.Question-main a'], [addListenImage]);
     nodesStopPropagation(['.RichContent-inner p'], [], 'copy'); // 去除禁止复制
+    const findNext = () => {
+      try {
+        const nodeJsonData = domById('js-initialData')!;
+        const pageJsData = JSON.parse(nodeJsonData.innerText || '{}');
+        const questionId = location.pathname.replace('/question/', '');
+        const next = pageJsData.initialState.question.answers[questionId].next;
+        this.next = next;
+        this.end = !next;
+      } catch {
+        setTimeout(() => {
+          findNext.call(myListenAnswer);
+        }, 300);
+      }
+    };
+    findNext();
     this.formatInitAnswers();
-    const nodeJsonData = domById('js-initialData');
-    if (!nodeJsonData) {
-      fnLog('cannot find script #js-initialData');
-      return;
-    }
-    const pageJsData = JSON.parse(nodeJsonData.innerText || '{}');
-    const questionId = location.pathname.replace('/question/', '');
-    const currentQuestion = pageJsData.initialState.question.answers[questionId];
-    if (!currentQuestion) return;
-    const next = pageJsData.initialState.question.answers[questionId].next;
-    this.next = next;
-    this.end = !next;
   },
   /** 处理初始页面数据 */
   formatInitAnswers: async function () {
@@ -71,8 +74,10 @@ export const myListenAnswer = {
           }
         }
 
+
         // 过滤用户名
-        const username = (nodeItem.querySelector('.AuthorInfo-head .UserLink-link') as HTMLElement).innerText;
+        const nodeUsername = nodeItem.querySelector('.AuthorInfo-head .UserLink-link');
+        const username = nodeUsername ? (nodeUsername as HTMLElement).innerText : '';
         for (let indexName = 0, lenName = hiddenUsers.length; indexName < lenName; indexName++) {
           if (hiddenUsers[indexName] === username) {
             domP(nodeItem, 'class', 'List-item')!.style.display = 'none';
@@ -82,13 +87,12 @@ export const myListenAnswer = {
         }
 
         releaseTimeForAnswer && updateItemTime(nodeItem);
-
         check();
 
         // 添加评论按钮
         const count = (nodeItem.querySelector('[itemprop="commentCount"]') as HTMLMetaElement).content;
         const nCommentBtn = cDomCommentBtn(count);
-        nodeActions.appendChild(nCommentBtn);
+        nodeActions && nodeActions.appendChild(nCommentBtn);
 
         // 添加自定义的展开、收起按钮
         if (nodeRich.classList.contains('is-collapsed')) {
@@ -102,7 +106,7 @@ export const myListenAnswer = {
             style: 'display: none;',
           });
           nodeRich.appendChild(nExpendButton);
-          nodeActions.appendChild(nCloseButton);
+          nodeActions && nodeActions.appendChild(nCloseButton);
         }
       }, 1000);
     }
@@ -138,6 +142,8 @@ export const myListenAnswer = {
     this.loading = true;
     openLoading(nodeListContent);
     const res = await commonRequest(this.next);
+    hideLoading(nodeListContent);
+    this.loading = false;
     if (!res) return;
     const { paging, data } = res as IZhihuAnswerResponse;
     if (paging.next === this.next) return;
@@ -146,8 +152,6 @@ export const myListenAnswer = {
     this.next = paging.next;
     const config = await myStorage.getConfig();
     nodeListContent.innerHTML += createListHTML(data, config);
-    hideLoading(nodeListContent);
-    this.loading = false;
     this.checkListHeight();
   },
   /** 检测元素高度 */

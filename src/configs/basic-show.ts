@@ -12,7 +12,7 @@ export const BASIC_SHOW_CONTENT = [
     value: 'questionTitleTag',
     needFetch: false,
   },
-  { label: '<b>收起</b>按钮悬浮', value: 'suspensionPickup' },
+  // { label: '<b>收起</b>按钮悬浮', value: 'suspensionPickup' },
   { label: '<b>列表</b>内容置顶创建和修改时间', value: 'releaseTimeForList' },
   { label: '<b>问题详情</b>置顶创建和修改时间', value: 'releaseTimeForQuestion' },
   { label: '<b>问题详情回答</b>置顶创建和修改时间', value: 'releaseTimeForAnswer' },

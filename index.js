@@ -348,7 +348,7 @@
       value: "questionTitleTag",
       needFetch: false
     },
-    { label: "<b>收起</b>按钮悬浮", value: "suspensionPickup" },
+    // { label: '<b>收起</b>按钮悬浮', value: 'suspensionPickup' },
     { label: "<b>列表</b>内容置顶创建和修改时间", value: "releaseTimeForList" },
     { label: "<b>问题详情</b>置顶创建和修改时间", value: "releaseTimeForQuestion" },
     { label: "<b>问题详情回答</b>置顶创建和修改时间", value: "releaseTimeForAnswer" },
@@ -740,7 +740,7 @@
     const nodeContentItemMeta = event.querySelector(".ContentItem-meta");
     if (!timeCreated || !nodeContentItemMeta)
       return;
-    const innerHTML = `<div>创建时间：${timeCreated}</div><div>最后修改时间：${timeModified}</div>`;
+    const innerHTML = `<div>创建于：${timeCreated}</div>${timeCreated !== timeModified ? `<div>编辑于：${timeModified}</div>` : ""}`;
     const domTime = event.querySelector(`.${CLASS_TIME_ITEM}`);
     if (domTime) {
       domTime.innerHTML = innerHTML;
@@ -764,10 +764,12 @@
     const nodeTitle = dom(".QuestionHeader-title");
     if (!(releaseTimeForQuestion && nodeCreated && nodeModified && nodeTitle))
       return;
+    const createTime = timeFormatter(nodeCreated.content);
+    const updateTime = timeFormatter(nodeModified.content);
     nodeTitle.appendChild(
       domC("div", {
         className,
-        innerHTML: `<div>创建时间：${timeFormatter(nodeCreated.content)}</div><div>最后修改时间：${timeFormatter(nodeModified.content)}</div>`,
+        innerHTML: `<div>创建于：${createTime}</div>${updateTime !== createTime ? `<div>编辑于：${updateTime}</div>` : ""}`,
         style: "font-size: 14px;"
       })
     );
@@ -1900,7 +1902,8 @@
       this.end = !next;
     },
     /** 处理初始页面数据 */
-    formatInitAnswers: function() {
+    formatInitAnswers: async function() {
+      const { releaseTimeForAnswer } = await myStorage.getConfig();
       const nodeAnswers = domA(".ContentItem.AnswerItem:not(.ctz-self-item)");
       const { hiddenTags, hiddenUsers } = store.getHidden();
       for (let i2 = 0, len = nodeAnswers.length; i2 < len; i2++) {
@@ -1928,8 +1931,10 @@
             if (hiddenUsers[indexName] === username) {
               domP(nodeItem, "class", "List-item").style.display = "none";
               check();
+              return;
             }
           }
+          releaseTimeForAnswer && updateItemTime(nodeItem);
           check();
           const count = nodeItem.querySelector('[itemprop="commentCount"]').content;
           const nCommentBtn = cDomCommentBtn(count);
@@ -2095,6 +2100,7 @@
   };
   var createListHTML = (data, config) => data.map((i2) => createListItemHTML(i2, config)).join("");
   var createListItemHTML = (data, config) => {
+    const { releaseTimeForAnswer } = config;
     const { target_type, target } = data;
     const { hiddenTags, hiddenUsers } = store.getHidden();
     const questionId = location.pathname.replace("/question/", "");
@@ -2161,6 +2167,7 @@
           </div>
         </div>
       </div>
+      ${releaseTimeForAnswer ? createTimeHTML(target.created_time, target.updated_time) : ""}
     </div>
     ${answerTopCard.length ? `<div class="KfeCollection-AnswerTopCard-Container">` + answerTopCard.map(
       (i2) => `<div class="KfeCollection-OrdinaryLabel-newStyle-mobile" style="margin-right: 6px;"><div class="KfeCollection-OrdinaryLabel-content">${i2}</div></div>`
@@ -2187,6 +2194,9 @@
     </div>
   </div>
 </div>`;
+  };
+  var createTimeHTML = (createTime, updateTime) => {
+    return `<div class="${CLASS_TIME_ITEM}" style="line-height: 24px;padding-top: 2px;font-size: 14px;"><div>创建于：${timeFormatter(+`${createTime}000`)}</div>${createTime !== updateTime && updateTime ? `<div>编辑于：${timeFormatter(+`${updateTime}000`)}</div>` : ""}</div>`;
   };
   var fnListenArticle = () => {
     nodesStopPropagation([".RichContent-actions .VoteButton", ".BottomActions-CommentBtn"], [clickCommit]);

@@ -1,11 +1,13 @@
 import { commonRequest } from '../commons/request';
 import { myStorage } from '../commons/storage';
 import { dom, domA, domById, domC, domP, fnLog, nodesStopPropagation } from '../commons/tools';
+import { CLASS_TIME_ITEM } from '../configs';
 import { store } from '../store';
 import { IConfig, IMyElement, IZhihuDataZop } from '../types';
 import { IZhihuAnswerDataItem, IZhihuAnswerResponse } from '../types/zhihu-answer.type';
 import { myListenComment } from './listen-comment';
 import { myPreview } from './preview';
+import { timeFormatter, updateItemTime } from './time';
 
 /** 自定义展开按钮类名 */
 const CLASS_BTN_EXPEND = 'ctz-n-button-expend';
@@ -41,7 +43,8 @@ export const myListenAnswer = {
     this.end = !next;
   },
   /** 处理初始页面数据 */
-  formatInitAnswers: function () {
+  formatInitAnswers: async function () {
+    const { releaseTimeForAnswer } = await myStorage.getConfig();
     const nodeAnswers = domA('.ContentItem.AnswerItem:not(.ctz-self-item)');
     const { hiddenTags, hiddenUsers } = store.getHidden();
 
@@ -74,8 +77,11 @@ export const myListenAnswer = {
           if (hiddenUsers[indexName] === username) {
             domP(nodeItem, 'class', 'List-item')!.style.display = 'none';
             check();
+            return;
           }
         }
+
+        releaseTimeForAnswer && updateItemTime(nodeItem);
 
         check();
 
@@ -253,6 +259,7 @@ const cDomCommentBtn = (count: string | number = 0) => {
 const createListHTML = (data: IZhihuAnswerDataItem[], config: IConfig) => data.map((i) => createListItemHTML(i, config)).join('');
 
 const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
+  const { releaseTimeForAnswer } = config;
   const { target_type, target } = data;
   const { hiddenTags, hiddenUsers } = store.getHidden();
   const questionId = location.pathname.replace('/question/', '');
@@ -322,6 +329,7 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
           </div>
         </div>
       </div>
+      ${releaseTimeForAnswer ? createTimeHTML(target.created_time, target.updated_time) : ''}
     </div>
     ${
       answerTopCard.length
@@ -359,4 +367,13 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
     </div>
   </div>
 </div>`;
+};
+
+const createTimeHTML = (createTime: string | number, updateTime: string | number) => {
+  return (
+    `<div class="${CLASS_TIME_ITEM}" style="line-height: 24px;padding-top: 2px;font-size: 14px;">` +
+    `<div>创建于：${timeFormatter(+`${createTime}000`)}</div>` +
+    `${createTime !== updateTime && updateTime ? `<div>编辑于：${timeFormatter(+`${updateTime}000`)}</div>` : ''}` +
+    `</div>`
+  );
 };

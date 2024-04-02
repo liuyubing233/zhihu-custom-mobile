@@ -35,7 +35,7 @@ export const updateItemTime = (event: IMyElement) => {
   const timeModified = timeFormatter(muTime);
   const nodeContentItemMeta = event.querySelector('.ContentItem-meta');
   if (!timeCreated || !nodeContentItemMeta) return;
-  const innerHTML = `<div>创建时间：${timeCreated}</div><div>最后修改时间：${timeModified}</div>`;
+  const innerHTML = `<div>创建于：${timeCreated}</div>${timeCreated !== timeModified ? `<div>编辑于：${timeModified}</div>` : ''}`;
   const domTime = event.querySelector(`.${CLASS_TIME_ITEM}`);
   if (domTime) {
     domTime.innerHTML = innerHTML;
@@ -59,10 +59,12 @@ export const addTimeForQuestion = async () => {
   const nodeModified = dom('[itemprop="dateModified"]');
   const nodeTitle = dom('.QuestionHeader-title');
   if (!(releaseTimeForQuestion && nodeCreated && nodeModified && nodeTitle)) return;
+  const createTime = timeFormatter(nodeCreated.content);
+  const updateTime = timeFormatter(nodeModified.content);
   nodeTitle.appendChild(
     domC('div', {
       className,
-      innerHTML: `<div>创建时间：${timeFormatter(nodeCreated.content)}</div><div>最后修改时间：${timeFormatter(nodeModified.content)}</div>`,
+      innerHTML: `<div>创建于：${createTime}</div>${updateTime !== createTime ? `<div>编辑于：${updateTime}</div>` : ''}`,
       style: 'font-size: 14px;',
     })
   );

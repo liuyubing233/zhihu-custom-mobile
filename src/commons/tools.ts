@@ -183,3 +183,23 @@ export const createBtnTr = (innerHTML: string, extraCLass: string = ''): IMyElem
 export const hexToRgba = (hex: string, opacity: number | string) => {
   return 'rgba(' + parseInt('0x' + hex.slice(1, 3)) + ',' + parseInt('0x' + hex.slice(3, 5)) + ',' + parseInt('0x' + hex.slice(5, 7)) + ',' + opacity + ')';
 };
+
+/**
+ * 批量阻止事件传递 & 添加自定义方法
+ * @param names 查询的名称列表，用于 document.querySelectAll
+ * @param fnArr 可添加的方法
+ */
+export const nodesStopPropagation = (names: string[], fnArr: Function[] = []) => {
+  let nodeArray: HTMLElement[] = [];
+  names.forEach((item) => {
+    nodeArray = nodeArray.concat(Array.prototype.slice.call(domA(item)));
+  });
+  for (let i = 0, len = nodeArray.length; i < len; i++) {
+    nodeArray[i].addEventListener('click', (event) => {
+      event.stopPropagation();
+      fnArr.forEach((fn) => {
+        fn(event)
+      })
+    });
+  }
+};

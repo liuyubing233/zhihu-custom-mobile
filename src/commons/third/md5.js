@@ -9,7 +9,6 @@ export default function md5(s) {
       }
       function a(t, e, n, r, o, a) {
         return i(((u = i(i(e, t), i(r, a))) << (c = o)) | (u >>> (32 - c)), n);
-        var u, c;
       }
       function u(t, e, n, r, o, i, u) {
         return a((e & n) | (~e & r), t, e, o, i, u);

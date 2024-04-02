@@ -1,6 +1,6 @@
 import { commonRequest } from '../commons/request';
 import { myStorage } from '../commons/storage';
-import { dom, domA, domById, domC, domP, fnLog } from '../commons/tools';
+import { dom, domA, domById, domC, domP, fnLog, nodesStopPropagation } from '../commons/tools';
 import { store } from '../store';
 import { IConfig, IMyElement, IZhihuDataZop } from '../types';
 import { IZhihuAnswerDataItem, IZhihuAnswerResponse } from '../types/zhihu-answer.type';
@@ -22,9 +22,9 @@ export const myListenAnswer = {
   next: '',
   end: false,
   loading: false,
-  init: async function () {
+  init: function () {
     dom('.Question-main')!.addEventListener('click', eventListenerQuestionMain);
-    nodesStopPropagation(['.RichContent-inner', '.Question-main figure img', '.Question-main a']);
+    nodesStopPropagation(['.RichContent-inner', '.Question-main figure img', '.Question-main a'], [addListenImage]);
     this.formatInitAnswers();
     const nodeJsonData = domById('js-initialData');
     if (!nodeJsonData) {
@@ -40,8 +40,8 @@ export const myListenAnswer = {
     this.end = !next;
   },
   /** 处理初始页面数据 */
-  formatInitAnswers: async function () {
-    const nodeAnswers = domA('.ContentItem.AnswerItem');
+  formatInitAnswers: function () {
+    const nodeAnswers = domA('.ContentItem.AnswerItem:not(.ctz-self-item)');
     const { hiddenTags, hiddenUsers } = store.getHidden();
 
     for (let i = 0, len = nodeAnswers.length; i < len; i++) {
@@ -241,20 +241,6 @@ const addListenImage = (event: MouseEvent) => {
   }
 };
 
-/** 批量阻止事件传递 & 添加自定义方法 */
-const nodesStopPropagation = (classNames: string[]) => {
-  let nodeArray: HTMLElement[] = [];
-  classNames.forEach((item) => {
-    nodeArray = nodeArray.concat(Array.prototype.slice.call(domA(item)));
-  });
-  for (let i = 0, len = nodeArray.length; i < len; i++) {
-    nodeArray[i].addEventListener('click', (event) => {
-      event.stopPropagation();
-      addListenImage(event);
-    });
-  }
-};
-
 /** 创建元素：评论按钮 */
 const cDomCommentBtn = (count: string | number = 0) => {
   return domC('button', {
@@ -299,7 +285,7 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
 
   return `<div class="List-item ctz-answer-item" tabindex="0">
   <div
-    class="ContentItem AnswerItem"
+    class="ContentItem AnswerItem ctz-self-item"
     data-za-index="0"
     data-zop='{"authorName":"${target.author.name}","itemId":${target.id},"title":"${target.question.title}","type":"${target_type}"}'
     name="${target.id}"

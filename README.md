@@ -16,7 +16,10 @@
 
 2.X 版本的详细更新内容在 [更新日志](https://github.com/liuyubing233/zhihu-custom-mobile/blob/main/CHANGELOG.md)。
 
-### 回答可以查看全部回答和评论
+### 回答可以查看全部回答和评论、文章可以查看全部评论
+
+![image](https://pic.imgdb.cn/item/660b787d9f345e8d03092bfc.png)
+![image](https://pic.imgdb.cn/item/660b78849f345e8d03094e9a.png)
 
 ### 历史记录
 

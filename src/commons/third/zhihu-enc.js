@@ -1,4 +1,3 @@
-// @ts-nocheck
 export default function zhihu_enc(s) {
   function f1(__unused_webpack_module, exports) {
     var __webpack_unused_export__;

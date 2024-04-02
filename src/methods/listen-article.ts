@@ -3,6 +3,7 @@ import { myListenComment } from './listen-comment';
 
 export const fnListenArticle = () => {
   nodesStopPropagation(['.RichContent-actions .VoteButton', '.BottomActions-CommentBtn'], [clickCommit]);
+  nodesStopPropagation(['.Post-content p'], [], 'copy'); // 去除禁止复制
 };
 
 const clickCommit = (event: Event) => {

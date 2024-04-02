@@ -21,6 +21,8 @@
 ![image](https://pic.imgdb.cn/item/660b787d9f345e8d03092bfc.png)
 ![image](https://pic.imgdb.cn/item/660b78849f345e8d03094e9a.png)
 
+### 去除禁止复制的限制
+
 ### 历史记录
 
 默认缓存 500 条，点击可跳转。

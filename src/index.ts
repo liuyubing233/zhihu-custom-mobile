@@ -64,7 +64,7 @@ import { INNER_CSS } from './web-resources';
       historyToChangePathname();
       if (host === 'zhuanlan.zhihu.com') {
         addTimeForArticle();
-        fnListenArticle()
+        fnListenArticle();
       }
     },
     false
@@ -127,4 +127,17 @@ import { INNER_CSS } from './web-resources';
     }, 100),
     false
   );
+
+  // 复制代码块删除版权信息
+  document.addEventListener('copy', function (event) {
+    // @ts-ignore window.clipboardData 是存在于IE中
+    let clipboardData = event.clipboardData || window.clipboardData;
+    if (!clipboardData) return;
+    const selection = window.getSelection();
+    let text = selection ? selection.toString() : '';
+    if (text) {
+      event.preventDefault();
+      clipboardData.setData('text/plain', text);
+    }
+  });
 })();

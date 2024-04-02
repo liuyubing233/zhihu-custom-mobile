@@ -2,7 +2,6 @@ import { myStorage } from './commons/storage';
 import { dom, domA, fnInitDomStyle, fnLog, pathnameHasFn, throttle } from './commons/tools';
 import { EXTRA_CLASS_HTML, HTML_HOOTS } from './configs/dom-name';
 import { initHTML } from './init/init-html';
-import { initResizeObserver } from './init/init-observer-resize';
 import { initOperate } from './init/init-operate';
 import { onInitStyleExtra } from './init/init-style-extra';
 import { loadBackground, myCustomStyle } from './methods/background';
@@ -11,7 +10,7 @@ import { echoData } from './methods/echo-data';
 import { addHistoryView, echoHistory } from './methods/history';
 import { myListenAnswer } from './methods/listen-answer';
 import { fnListenArticle } from './methods/listen-article';
-import { myListenListItem } from './methods/listen-list-item';
+import { myListenListRecommend } from './methods/listen-list-recommend';
 import { addQuestionLogButton } from './methods/question-log';
 import { fnSuspensionPickup } from './methods/suspension';
 import { addTimeForArticle, addTimeForQuestion } from './methods/time';
@@ -57,7 +56,7 @@ import { INNER_CSS } from './web-resources';
         // 页面加载完成后再进行加载背景色, 解决存在顶部推广的 header 颜色
         loadBackground();
         myCustomStyle.init();
-        initResizeObserver();
+        // initResizeObserver();
         echoHistory();
       }
 
@@ -66,6 +65,10 @@ import { INNER_CSS } from './web-resources';
         addTimeForArticle();
         fnListenArticle();
       }
+
+      setTimeout(() => {
+        myListenListRecommend.init();
+      }, 0);
     },
     false
   );
@@ -85,8 +88,9 @@ import { INNER_CSS } from './web-resources';
   /** 页面路由变化, 部分操作方法 */
   const changeHistory = () => {
     historyToChangePathname();
+
     // 重置监听起点
-    myListenListItem.reset();
+    // myListenListItem.reset();
   };
   /** history 变化 */
   window.addEventListener('popstate', changeHistory);
@@ -124,6 +128,7 @@ import { INNER_CSS } from './web-resources';
         fnSuspensionPickup(domA('.AnswerCard'));
       }
       myListenAnswer.scroll();
+      myListenListRecommend.scroll()
     }, 100),
     false
   );

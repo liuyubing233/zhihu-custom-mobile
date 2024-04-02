@@ -1,4 +1,23 @@
-export interface IZhihuListServiceTargetItem {
+export interface IZhihuListRecommendResponse {
+  data: IZhihuRecommendData[];
+  paging: IZhihuRecommendPaging;
+  fresh_text: string;
+}
+
+export interface IZhihuRecommendData {
+  id: string;
+  type: string;
+  offset: number;
+  verb: string;
+  created_time: number;
+  updated_time: number;
+  target: Target;
+  brief: string;
+  attached_info: string;
+  action_card: boolean;
+}
+
+export interface Target {
   id: number;
   type: string;
   url: string;
@@ -16,7 +35,7 @@ export interface IZhihuListServiceTargetItem {
   preview_text: string;
   reshipment_settings: string;
   content: string;
-  relationship: Untitled1_Relationship;
+  relationship: TargetRelationship;
   is_labeled: boolean;
   visited_count: number;
   favorite_count: number;
@@ -26,7 +45,7 @@ export interface IZhihuListServiceTargetItem {
 export interface Author {
   id: string;
   url: string;
-  user_type: string;
+  user_type: UserType;
   url_token: string;
   name: string;
   headline: string;
@@ -36,6 +55,16 @@ export interface Author {
   followers_count: number;
   is_following: boolean;
   is_followed: boolean;
+  badge?: Badge[];
+}
+
+export interface Badge {
+  type: string;
+  description: string;
+}
+
+export enum UserType {
+  People = 'people',
 }
 
 export interface Question {
@@ -60,8 +89,16 @@ export interface QuestionRelationship {
   is_author: boolean;
 }
 
-export interface Untitled1_Relationship {
+export interface TargetRelationship {
   is_thanked: boolean;
   is_nothelp: boolean;
   voting: number;
+}
+
+export interface IZhihuRecommendPaging {
+  is_end: boolean;
+  is_start: boolean;
+  next: string;
+  previous: string;
+  totals: number;
 }

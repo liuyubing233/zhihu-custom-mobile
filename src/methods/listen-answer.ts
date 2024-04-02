@@ -1,13 +1,12 @@
 import { commonRequest } from '../commons/request';
 import { myStorage } from '../commons/storage';
 import { dom, domA, domById, domC, domP, nodesStopPropagation } from '../commons/tools';
-import { CLASS_TIME_ITEM } from '../configs';
 import { store } from '../store';
 import { IConfig, IMyElement, IZhihuDataZop } from '../types';
 import { IZhihuAnswerDataItem, IZhihuAnswerResponse } from '../types/zhihu-answer.type';
 import { myListenComment } from './listen-comment';
 import { myPreview } from './preview';
-import { timeFormatter, updateItemTime } from './time';
+import { createTimeHTML, updateItemTime } from './time';
 
 /** 自定义展开按钮类名 */
 const CLASS_BTN_EXPEND = 'ctz-n-button-expend';
@@ -295,7 +294,8 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
     if (target.author.name === hiddenUsers[i]) return '';
   }
 
-  return `<div class="List-item ctz-answer-item" tabindex="0">
+  return `
+<div class="List-item ctz-answer-item" tabindex="0">
   <div
     class="ContentItem AnswerItem ctz-self-item"
     data-za-index="0"
@@ -333,7 +333,7 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
           </div>
         </div>
       </div>
-      ${releaseTimeForAnswer ? createTimeHTML(target.created_time, target.updated_time) : ''}
+      ${releaseTimeForAnswer ? createTimeHTML(`${target.created_time}000`, `${target.updated_time}000`) : ''}
     </div>
     ${
       answerTopCard.length
@@ -373,11 +373,3 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
 </div>`;
 };
 
-const createTimeHTML = (createTime: string | number, updateTime: string | number) => {
-  return (
-    `<div class="${CLASS_TIME_ITEM}" style="line-height: 24px;padding-top: 2px;font-size: 14px;">` +
-    `<div>创建于：${timeFormatter(+`${createTime}000`)}</div>` +
-    `${createTime !== updateTime && updateTime ? `<div>编辑于：${timeFormatter(+`${updateTime}000`)}</div>` : ''}` +
-    `</div>`
-  );
-};

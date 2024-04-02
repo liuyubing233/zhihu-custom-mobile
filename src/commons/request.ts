@@ -36,10 +36,10 @@ const createCommentHeaders = (url: string) => {
 };
 
 /** 获取知乎评论区内容 */
-export const requestComment = async ({ url, answerId, orderBy = 'score', offset = '' }: IRequestCommentParams): Promise<IZhihuCommentResponse | undefined> => {
+export const requestComment = async ({ url, answerId, orderBy = 'score', offset = '', type = 'answers' }: IRequestCommentParams): Promise<IZhihuCommentResponse | undefined> => {
   // order_by: ts, score
   if (!answerId && !url) return undefined;
-  const nUrl = url || `/api/v4/comment_v5/answers/${answerId}/root_comment?order_by=${orderBy}&limit=20&offset=${offset}`;
+  const nUrl = url || `https://www.zhihu.com/api/v4/comment_v5/${type}/${answerId}/root_comment?order_by=${orderBy}&limit=20&offset=${offset}`;
   return fetch(nUrl, {
     method: 'GET',
     headers: createCommentHeaders(nUrl),
@@ -55,7 +55,7 @@ export const requestCommentChild = async ({
 }: IRequestCommentParams): Promise<IZhihuCommentResponse | undefined> => {
   // order_by: ts, score
   if (!answerId && !url) return undefined;
-  const nUrl = url || `/api/v4/comment_v5/comment/${answerId}/child_comment?order_by=${orderBy}&limit=20&offset=${offset}`;
+  const nUrl = url || `https://www.zhihu.com/api/v4/comment_v5/comment/${answerId}/child_comment?order_by=${orderBy}&limit=20&offset=${offset}`;
   return fetch(nUrl, {
     method: 'GET',
     headers: createCommentHeaders(nUrl),

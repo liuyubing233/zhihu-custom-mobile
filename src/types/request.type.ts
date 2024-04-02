@@ -3,4 +3,5 @@ export interface IRequestCommentParams {
   orderBy?: string;
   offset?: string;
   url?: string;
+  type?: string;
 }

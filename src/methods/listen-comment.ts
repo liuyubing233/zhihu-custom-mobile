@@ -77,10 +77,10 @@ export const myListenComment: myListenComment = {
     }, 300);
   },
   /** 打开｜创建评论弹窗 */
-  create: async function (answerId, _, orderBy = 'score') {
+  create: async function (answerId, _, orderBy = 'score', type = 'answers') {
     myLoadingToast.open();
     this.answerId = answerId;
-    const res = await requestComment({ answerId, orderBy });
+    const res = await requestComment({ answerId, orderBy, type });
     myLoadingToast.hide();
     if (!res) return;
     const nodeComment = domById(ID_CTZ_COMMENT)!;
@@ -251,7 +251,7 @@ interface myListenComment {
   commentData: ICommentData[];
   answerId?: string | number;
   initOperate: () => void;
-  create: (answerId?: string | number, parentData?: ICommentData, sort?: string) => Promise<void>;
+  create: (answerId?: string | number, parentData?: ICommentData, sort?: string, type?: 'answers' | 'articles') => Promise<void>;
   commentLoadMore: () => Promise<void>;
   openLoading: () => void;
   hideLoading: () => void;

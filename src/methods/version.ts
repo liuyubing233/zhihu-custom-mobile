@@ -6,7 +6,7 @@ import { IConfig } from '../types';
 export const myVersion = {
   init: async function () {
     const config = await myStorage.getConfig();
-    fnInitDomStyle('CTZ_STYLE_VERSION', this.vQuestionTitleTag(config) + this.openButtonInvisible(config));
+    fnInitDomStyle('CTZ_STYLE_VERSION', this.vQuestionTitleTag(config) + this.openButtonInvisible(config) + this.vCommentHeaderToBottom(config));
   },
   change: function () {
     this.init();
@@ -23,6 +23,9 @@ export const myVersion = {
         `.TopstoryQuestionAskItem .ContentItem-title::before{content:'提问';background:#533b77}`,
       questionTitleTag
     );
+  },
+  vCommentHeaderToBottom: function ({ commentHeaderToBottom }: IConfig) {
+    return fnReturnStr(`#CTZ_COMMENT,#CTZ_COMMENT_CHILD{flex-direction: column-reverse!important;}`, commentHeaderToBottom);
   },
   /** 隐藏修改器唤起按钮 */
   openButtonInvisible: function ({ openButtonInvisible }: IConfig) {

@@ -257,4 +257,6 @@ export interface IConfig extends IConfigHidden, IConfigFilter {
   showAllContent?: boolean;
   /** 列表显示直达问题按钮 */
   showToAnswer?: boolean;
+  /** 评论顺序、关闭操作栏置于底部 */
+  commentHeaderToBottom?: boolean;
 }

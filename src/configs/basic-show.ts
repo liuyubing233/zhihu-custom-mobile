@@ -20,4 +20,5 @@ export const BASIC_SHOW_CONTENT = [
   { label: '一键获取内容链接', value: 'copyAnswerLink' },
   { label: '<b>列表</b>显示直达问题按钮', value: 'showToAnswer' },
   { label: '<b>问题详情</b>显示<b>查看问题日志</b>按钮', value: 'showQuestionLog' },
+  { label: '<b>评论</b>顺序、关闭操作栏置于底部', value: 'commentHeaderToBottom' },
 ];

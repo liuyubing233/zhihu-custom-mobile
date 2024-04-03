@@ -141,7 +141,6 @@ export const myListenCommentChild: myListenComment = {
       const nodeContentDiv = dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_LIST}`)!;
       const bounding = nodeContentDiv.getBoundingClientRect();
       if (bounding.bottom - 100 <= window.innerHeight) {
-        // me.openLoading();
         openLoading(domById(ID_CTZ_COMMENT_CHILD)!, CLASS_LOADING);
         me.commentLoadMore();
       }

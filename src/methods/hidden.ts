@@ -16,7 +16,7 @@ export const myHidden: IMyHidden = {
       .map((key) => (config[key] ? this.hiddenItem[key] : ''))
       .join('');
     let cssHiddenMore = '';
-    this.hiddenArray.forEach(({ keys, value }) => {
+    this.hiddenArray.forEach(({ keys, value }: IHiddenArray) => {
       let trueNumber = 0;
       keys.forEach((key) => config[key] && trueNumber++);
       trueNumber === keys.length && (cssHiddenMore += value);

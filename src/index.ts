@@ -1,5 +1,4 @@
-import { myStorage } from './commons/storage';
-import { dom, domA, fnInitDomStyle, pathnameHasFn, throttle } from './commons/tools';
+import { dom, fnInitDomStyle, pathnameHasFn, throttle } from './commons/tools';
 import { EXTRA_CLASS_HTML, HTML_HOOTS } from './configs/dom-name';
 import { initHTML } from './init/init-html';
 import { initOperate } from './init/init-operate';
@@ -13,7 +12,6 @@ import { myListenAnswer } from './methods/listen-answer';
 import { fnListenArticle } from './methods/listen-article';
 import { myListenListRecommend } from './methods/listen-list-recommend';
 import { addQuestionLogButton } from './methods/question-log';
-import { fnSuspensionPickup } from './methods/suspension';
 import { addTimeForArticle, addTimeForQuestion } from './methods/time';
 import { store } from './store';
 import { INNER_CSS } from './web-resources';
@@ -117,12 +115,12 @@ import { INNER_CSS } from './web-resources';
   window.addEventListener(
     'scroll',
     throttle(async () => {
-      const { suspensionPickup } = await myStorage.getConfig();
-      if (suspensionPickup) {
-        fnSuspensionPickup(domA('.List-item'));
-        fnSuspensionPickup(domA('.TopstoryItem'));
-        fnSuspensionPickup(domA('.AnswerCard'));
-      }
+      // const { suspensionPickup } = await myStorage.getConfig();
+      // if (suspensionPickup) {
+      //   fnSuspensionPickup(domA('.List-item'));
+      //   fnSuspensionPickup(domA('.TopstoryItem'));
+      //   fnSuspensionPickup(domA('.AnswerCard'));
+      // }
       myListenAnswer.scroll();
       myListenListRecommend.scroll();
     }, 100),

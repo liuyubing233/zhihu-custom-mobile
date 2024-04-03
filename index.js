@@ -23,6 +23,128 @@
 
 "use strict";
 (() => {
+  var dom = (n2) => document.querySelector(n2);
+  var domById = (id) => document.getElementById(id);
+  var domA = (n2) => document.querySelectorAll(n2);
+  var domC = (name, attrObjs) => {
+    const node = document.createElement(name);
+    for (let key in attrObjs) {
+      node[key] = attrObjs[key];
+    }
+    return node;
+  };
+  var domP = (node, attrName, attrValue) => {
+    const nodeP = node.parentElement;
+    if (!nodeP)
+      return void 0;
+    if (!attrName || !attrValue)
+      return nodeP;
+    if (nodeP === document.body)
+      return void 0;
+    const attrValueList = (nodeP.getAttribute(attrName) || "").split(" ");
+    return attrValueList.includes(attrValue) ? nodeP : domP(nodeP, attrName, attrValue);
+  };
+  var fnReturnStr = (str, isHave = false, strFalse = "") => isHave ? str : strFalse;
+  var fnInitDomStyle = (id, innerHTML) => {
+    const element = domById(id);
+    element ? element.innerHTML = innerHTML : document.head.appendChild(domC("style", { id, type: "text/css", innerHTML }));
+  };
+  function throttle(fn, time = 300) {
+    let tout = void 0;
+    return function() {
+      if (tout)
+        return;
+      tout = setTimeout(() => {
+        tout = void 0;
+        fn.apply(this, arguments);
+      }, time);
+    };
+  }
+  var pathnameHasFn = (obj) => {
+    const { pathname } = location;
+    for (let name in obj) {
+      pathname.includes(name) && obj[name]();
+    }
+  };
+  var copy = async (value) => {
+    if (navigator.clipboard && navigator.permissions) {
+      await navigator.clipboard.writeText(value);
+    } else {
+      const domTextarea = domC("textArea", {
+        value,
+        style: "width: 0px;position: fixed;left: -999px;top: 10px;"
+      });
+      domTextarea.setAttribute("readonly", "readonly");
+      document.body.appendChild(domTextarea);
+      domTextarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(domTextarea);
+    }
+  };
+  var messageDoms = [];
+  var message = (value, t2 = 3e3) => {
+    const time = +/* @__PURE__ */ new Date();
+    const classTime = `ctz-message-${time}`;
+    const nDom = domC("div", {
+      innerHTML: value,
+      className: `ctz-message ${classTime}`
+    });
+    const domBox = domById("CTZ_MESSAGE_BOX");
+    if (!domBox)
+      return;
+    domBox.appendChild(nDom);
+    messageDoms.push(nDom);
+    if (messageDoms.length > 3) {
+      const prevDom = messageDoms.shift();
+      prevDom && domBox.removeChild(prevDom);
+    }
+    setTimeout(() => {
+      const nPrevDom = dom(`.${classTime}`);
+      if (nPrevDom) {
+        domById("CTZ_MESSAGE_BOX").removeChild(nPrevDom);
+        messageDoms.shift();
+      }
+    }, t2);
+  };
+  var hexToRgba = (hex, opacity) => {
+    return "rgba(" + parseInt("0x" + hex.slice(1, 3)) + "," + parseInt("0x" + hex.slice(3, 5)) + "," + parseInt("0x" + hex.slice(5, 7)) + "," + opacity + ")";
+  };
+  var nodesStopPropagation = (names, fnArr = [], type = "click") => {
+    let nodeArray = [];
+    names.forEach((item) => {
+      nodeArray = nodeArray.concat(Array.prototype.slice.call(domA(item)));
+    });
+    for (let i2 = 0, len = nodeArray.length; i2 < len; i2++) {
+      nodeArray[i2].addEventListener(type, (event) => {
+        event.stopPropagation();
+        fnArr.forEach((fn) => {
+          fn(event);
+        });
+      });
+    }
+  };
+  var HTML_HOOTS = ["www.zhihu.com", "zhuanlan.zhihu.com"];
+  var ID_CTZ_COMMENT = "CTZ_COMMENT";
+  var ID_CTZ_COMMENT_CHILD = "CTZ_COMMENT_CHILD";
+  var ID_CTZ_COMMENT_CLOSE = "CTZ_BUTTON_COMMENT_CLOSE";
+  var ID_CTZ_COMMENT_BACK = "CTZ_BOTTOM_COMMENT_BACK";
+  var CLASS_INPUT_CLICK = "ctz-i";
+  var CLASS_INPUT_CHANGE = "ctz-i-change";
+  var CLASS_TIME_ITEM = "ctz-list-item-time";
+  var CLASS_COPY_LINK = "ctz-copy-link";
+  var EXTRA_CLASS_HTML = {
+    "zhuanlan.zhihu.com": "zhuanlan",
+    "www.zhihu.com": "zhihu"
+  };
+  var HEADER = [
+    { href: "#CTZ_BASIS", value: "基础设置" },
+    { href: "#CTZ_HIDDEN", value: "隐藏模块" },
+    { href: "#CTZ_FILTER", value: "屏蔽内容" },
+    // { href: '#CTZ_BLOCK_WORD', value: '屏蔽词' },
+    // { href: '#CTZ_BLACKLIST', value: '黑名单' },
+    { href: "#CTZ_HISTORY", value: "历史记录" }
+    // { href: '#CTZ_DEFAULT', value: '默认功能' },
+  ];
   var THEMES = [
     { label: "浅色", value: "0" /* 浅色 */, background: "#fff", color: "#000" },
     { label: "深色", value: "1" /* 深色 */, background: "#000", color: "#fff" },
@@ -88,28 +210,6 @@
     showToAnswer: true
   };
   var SAVE_HISTORY_NUMBER = 500;
-  var HTML_HOOTS = ["www.zhihu.com", "zhuanlan.zhihu.com"];
-  var ID_CTZ_COMMENT = "CTZ_COMMENT";
-  var ID_CTZ_COMMENT_CHILD = "CTZ_COMMENT_CHILD";
-  var ID_CTZ_COMMENT_CLOSE = "CTZ_BUTTON_COMMENT_CLOSE";
-  var ID_CTZ_COMMENT_BACK = "CTZ_BOTTOM_COMMENT_BACK";
-  var CLASS_INPUT_CLICK = "ctz-i";
-  var CLASS_INPUT_CHANGE = "ctz-i-change";
-  var CLASS_TIME_ITEM = "ctz-list-item-time";
-  var CLASS_COPY_LINK = "ctz-copy-link";
-  var EXTRA_CLASS_HTML = {
-    "zhuanlan.zhihu.com": "zhuanlan",
-    "www.zhihu.com": "zhihu"
-  };
-  var HEADER = [
-    { href: "#CTZ_BASIS", value: "基础设置" },
-    { href: "#CTZ_HIDDEN", value: "隐藏模块" },
-    { href: "#CTZ_FILTER", value: "屏蔽内容" },
-    // { href: '#CTZ_BLOCK_WORD', value: '屏蔽词' },
-    // { href: '#CTZ_BLACKLIST', value: '黑名单' },
-    { href: "#CTZ_HISTORY", value: "历史记录" }
-    // { href: '#CTZ_DEFAULT', value: '默认功能' },
-  ];
   var HIDDEN_ANSWER_TAG = {
     removeFromYanxuan: "盐选专栏",
     removeUnrealAnswer: "虚构创作",
@@ -173,6 +273,23 @@
       { value: "hiddenAnswerHotRecommend", label: "隐藏回答页热门推荐" }
     ]
   ];
+  var BASIC_SHOW_CONTENT = [
+    { label: "隐藏修改器唤起按钮，可在脚本菜单<b>⚙️ 设置</b>打开", value: "openButtonInvisible" },
+    { label: "<b>回答、文章</b>显示完整内容和评论", value: "showAllContent" },
+    {
+      label: `<b>列表</b>标题类别显示<span class="ctz-label-tag ctz-label-tag-Answer">问答</span><span class="ctz-label-tag ctz-label-tag-Article">文章</span><span class="ctz-label-tag ctz-label-tag-ZVideo">视频</span><span class="ctz-label-tag ctz-label-tag-Pin">想法</span>`,
+      value: "questionTitleTag",
+      needFetch: false
+    },
+    // { label: '<b>收起</b>按钮悬浮', value: 'suspensionPickup' },
+    { label: "<b>列表</b>内容置顶创建和修改时间", value: "releaseTimeForList" },
+    { label: "<b>问题详情</b>置顶创建和修改时间", value: "releaseTimeForQuestion" },
+    { label: "<b>问题详情回答</b>置顶创建和修改时间", value: "releaseTimeForAnswer" },
+    { label: "<b>文章</b>置顶创建时间", value: "releaseTimeForArticle" },
+    { label: "一键获取内容链接", value: "copyAnswerLink" },
+    { label: "<b>列表</b>显示直达问题按钮", value: "showToAnswer" },
+    { label: "<b>问题详情</b>显示<b>查看问题日志</b>按钮", value: "showQuestionLog" }
+  ];
   var myStorage = {
     set: async function(name, value) {
       value.t = +/* @__PURE__ */ new Date();
@@ -231,124 +348,6 @@
       this.set(NAME_HISTORY, value);
     }
   };
-  var dom = (n2) => document.querySelector(n2);
-  var domById = (id) => document.getElementById(id);
-  var domA = (n2) => document.querySelectorAll(n2);
-  var domC = (name, attrObjs) => {
-    const node = document.createElement(name);
-    for (let key in attrObjs) {
-      node[key] = attrObjs[key];
-    }
-    return node;
-  };
-  var domP = (node, attrName, attrValue) => {
-    const nodeP = node.parentElement;
-    if (!nodeP)
-      return void 0;
-    if (!attrName || !attrValue)
-      return nodeP;
-    if (nodeP === document.body)
-      return void 0;
-    const attrValueList = (nodeP.getAttribute(attrName) || "").split(" ");
-    return attrValueList.includes(attrValue) ? nodeP : domP(nodeP, attrName, attrValue);
-  };
-  var fnReturnStr = (str, isHave = false, strFalse = "") => isHave ? str : strFalse;
-  var fnInitDomStyle = (id, innerHTML) => {
-    const element = domById(id);
-    element ? element.innerHTML = innerHTML : document.head.appendChild(domC("style", { id, type: "text/css", innerHTML }));
-  };
-  function throttle(fn, time = 300) {
-    let tout = void 0;
-    return function() {
-      if (tout)
-        return;
-      tout = setTimeout(() => {
-        tout = void 0;
-        fn.apply(this, arguments);
-      }, time);
-    };
-  }
-  var pathnameHasFn = (obj) => {
-    const { pathname } = location;
-    for (let name in obj) {
-      pathname.includes(name) && obj[name]();
-    }
-  };
-  var copy = async (value) => {
-    console.log("222", navigator.clipboard, navigator.permissions);
-    if (navigator.clipboard && navigator.permissions) {
-      await navigator.clipboard.writeText(value);
-    } else {
-      const domTextarea = domC("textArea", {
-        value,
-        style: "width: 0px;position: fixed;left: -999px;top: 10px;"
-      });
-      domTextarea.setAttribute("readonly", "readonly");
-      document.body.appendChild(domTextarea);
-      domTextarea.select();
-      document.execCommand("copy");
-      document.body.removeChild(domTextarea);
-    }
-  };
-  var messageDoms = [];
-  var message = (value, t2 = 3e3) => {
-    const time = +/* @__PURE__ */ new Date();
-    const classTime = `ctz-message-${time}`;
-    const nDom = domC("div", {
-      innerHTML: value,
-      className: `ctz-message ${classTime}`
-    });
-    const domBox = domById("CTZ_MESSAGE_BOX");
-    if (!domBox)
-      return;
-    domBox.appendChild(nDom);
-    messageDoms.push(nDom);
-    if (messageDoms.length > 3) {
-      const prevDom = messageDoms.shift();
-      prevDom && domBox.removeChild(prevDom);
-    }
-    setTimeout(() => {
-      const nPrevDom = dom(`.${classTime}`);
-      if (nPrevDom) {
-        domById("CTZ_MESSAGE_BOX").removeChild(nPrevDom);
-        messageDoms.shift();
-      }
-    }, t2);
-  };
-  var hexToRgba = (hex, opacity) => {
-    return "rgba(" + parseInt("0x" + hex.slice(1, 3)) + "," + parseInt("0x" + hex.slice(3, 5)) + "," + parseInt("0x" + hex.slice(5, 7)) + "," + opacity + ")";
-  };
-  var nodesStopPropagation = (names, fnArr = [], type = "click") => {
-    let nodeArray = [];
-    names.forEach((item) => {
-      nodeArray = nodeArray.concat(Array.prototype.slice.call(domA(item)));
-    });
-    for (let i2 = 0, len = nodeArray.length; i2 < len; i2++) {
-      nodeArray[i2].addEventListener(type, (event) => {
-        event.stopPropagation();
-        fnArr.forEach((fn) => {
-          fn(event);
-        });
-      });
-    }
-  };
-  var BASIC_SHOW_CONTENT = [
-    { label: "隐藏修改器唤起按钮，可在脚本菜单<b>⚙️ 设置</b>打开", value: "openButtonInvisible" },
-    { label: "<b>回答、文章</b>显示完整内容和评论", value: "showAllContent" },
-    {
-      label: `<b>列表</b>标题类别显示<span class="ctz-label-tag ctz-label-tag-Answer">问答</span><span class="ctz-label-tag ctz-label-tag-Article">文章</span><span class="ctz-label-tag ctz-label-tag-ZVideo">视频</span><span class="ctz-label-tag ctz-label-tag-Pin">想法</span>`,
-      value: "questionTitleTag",
-      needFetch: false
-    },
-    // { label: '<b>收起</b>按钮悬浮', value: 'suspensionPickup' },
-    { label: "<b>列表</b>内容置顶创建和修改时间", value: "releaseTimeForList" },
-    { label: "<b>问题详情</b>置顶创建和修改时间", value: "releaseTimeForQuestion" },
-    { label: "<b>问题详情回答</b>置顶创建和修改时间", value: "releaseTimeForAnswer" },
-    { label: "<b>文章</b>置顶创建时间", value: "releaseTimeForArticle" },
-    { label: "一键获取内容链接", value: "copyAnswerLink" },
-    { label: "<b>列表</b>显示直达问题按钮", value: "showToAnswer" },
-    { label: "<b>问题详情</b>显示<b>查看问题日志</b>按钮", value: "showQuestionLog" }
-  ];
   var myBackground = {
     init: async function() {
       const { themeDark = "1" /* 夜间护眼一 */, themeLight = "0" /* 默认 */ } = await myStorage.getConfig();
@@ -2258,35 +2257,6 @@
     });
     nodeBtnGroup.appendChild(nBtn);
   };
-  var fnSuspensionPickup = async (elements) => {
-    for (let i2 = 0, len = elements.length; i2 < len; i2++) {
-      const even = elements[i2];
-      const evenSticky = even.querySelector(".ContentItem-actions");
-      const evenButton = even.querySelector(".ContentItem-actions .ContentItem-rightButton");
-      const evenBtn = even.querySelector(".ctz-suspension-pickup");
-      if (!evenButton) {
-        evenBtn && evenBtn.remove();
-        continue;
-      }
-      const isFixed = evenSticky.classList.contains("RichContent-actions");
-      if (isFixed) {
-        if (evenBtn)
-          continue;
-        const domButton = domC("div", {
-          className: "ctz-suspension-pickup",
-          innerHTML: "收起 ^"
-        });
-        domButton.addEventListener("touchend", function(e2) {
-          e2.preventDefault();
-          evenButton.click();
-          this.remove();
-        });
-        even.appendChild(domButton);
-      } else if (evenBtn) {
-        evenBtn.remove();
-      }
-    }
-  };
   (function() {
     const { hostname, host } = location;
     if (!HTML_HOOTS.includes(hostname) || window.frameElement)
@@ -2367,12 +2337,6 @@
     window.addEventListener(
       "scroll",
       throttle(async () => {
-        const { suspensionPickup } = await myStorage.getConfig();
-        if (suspensionPickup) {
-          fnSuspensionPickup(domA(".List-item"));
-          fnSuspensionPickup(domA(".TopstoryItem"));
-          fnSuspensionPickup(domA(".AnswerCard"));
-        }
         myListenAnswer.scroll();
         myListenListRecommend.scroll();
       }, 100),

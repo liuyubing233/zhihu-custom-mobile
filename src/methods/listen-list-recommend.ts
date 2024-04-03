@@ -67,16 +67,15 @@ export const myListenListRecommend = {
   },
 };
 
-const addHistory = async (data: IZhihuRecommendData) => {
-  const { id, target, attached_info, brief } = data;
+const addHistoryItem = async (data: IZhihuRecommendData) => {
+  const { target } = data;
   const type = target.type as IItemType;
-  const { name, bTypeClass } = itemType[type];
+  const { name, bTypeClass, formatData } = itemType[type];
   const pfHistory = await myStorage.getHistory();
   const historyList = pfHistory.list;
-  let itemHref = '';
-  let title = '';
+  const { itemHref2, itemTitle } = formatData(target);
   let bType = `<b class="${bTypeClass}">「${name}」</b>`;
-  const itemA = `<a href="${itemHref}" target="_blank">${bType + title}</a>`;
+  const itemA = `<a href="${itemHref2}" target="_blank">${bType + itemTitle}</a>`;
   !historyList.includes(itemA) && historyList.unshift(itemA);
   myStorage.setHistoryItem('list', historyList);
 };
@@ -144,6 +143,7 @@ const createListItemHTML = (data: IZhihuRecommendData, config: IConfig) => {
   const type = target.type as IItemType;
   const { contentItem, nType, formatData } = itemType[type];
   const { itemHref, itemHref2, itemTitle } = formatData(target);
+  addHistoryItem(data)
 
   return `
 <div class="Card TopstoryItem TopstoryItem-isRecommend ctz-recommend-item" tabindex="0">

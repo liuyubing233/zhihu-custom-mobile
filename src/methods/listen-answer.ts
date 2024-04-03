@@ -14,7 +14,7 @@ import {
   innerHTMLRichInnerAndAction,
   openEnd,
   openLoading,
-  removeByBox
+  removeByBox,
 } from './listen-common';
 import { updateItemTime } from './time';
 
@@ -37,7 +37,9 @@ export const myListenAnswer = {
     }
     const pageJsData = JSON.parse(nodeJsonData.innerText || '{}');
     const questionId = location.pathname.replace('/question/', '');
-    const next = pageJsData.initialState.question.answers[questionId].next;
+    const currentQuestion = pageJsData.initialState.question.answers[questionId];
+    if (!currentQuestion) return;
+    const next = currentQuestion.next;
     this.next = next;
     this.end = !next;
   },
@@ -142,11 +144,11 @@ export const myListenAnswer = {
     if (!res) return;
     const { paging, data } = res as IZhihuAnswerResponse;
     if (paging.next === this.next) return;
-    paging.is_end && openEnd(nodeListContent, 'ctz-answer-end');
     this.end = paging.is_end;
     this.next = paging.next;
     const config = await myStorage.getConfig();
     nodeListContent.innerHTML += createListHTML(data, config);
+    paging.is_end && openEnd(nodeListContent, 'ctz-answer-end');
     this.checkListHeight();
   },
   /** 检测元素高度 */

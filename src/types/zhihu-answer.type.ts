@@ -5,64 +5,64 @@ export interface IZhihuAnswerResponse {
 }
 
 export interface IZhihuAnswerDataItem {
-  type: string;
-  target_type: string;
+  type?: string;
+  targetType: string;
   target: Target;
-  skip_count: boolean;
-  position: number;
-  cursor: string;
-  is_jump_native: boolean;
+  skipCount?: boolean;
+  position?: number;
+  cursor?: string;
+  isJumpNative?: boolean;
 }
 
 export interface Target {
-  admin_closed_comment: boolean;
-  annotation_action: null;
-  answer_type: string;
-  attached_info: string;
+  adminClosed_comment: boolean;
+  annotationAction: null;
+  answerType: string;
+  attachedInfo: string;
   author: Author;
-  can_comment: CanComment;
-  collapse_reason: string;
-  collapsed_by: string;
-  comment_count: number;
-  comment_permission: string;
+  canComment: CanComment;
+  collapseReason: string;
+  collapsedBy: string;
+  commentCount: number;
+  commentPermission: string;
   content: string;
-  content_mark: ContentMark;
-  created_time: number;
-  decorative_labels: any[];
-  editable_content: string;
+  contentMark: ContentMark;
+  createdTime: number;
+  decorativeLabels: any[];
+  editableContent: string;
   excerpt: string;
   extras: string;
   id: number;
-  is_collapsed: boolean;
-  is_copyable: boolean;
-  is_jump_native: boolean;
-  is_labeled: boolean;
-  is_mine: boolean;
-  is_normal: boolean;
-  is_sticky: boolean;
-  is_visible: boolean;
+  isCollapsed: boolean;
+  isCopyable: boolean;
+  isJumpNative: boolean;
+  isLabeled: boolean;
+  isMine: boolean;
+  isNormal: boolean;
+  isSticky: boolean;
+  isVisible: boolean;
   question: Question;
-  reaction_instruction: ContentMark;
+  reactionInstruction: ContentMark;
   relationship: Relationship;
-  relevant_info: RelevantInfo;
-  reshipment_settings: string;
-  reward_info: RewardInfo;
-  sticky_info: string;
-  suggest_edit: SuggestEdit;
-  thanks_count: number;
-  thumbnail_info: ThumbnailInfo;
+  relevantInfo: RelevantInfo;
+  reshipmentSettings: string;
+  rewardInfo: RewardInfo;
+  stickyInfo: string;
+  suggestEdit: SuggestEdit;
+  thanksCount: number;
+  thumbnailInfo: ThumbnailInfo;
   type: string;
-  updated_time: number;
+  updatedTime: number;
   url: string;
-  visible_only_to_author: boolean;
-  voteup_count: number;
-  zhi_plus_extra_info: string;
-  label_info: ILabelInfo;
+  visibleOnlyToAuthor: boolean;
+  voteupCount: number;
+  zhiPlusExtraInfo: string;
+  labelInfo: ILabelInfo;
 }
 
 export interface ILabelInfo {
-  foreground_color: ForegroundColor;
-  icon_url: string;
+  foregroundColor: ForegroundColor;
+  iconUrl: string;
   text: string;
   type: string;
 }
@@ -73,42 +73,42 @@ export interface ForegroundColor {
 }
 
 export interface Author {
-  avatar_url: string;
-  avatar_url_template: string;
+  avatarUrl: string;
+  avatarUrlTemplate: string;
   badge: any[];
-  badge_v2: BadgeV2;
-  exposed_medal: ExposedMedal;
-  follower_count: number;
+  badgeV2: BadgeV2;
+  exposedMedal: ExposedMedal;
+  followerCount: number;
   gender: number;
   headline: string;
   id: string;
-  is_advertiser: boolean;
-  is_followed: boolean;
-  is_following: boolean;
-  is_org: boolean;
-  is_privacy: boolean;
+  isAdvertiser: boolean;
+  isFollowed: boolean;
+  isFollowing: boolean;
+  isOrg: boolean;
+  isPrivacy: boolean;
   name: string;
   type: string;
   url: string;
-  url_token: string;
-  user_type: string;
+  urlToken: string;
+  userType: string;
 }
 
 export interface BadgeV2 {
-  detail_badges: any[];
+  detailBadges: any[];
   icon: string;
-  merged_badges: any[];
-  night_icon: string;
+  mergedBadges: any[];
+  nightIcon: string;
   title: string;
 }
 
 export interface ExposedMedal {
-  avatar_url: string;
+  avatarUrl: string;
   description: string;
-  medal_id: string;
-  medal_name: string;
-  medal_avatar_frame?: string;
-  mini_avatar_url?: string;
+  medalId: string;
+  medalName: string;
+  medalAvatarFrame?: string;
+  miniAvatarUrl?: string;
 }
 
 export interface CanComment {
@@ -121,34 +121,34 @@ export interface ContentMark {}
 export interface Question {
   created: number;
   id: number;
-  question_type: string;
+  questionType: string;
   relationship: ContentMark;
   title: string;
   type: string;
-  updated_time: number;
+  updatedTime: number;
   url: string;
 }
 
 export interface Relationship {
-  is_author: boolean;
-  is_authorized: boolean;
-  is_nothelp: boolean;
-  is_thanked: boolean;
-  upvoted_followees: any[];
+  isAuthor: boolean;
+  isAuthorized: boolean;
+  isNothelp: boolean;
+  isThanked: boolean;
+  upvotedFollowees: any[];
   voting: number;
 }
 
 export interface RelevantInfo {
-  is_relevant: boolean;
-  relevant_text: string;
-  relevant_type: string;
+  isRelevant: boolean;
+  relevantText: string;
+  relevantType: string;
 }
 
 export interface RewardInfo {
-  can_open_reward: boolean;
-  is_rewardable: boolean;
-  reward_member_count: number;
-  reward_total_money: number;
+  canOpenReward: boolean;
+  isRewardable: boolean;
+  rewardMemberCount: number;
+  rewardTotalMoney: number;
   tagline: string;
 }
 
@@ -157,7 +157,7 @@ export interface SuggestEdit {
   status: boolean;
   tip: string;
   title: string;
-  unnormal_details: UnnormalDetails;
+  unnormalDetails: UnnormalDetails;
   url: string;
 }
 
@@ -165,7 +165,7 @@ export interface UnnormalDetails {
   description: string;
   note: string;
   reason: string;
-  reason_id: number;
+  reasonId: number;
   status: string;
 }
 
@@ -177,7 +177,7 @@ export interface ThumbnailInfo {
 
 export interface IZhihuPaging {
   page: number;
-  is_end: boolean;
+  isEnd: boolean;
   next: string;
 }
 

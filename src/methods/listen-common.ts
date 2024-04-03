@@ -44,11 +44,6 @@ const eventMainObject: Record<string, Function> = {
     const nodeRich = domP(currentNode, 'class', 'RichContent')!;
     const nodeRichInner = nodeRich.querySelector('.RichContent-inner') as HTMLElement;
     const nodeBTNOther = nodeRich.querySelector(`.${CLASS_BTN_CLOSE}`) as HTMLElement;
-    const nodeImgs = nodeRichInner.querySelectorAll('img');
-    for (let i = 0, len = nodeImgs.length; i < len; i++) {
-      const item = nodeImgs[i];
-      item.src = item.getAttribute('data-original') || '';
-    }
     nodeRich.classList.remove('is-collapsed');
     nodeRichInner.style.maxHeight = 'max-content';
     nodeBTNOther.style.display = 'block';
@@ -114,18 +109,18 @@ export const innerHTMLContentItemMeta = (data: any, options?: { extraHTML?: stri
   <div class="AuthorInfo AnswerItem-authorInfo AuthorInfo--plain" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
     <div class="AuthorInfo AuthorInfo--mobile">
       <meta itemprop="name" content="${target.author.name}" />
-      <meta itemprop="image" content="${target.author.avatar_url}" />
-      <meta itemprop="url" content="https://www.zhihu.com/people/${target.author.url_token}" />
+      <meta itemprop="image" content="${target.author.avatarUrl}" />
+      <meta itemprop="url" content="https://www.zhihu.com/people/${target.author.urlToken}" />
       <meta itemprop="zhihu:followerCount" />
       <span class="UserLink AuthorInfo-avatarWrapper">
-        <a href="//www.zhihu.com/people/${target.author.url_token}" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">
-          <img class="Avatar AuthorInfo-avatar" src="${target.author.avatar_url}" srcset="${target.author.avatar_url} 2x" alt="${target.author.name}" />
+        <a href="//www.zhihu.com/people/${target.author.urlToken}" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">
+          <img class="Avatar AuthorInfo-avatar" src="${target.author.avatarUrl}" srcset="${target.author.avatarUrl} 2x" alt="${target.author.name}" />
         </a>
       </span>
       <div class="AuthorInfo-content">
         <div class="AuthorInfo-head">
           <span class="UserLink AuthorInfo-name">
-            <a href="//www.zhihu.com/people/${target.author.url_token}" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">${
+            <a href="//www.zhihu.com/people/${target.author.urlToken}" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">${
     target.author.name
   }</a>
           </span>
@@ -137,7 +132,7 @@ export const innerHTMLContentItemMeta = (data: any, options?: { extraHTML?: stri
       ${extraHTML}
     </div>
   </div>
-  ${haveTime ? createTimeHTML(`${target.created_time}000`, `${target.updated_time}000`) : ''}
+  ${haveTime ? createTimeHTML(`${target.createdTime}000`, `${target.updatedTime}000`) : ''}
   <div class="LabelContainer-wrapper"></div>
 </div>
 `;
@@ -153,13 +148,13 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
     ? `
 <a
   class="video-box"
-  href="https://link.zhihu.com/?target=https%3A//www.zhihu.com/video/${target.thumbnail_extra_info.video_id}"
+  href="https://link.zhihu.com/?target=https%3A//www.zhihu.com/video/${target.thumbnailExtraInfo.videoId}"
   target="_blank"
   data-video-id=""
   data-video-playable=""
   data-name=""
-  data-poster="${target.thumbnail_extra_info.url}"
-  data-lens-id="${target.thumbnail_extra_info.video_id}"
+  data-poster="${target.thumbnailExtraInfo.url}"
+  data-lens-id="${target.thumbnailExtraInfo.videoId}"
 >
   <img class="thumbnail" src="" />
   <span class="content">
@@ -169,19 +164,19 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
     </span>
     <span class="url">
       <span class="z-ico-video"></span>
-      https://www.zhihu.com/video/${target.thumbnail_extra_info.video_id}
+      https://www.zhihu.com/video/${target.thumbnailExtraInfo.videoId}
     </span>
   </span>
 </a>
     `
     : isPin
-    ? target.content_html || target.content
+    ? target.contentHtml || target.content
     : target.content;
 
   const isMore = isVideo ? true : innerHTML.length > moreLength;
   const vDomContent = domC('div', { innerHTML });
   vDomContent.querySelectorAll('img').forEach((item) => {
-    item.src = item.getAttribute('data-original') || '';
+    item.src = item.getAttribute('data-original') || item.getAttribute('data-actualsrc') || '';
   });
   vDomContent.querySelectorAll('a.video-box').forEach((item) => {
     const nItem = item as HTMLAnchorElement;
@@ -196,20 +191,20 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
   vDomContent.remove();
   return `
 <meta itemprop="image" />
-<meta itemprop="upvoteCount" content="${target.voteup_count}" />
-<meta itemprop="dateCreated" content="${target.created_time}000" />
-<meta itemprop="dateModified" content="${target.updated_time}000" />
-<meta itemprop="commentCount" content="${target.comment_count}" />
+<meta itemprop="upvoteCount" content="${target.voteupCount}" />
+<meta itemprop="dateCreated" content="${target.createdTime}000" />
+<meta itemprop="dateModified" content="${target.updatedTime}000" />
+<meta itemprop="commentCount" content="${target.commentCount}" />
 <div class="RichContent ${isMore ? 'is-collapsed' : ''} RichContent--unescapable">
   <div class="RichContent-inner RichContent-inner--collapsed" style="${isMore ? `max-height: ${moreMaxHeight}` : ''}">${contentHTML}</div>
   <div class="ContentItem-actions">
-    <button aria-label="赞同 ${target.voteup_count}" aria-live="polite" type="button" class="Button VoteButton VoteButton--up">
-      ▲ 赞同 ${target.voteup_count}
+    <button aria-label="赞同 ${target.voteupCount}" aria-live="polite" type="button" class="Button VoteButton VoteButton--up">
+      ▲ 赞同 ${target.voteupCount}
     </button>
     <button   aria-label="反对" aria-live="polite" type="button" class="Button VoteButton VoteButton--down VoteButton--mobileDown">
       ▼
     </button>
-    <button class="ctz-n-button-comment Button Button--plain Button--withIcon Button--withLabel">评论 ${target.comment_count}</button>
+    <button class="ctz-n-button-comment Button Button--plain Button--withIcon Button--withLabel">评论 ${target.commentCount}</button>
     ${isMore ? '<button class="ctz-n-button-close Button" style="display: none">收起 ▲</button>' : ''}
   </div>
   ${isMore ? '<button class="ctz-n-button-expend">展开更多 ▼</button>' : ''}

@@ -139,7 +139,7 @@ export interface IConfig extends IConfigHidden, IConfigFilter {
   /** 修改器唤醒按钮的位置 left */
   openButtonLeft: number;
   /** 长回答和列表收起按钮悬浮*/
-  suspensionPickup?: boolean;
+  // suspensionPickup?: boolean;
   /** 隐藏修改器唤起按钮（可在脚本菜单处<b>⚙️ 设置</b>打开） */
   openButtonInvisible?: boolean;
 

@@ -11,13 +11,13 @@ export interface IZhihuRecommendData {
   verb: string;
   created_time: number;
   updated_time: number;
-  target: Target;
+  target: IZhihuRecommendDataTarget;
   brief: string;
   attached_info: string;
   action_card: boolean;
 }
 
-export interface Target {
+export interface IZhihuRecommendDataTarget {
   id: number;
   type: string;
   url: string;
@@ -40,6 +40,7 @@ export interface Target {
   visited_count: number;
   favorite_count: number;
   answer_type: string;
+  title?: string;
 }
 
 export interface Author {

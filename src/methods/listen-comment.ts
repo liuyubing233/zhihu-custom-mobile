@@ -5,14 +5,13 @@ import { ID_CTZ_COMMENT, ID_CTZ_COMMENT_BACK, ID_CTZ_COMMENT_CHILD, ID_CTZ_COMME
 import { IMyElement } from '../types';
 import { myLoadingToast } from '../types/loading-toast';
 import { IAuthorTag, ICommentData, ICommentPaging } from '../types/zhihu-comment.type';
+import { openEnd, openLoading, removeByBox } from './listen-common';
 import { timeFormatter } from './time';
 
 /** 查找插入列表元素 */
 const QUERY_LIST = '.ctz-comment-list';
-/** 查找评论加载中 */
-const QUERY_LOADING = '.ctz-comment-loading';
-/** 查找评论没有更多了 */
-const QUERY_END = '.ctz-comment-end';
+const CLASS_LOADING = 'ctz-comment-loading';
+const ClASS_END = 'ctz-comment-end';
 
 const ACTIVE_STYLE = 'color: rgb(25, 27, 31);background: #fff;';
 
@@ -41,7 +40,7 @@ export const myListenComment: myListenComment = {
   commentData: [],
   answerId: undefined,
   initOperate: function () {
-    const me = this;
+    const me = this as myListenComment;
     domById(ID_CTZ_COMMENT)!.onclick = async (event) => {
       const nodeCurrent = event.target as IMyElement;
       const { id, name } = nodeCurrent;
@@ -71,7 +70,7 @@ export const myListenComment: myListenComment = {
       const nodeContentDiv = dom(`#${ID_CTZ_COMMENT} ${QUERY_LIST}`)!;
       const bounding = nodeContentDiv.getBoundingClientRect();
       if (bounding.bottom - 100 <= window.innerHeight) {
-        me.openLoading();
+        openLoading(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!, CLASS_LOADING);
         me.commentLoadMore();
       }
     }, 300);
@@ -87,13 +86,13 @@ export const myListenComment: myListenComment = {
     nodeComment.querySelector('.ctz-comment-count>span')!.innerHTML = `${res.paging.totals}`;
     nodeComment.querySelector(QUERY_LIST)!.innerHTML = createCommentHTML(res.data);
     myChangeCommentSort[orderBy]();
-    this.hideEnd();
-    this.hideLoading();
+    removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!, ClASS_END);
+    removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!, CLASS_LOADING);
     nodeComment.style.display = 'flex';
     this.page = res.paging;
     this.commentData = res.data;
     if (res.paging.is_end) {
-      this.openEnd();
+      openEnd(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!, ClASS_END);
     }
     myScroll.stop();
   },
@@ -105,15 +104,11 @@ export const myListenComment: myListenComment = {
     this.page = res.paging;
     this.commentData = this.commentData.concat(res.data);
     nodeCommentContentDiv.innerHTML += createCommentHTML(res.data);
-    this.hideLoading();
+    removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!, CLASS_LOADING);
     if (res.paging.is_end) {
-      this.openEnd();
+      openEnd(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!, ClASS_END);
     }
   },
-  openLoading: () => (dom(`#${ID_CTZ_COMMENT} ${QUERY_LOADING}`)!.style.display = 'block'),
-  hideLoading: () => (dom(`#${ID_CTZ_COMMENT} ${QUERY_LOADING}`)!.style.display = 'none'),
-  openEnd: () => (dom(`#${ID_CTZ_COMMENT} ${QUERY_END}`)!.style.display = 'block'),
-  hideEnd: () => (dom(`#${ID_CTZ_COMMENT} ${QUERY_END}`)!.style.display = 'none'),
 };
 
 /** 子评论弹窗 */
@@ -142,7 +137,8 @@ export const myListenCommentChild: myListenComment = {
       const nodeContentDiv = dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_LIST}`)!;
       const bounding = nodeContentDiv.getBoundingClientRect();
       if (bounding.bottom - 100 <= window.innerHeight) {
-        me.openLoading();
+        // me.openLoading();
+        openLoading(domById(ID_CTZ_COMMENT_CHILD)!, CLASS_LOADING);
         me.commentLoadMore();
       }
     }, 300);
@@ -157,13 +153,13 @@ export const myListenCommentChild: myListenComment = {
     const parentCommentHTML = parentData ? createCommentHTMLItem(parentData, false, false) : '';
     nodeComment.querySelector(QUERY_LIST)!.innerHTML =
       parentCommentHTML + `<div class="ctz-comment-child-count">${res.paging.totals} 条回复</div>` + createCommentHTML(res.data);
-    this.hideEnd();
-    this.hideLoading();
+    removeByBox(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!, ClASS_END);
+    removeByBox(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!, CLASS_LOADING);
     nodeComment.style.display = 'flex';
     this.page = res.paging;
     this.commentData = res.data;
     if (res.paging.is_end) {
-      this.openEnd();
+      openEnd(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!, ClASS_END);
     }
     myScroll.stop();
   },
@@ -174,15 +170,11 @@ export const myListenCommentChild: myListenComment = {
     this.page = res.paging;
     this.commentData = this.commentData.concat(res.data);
     nodeCommentContentDiv.innerHTML += createCommentHTML(res.data);
-    this.hideLoading();
+    removeByBox(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!, CLASS_LOADING);
     if (res.paging.is_end) {
-      this.openEnd();
+      openEnd(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!, ClASS_END);
     }
   },
-  openLoading: () => (dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_LOADING}`)!.style.display = 'block'),
-  hideLoading: () => (dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_LOADING}`)!.style.display = 'none'),
-  openEnd: () => (dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_END}`)!.style.display = 'block'),
-  hideEnd: () => (dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_END}`)!.style.display = 'none'),
 };
 
 const createCommentHTML = (data: ICommentData[], isChild = false) => data.map((i) => createCommentHTMLItem(i, isChild)).join('');
@@ -253,8 +245,4 @@ interface myListenComment {
   initOperate: () => void;
   create: (answerId?: string | number, parentData?: ICommentData, sort?: string, type?: 'answers' | 'articles') => Promise<void>;
   commentLoadMore: () => Promise<void>;
-  openLoading: () => void;
-  hideLoading: () => void;
-  openEnd: () => void;
-  hideEnd: () => void;
 }

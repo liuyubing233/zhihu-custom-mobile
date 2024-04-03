@@ -134,8 +134,8 @@
     [
       { value: "hiddenAnswers", label: "隐藏列表回答内容" },
       { value: "hiddenListVideoContent", label: "隐藏列表视频回答的内容" },
-      { value: "hiddenListImg", label: "隐藏列表图片" },
-      { value: "hiddenReadMoreText", label: "隐藏列表「阅读全文」文字" }
+      { value: "hiddenListImg", label: "隐藏列表图片" }
+      // { value: 'hiddenReadMoreText', label: '隐藏列表「阅读全文」文字' },
     ],
     [
       { value: "hiddenItemActions", label: "隐藏列表回答操作栏" },
@@ -582,8 +582,8 @@
       });
     });
   };
-  var INNER_HTML = `<div id="CTZ_DIALOG" style="display: none"><div class="ctz-header"><span class="ctz-version"></span><div class="ctz-top-operate"><!-- <span id="CTZ_FETCH_STATUS">状态获取中...</span><button class="ctz-button" id="CTZ_CHANGE_FETCH" size="small">切换接口拦截</button> --></div><button id="CTZ_CLOSE_DIALOG">✕</button></div><div class="ctz-menu"></div><div class="ctz-content"><div id="CTZ_BASIS" style="display: none"><div class="ctz-content-top"><a href="#CTZ_BASIS_SHOW">显示</a><a href="#CTZ_BASIS_BACKGROUND">颜色</a><a href="#CTZ_BASIS_SETTING">配置</a></div><div class="ctz-content-center"><div id="CTZ_BASIS_SHOW" style="display: none"></div><div id="CTZ_BASIS_BACKGROUND" style="display: none"><div class="ctz-set-background"><div class="fwb mt8 ctz-background-title">外观</div><div id="CTZ_BACKGROUND" class="ctz-background-content"></div><div class="fwb mt8 ctz-background-title">浅色设置</div><div id="CTZ_BACKGROUND_LIGHT" class="ctz-background-content"></div><div class="fwb mt8 ctz-background-title">深色设置</div><div id="CTZ_BACKGROUND_DARK" class="ctz-background-content"></div></div></div><div id="CTZ_BASIS_SETTING" style="display: none"><button class="ctz-button" name="configExport" style="margin-right: 8px">获取当前配置</button><button class="ctz-button" name="configReset">恢复默认配置</button><div class="ctz-hidden-item-br"></div><div class="ctz-config-import-box"><div>配置导入</div><textarea name="textConfigImport" placeholder="配置参考获取的格式"></textarea><button class="ctz-button" name="configImport">确 定</button></div><div class="ctz-hidden-item-br"></div><div class="ctz-config-import-box"><div>自定义样式</div><textarea name="textStyleCustom" placeholder="示例: body{background: #ffffff;}"></textarea><div class="ctz-btn-box"><button class="ctz-button" name="styleCustom" style="margin-right: 12px">确 定</button><button class="ctz-button" name="styleCustomReset">清 空</button></div></div></div></div></div><div id="CTZ_HIDDEN" style="display: none"><div class="ctz-content-center"></div></div><div id="CTZ_FILTER" style="display: none"><!-- <div class="ctz-content-top"></div> --><div class="ctz-content-center"><div class="ctz-filter-defail-who"><div class="ctz-label">屏蔽以下官方账号的回答</div><div style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px"><label><input class="ctz-i" name="removeZhihuOfficial" type="checkbox" value="on" />所有知乎官方账号</label></div><div class="ctz-flex-wrap" style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px"><label><input class="ctz-i" name="removeStoryAnswer" type="checkbox" value="on" />故事档案局</label><label><input class="ctz-i" name="removeYanxuanAnswer" type="checkbox" value="on" />盐选科普</label><label><input class="ctz-i" name="removeYanxuanRecommend" type="checkbox" value="on" />盐选推荐</label><label><input class="ctz-i" name="removeYanxuanCPRecommend" type="checkbox" value="on" />盐选测评室</label></div></div><div class="ctz-flex-wrap" style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px"><label><span class="ctz-label">屏蔽「匿名用户」回答</span><input class="ctz-i" name="removeAnonymousAnswer" type="checkbox" value="on" /></label></div><div class="ctz-filter-defail-tag"><div class="ctz-label">屏蔽带有以下标签的回答</div><div class="ctz-flex-wrap"><label><input class="ctz-i" name="removeFromYanxuan" type="checkbox" value="on" />选自盐选专栏</label><label><input class="ctz-i" name="removeUnrealAnswer" type="checkbox" value="on" />带有虚构创作</label><label><input class="ctz-i" name="removeFromEBook" type="checkbox" value="on" />选自电子书</label></div></div></div></div><div id="CTZ_BLACKLIST" style="display: none"><div class="ctz-content-top"></div><div class="ctz-content-center">CTZ_BLACKLIST</div></div><div id="CTZ_HISTORY" style="display: none"><div class="ctz-content-top"><a href="#CTZ_HISTORY_LIST">推荐列表缓存</a><a href="#CTZ_HISTORY_VIEW">浏览历史记录</a></div><div class="ctz-content-center"><div id="CTZ_HISTORY_LIST" style="display: none"><button class="ctz-button" name="buttonHistoryClear" data-id="list">清空列表缓存</button><div class="ctz-set-content"></div><div class="ctz-commit ta-c mt8">--- 最多缓存500条，包含已过滤项 ---</div></div><div id="CTZ_HISTORY_VIEW" style="display: none"><button class="ctz-button" name="buttonHistoryClear" data-id="view">清空历史记录</button><div class="ctz-set-content"></div><div class="ctz-commit ta-c mt8">--- 最多缓存500条 ---</div></div></div></div></div></div><div id="CTZ_OPEN_BUTTON">⚙︎</div><div id="CTZ_MESSAGE_BOX"></div><div id="CTZ_LOADING_TOAST" style="display: none"><div class="ctz-loading-toast-icon"><span>↻</span></div><div class="ctz-loading-toast-text">加载中...</div></div><div id="CTZ_COMMENT" style="display: none"><div class="ctz-comment-header"><div class="ctz-comment-header-left"><div class="ctz-comment-count"><span>0</span>条评论</div><div class="ctz-comment-sort"><button name="score">默认</button><button name="ts">最新</button></div></div><button class="ctz-comment-btn" id="CTZ_BUTTON_COMMENT_CLOSE">✕</button></div><div class="ctz-comment-content"><div class="ctz-comment-list"></div><div class="ctz-comment-loading" style="display: none"><span>↻</span></div><div class="ctz-comment-end" style="display: none">----- 没有更多了 -----</div></div></div><div id="CTZ_COMMENT_CHILD" style="display: none"><div class="ctz-comment-header"><button class="ctz-comment-btn" id="CTZ_BOTTOM_COMMENT_BACK">◀︎ 评论回复</button></div><div class="ctz-comment-content"><div class="ctz-comment-list"></div><div class="ctz-comment-loading" style="display: none"><span>↻</span></div><div class="ctz-comment-end" style="display: none">----- 没有更多了 -----</div></div></div><div style="display: none" class="ctz-preview" id="CTZ_PREVIEW_IMAGE"><div><img src="" /></div></div>`;
-  var INNER_CSS = `@keyframes rotate{from{transform:translate(-50%, -50%) rotate(0deg)}to{transform:translate(-50%, -50%) rotate(360deg)}}.hover-style{cursor:pointer}.hover-style:hover{color:#1677ff !important}.ctz-btn-box{display:flex}.ctz-btn-box button{flex:1;margin-right:12px}.ctz-btn-box button:last-child{margin:0}.ctz-desc,.ctz-commit{font-size:14px;color:#999}.ctz-desc b,.ctz-commit b{color:#e55353}.ctz-desc{padding-left:4px}.dis-if-c{display:inline-flex;align-items:center}.ta-c{text-align:center}.fwb{font-weight:bold}.mt8{margin-top:8px}.bg-ec7259{background:#ec7259}.bg-12c2e9{background:#12c2e9}.bg-00965e{background:#00965e}.bg-9c27b0{background:#9c27b0}.c-ec7259{color:#ec7259}.c-12c2e9{color:#12c2e9}.c-00965e{color:#00965e}.c-9c27b0{color:#9c27b0}.ctz-button{outline:none;position:relative;display:inline-block;font-weight:400;white-space:nowrap;text-align:center;border:1px solid transparent;cursor:pointer;transition:all .3s;user-select:none;touch-action:manipulation;line-height:1.5;font-size:14px;height:32px;padding:4px 15px;border-radius:6px;background-color:#ffffff;border-color:#d9d9d9;color:rgba(0,0,0,0.88);box-shadow:0 2px 0 rgba(0,0,0,0.02)}.ctz-button:hover{color:#1677ff;border-color:#1677ff}.ctz-button:active{background:rgba(0,0,0,0.08) !important}.ctz-button[size='small'],.ctz-button.ctz-button-small{padding:2px 6px;font-size:12px;height:24px}.ctz-button.ctz-button-transparent{background:transparent}.ctz-button-red{color:#e55353 !important;border:1px solid #e55353 !important}.ctz-button-red:hover{color:#ec7259 !important;border:1px solid #ec7259 !important}.ctz-button:disabled{border-color:#d0d0d0;background-color:rgba(0,0,0,0.08);color:#b0b0b0;cursor:not-allowed}[name='buttonHistoryClear']{margin-bottom:12px}#CTZ_BACKGROUND,#CTZ_BACKGROUND_LIGHT,#CTZ_BACKGROUND_DARK{display:grid;gap:8px}#CTZ_BACKGROUND>label,#CTZ_BACKGROUND_LIGHT>label,#CTZ_BACKGROUND_DARK>label{position:relative;cursor:pointer}#CTZ_BACKGROUND>label input,#CTZ_BACKGROUND_LIGHT>label input,#CTZ_BACKGROUND_DARK>label input{position:absolute;pointer-events:none;width:20px;height:20px;top:18px;left:20px}#CTZ_BACKGROUND>label input:checked+div,#CTZ_BACKGROUND_LIGHT>label input:checked+div,#CTZ_BACKGROUND_DARK>label input:checked+div{border:4px solid #1677ff}#CTZ_BACKGROUND>label div,#CTZ_BACKGROUND_LIGHT>label div,#CTZ_BACKGROUND_DARK>label div{pointer-events:none;border:4px double #eee;font-size:14px;border-radius:12px;line-height:56px;padding-left:60px}#CTZ_BACKGROUND_LIGHT{color:#000}.ctz-set-background{margin:-12px}.ctz-set-background .ctz-background-title{padding:12px 12px 0}.ctz-set-background .ctz-background-content{padding:12px;border-bottom:1px solid #d9d9d9}.ctz-set-background .ctz-background-content:last-of-type{border:none}.ErrorPage-text::after{content:'这是知乎因为移动端加载了电脑端网页导致（移动网页端想查看完整的评论和回答内容只能用此方法），会在部分回答中出现这个问题。不是修改器问题，暂时无法解决，刷新或后退返回回答页面。';padding:24px}.css-nk32ej{display:none}.Question-main .ContentItem.AnswerItem .ContentItem-expandButton{display:none !important}.Question-main .ctz-n-button-expend{color:#1677ff;position:absolute;border:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;z-index:10;top:0;left:0}.Question-main .ctz-n-button-close{margin-left:12px;border:0 !important}.Question-main .ctz-n-button-comment{margin-left:12px}.ctz-answer-item .AuthorInfo-avatarWrapper .AuthorInfo-avatar{box-sizing:border-box;margin:0;min-width:0;max-width:100%;background-color:#ffffff;width:38px;height:38px;border-radius:2px}.ctz-answer-item .RichContent-inner img{width:100%;max-width:100%}.Question-mainEntity .ContentItem-actions>.ContentItem-action{display:none}#CTZ_COMMENT,#CTZ_COMMENT_CHILD{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:2000;font-size:16px;transition:all .2s;flex-direction:column}#CTZ_COMMENT button,#CTZ_COMMENT_CHILD button{padding:0;margin:0;border:0}#CTZ_COMMENT button.ctz-comment-button,#CTZ_COMMENT_CHILD button.ctz-comment-button{display:inline-block;font-size:14px;line-height:32px;text-align:center;cursor:pointer;background:rgba(132,145,165,0.1);border:1px solid transparent;border-radius:3px;margin:10px 0px 10px 54px;padding:0px 6px 0px 12px;height:32px;color:#8491a5;font-weight:500}.ctz-comment-header{height:48px;display:flex;padding:0 24px;align-items:center;border-bottom:1px solid #ebeced}.ctz-comment-header-left{flex:1;display:flex;align-items:center}.ctz-comment-content{flex:1;overflow-y:auto}.ctz-ci{display:flex;padding:10px 20px 14px}.ctz-ci-child{padding:10px 20px 14px 54px}.ctz-ci-avatar img{box-sizing:border-box;margin:0px;min-width:0px;max-width:100%;width:24px;height:24px;border-radius:2px;filter:brightness(.95);display:block;position:relative;background-color:#f8f8fa;flex:0 0 auto;text-indent:-9999px;overflow:hidden}.ctz-ci-right{flex:1;padding-left:10px}.ctz-ci-user a,.ctz-ci-user div{display:inline-block}.ctz-ci-user a{font-size:15px;font-weight:bold}.ctz-ci-user .ctz-tag{padding:0px 4px;color:#999;height:16px;line-height:16px;box-sizing:border-box;margin-left:4px;font-size:12px;border-radius:4px}.ctz-ci-user span{margin:0 6px;font-size:16px;color:#9196a1}.ctz-ci-content{margin:4px 0px 0px;min-width:0px;overflow:hidden;overflow-wrap:break-word;font-size:15px;line-height:21px}.ctz-ci-content>p{display:inline}.ctz-ci-info{display:flex;justify-content:space-between;padding-top:4px;color:#75849a;font-size:14px}.ctz-ci-info-left span{margin-right:6px}.ctz-comment-list{padding:10px 0}.ctz-comment-child-count{padding:0 20px;height:50px;line-height:50px;font-size:16px;font-weight:bold;border-bottom:1px solid #ebeced;border-top:20px solid rgba(132,145,165,0.1)}.ctz-comment-count{font-size:16px;font-weight:bold;padding-right:16px}.ctz-comment-sort{border:2px solid #f8f8fa;background:#f8f8fa}.ctz-comment-sort button{box-sizing:border-box;margin:0px;min-width:0px;border-radius:2px;text-align:center;cursor:pointer;width:50px;height:24px;font-size:12px;line-height:24px;font-weight:600;background:transparent;color:#81858f}.ctz-stop-scroll{height:100% !important;overflow:hidden !important}#CTZ_OPEN_BUTTON{position:fixed;font-size:48px;background:#e1e1e1;color:#000;opacity:.6;width:48px;height:48px;line-height:46px;border-radius:8px;z-index:2000;text-align:center}#CTZ_DIALOG{position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f5f5;z-index:2001;font-size:16px;transition:all .2s;flex-direction:column}#CTZ_DIALOG input[type='checkbox']{width:16px;height:16px}#CTZ_DIALOG textarea{box-sizing:border-box;margin:0;padding:4px 11px;font-size:14px;line-height:1.5;list-style:none;position:relative;display:inline-block;min-width:0;border-width:1px;border-style:solid;border-color:#d9d9d9;border-radius:6px;transition:all .2s}#CTZ_DIALOG a{color:inherit}.ctz-header{font-size:16px;display:flex;align-items:center;height:48px;padding:0 12px}.ctz-top-operate{flex:1;padding:0 12px;font-size:12px}.ctz-version{font-size:16px}#CTZ_CLOSE_DIALOG{font-weight:bold;width:40px;height:40px;color:rgba(0,0,0,0.45);background:transparent;border:none;font-size:18px}#CTZ_CLOSE_DIALOG i{font-size:12px}.ctz-menu{height:36px;display:flex}.ctz-menu>a{border-radius:12px 12px 0 0;flex:1;text-align:center;cursor:pointer;transition:initial !important;position:relative;display:flex;align-items:center;justify-content:center}.ctz-menu>a span{border-radius:8px;transition:all .3s;margin:0 4px;flex:1;box-sizing:border-box;align-items:center;line-height:26px}.ctz-menu>a.target{background:#fff}.ctz-menu>a.target::after,.ctz-menu>a.target::before{position:absolute;bottom:-12px;content:' ';background:radial-gradient(circle at top left, transparent 12px, #fff 0) top left,radial-gradient(circle at top right, transparent 12px, #fff 0) top right,radial-gradient(circle at bottom right, transparent 12px, #fff 0) bottom right,radial-gradient(circle at bottom left, transparent 12px, #fff 0) bottom left;background-size:50% 50%;background-repeat:no-repeat;width:24px;height:24px}.ctz-menu>a.target::before{left:-12px;z-index:-1}.ctz-menu>a.target::after{right:-12px;z-index:-1}.ctz-content{flex:1;overflow:hidden;background:#fff;border-radius:12px;padding:8px 0}.ctz-content>div{height:100%;flex-direction:column}.ctz-content-top{height:28px;display:flex;padding-bottom:8px}.ctz-content-top a{flex:1;text-align:center;line-height:28px;margin:0 8px;border-radius:8px}.ctz-content-top a.target{background-color:#f5f5f5}.ctz-content-top~.ctz-content-center{padding-top:0}.ctz-content-center{flex:1;overflow-y:auto;padding:12px}.ctz-content-center ::-webkit-scrollbar{width:8px;height:8px}.ctz-content-center ::-webkit-scrollbar-track{border-radius:0}.ctz-content-center ::-webkit-scrollbar-thumb{background:#bbb;transition:all .2s;border-radius:8px}.ctz-content-center ::-webkit-scrollbar-thumb:hover{background-color:rgba(95,95,95,0.7)}.ctz-hidden-item-br{margin:12px 0;width:100%;height:1px;position:relative}.ctz-hidden-item-br::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:65%;height:1px;background:#d9d9d9}#CTZ_HIDDEN .ctz-content-center label{margin-right:12px;margin-bottom:4px}#CTZ_BASIS_SHOW label{margin:8px 0}#CTZ_BASIS_SHOW label b{display:inline-block;padding:0 4px;background:#f5f5f5;border-radius:2px;margin-right:2px}.ctz-suspension-pickup{position:fixed;bottom:60px;right:14px;text-align:center;height:40px;line-height:40px;width:68px;border-radius:4px;font-size:14px;background:#fff}.ctz-label{font-size:14px;line-height:24px}.ctz-label::after{content:'：'}.ctz-flex-wrap{display:flex;flex-wrap:wrap;line-height:24px}.ctz-flex-wrap label{margin-right:4px;display:flex;align-items:center}.ctz-flex-wrap label input[type='radio']{margin:0 4px 0 0}.ctz-label-tag{font-weight:normal;padding:2px 4px;border-radius:4px;font-size:12px;color:#ffffff;margin:0 2px}.ctz-label-tag-Answer{background:#ec7259}.ctz-label-tag-ZVideo{background:#12c2e9}.ctz-label-tag-Article{background:#00965e}.ctz-label-tag-Pin{background:#9c27b0}#CTZ_HISTORY_LIST .ctz-set-content a,#CTZ_HISTORY_VIEW .ctz-set-content a{word-break:break-all;display:block;margin-bottom:12px;padding:6px 12px;border:1px solid #eee;border-radius:4px}.ctz-fetch-intercept .ctz-need-fetch{display:none}.ctz-fetch-intercept.ctz-fetch-intercept-close{color:#b0b0b0 !important;cursor:not-allowed}.ctz-fetch-intercept.ctz-fetch-intercept-close span.ctz-need-fetch{display:inline}.ctz-fetch-intercept.ctz-fetch-intercept-close div.ctz-need-fetch{display:block}.ctz-fetch-intercept.ctz-fetch-intercept-close .ctz-remove-block{cursor:not-allowed !important}.ctz-fetch-intercept.ctz-fetch-intercept-close .ctz-black-item .ctz-remove-block:hover,.ctz-fetch-intercept.ctz-fetch-intercept-close .ctz-black-item a:hover{background:transparent !important;color:#b0b0b0 !important}#CTZ_MESSAGE_BOX{position:fixed;left:0;top:10px;width:100%;z-index:2002}.ctz-message{margin:20px auto;width:70%;height:48px;display:flex;align-items:center;justify-content:center;font-size:14px;border-radius:8px;box-shadow:0 0 8px #d0d4d6,0 0 8px #e6eaec;margin-bottom:12px;background:#fff}.ctz-config-import-box{display:flex;flex-direction:column}.ctz-config-import-box>div,.ctz-config-import-box>textarea{margin-bottom:12px !important}.ctz-config-import-box textarea{height:120px;resize:vertical}#CTZ_LOADING_TOAST{position:fixed;top:50%;left:50%;width:100px;height:100px;background:rgba(0,0,0,0.25);color:#fff;transform:translate(-50%, -50%);border-radius:16px;z-index:2002;display:flex;flex-direction:column;align-items:center}#CTZ_LOADING_TOAST .ctz-loading-toast-text{padding-bottom:12px}#CTZ_LOADING_TOAST .ctz-loading-toast-icon{flex:1;position:relative;font-size:34px}#CTZ_LOADING_TOAST .ctz-loading-toast-icon span{position:absolute;top:50%;left:50%;animation:rotate 1.5s infinite}.ctz-preview{box-sizing:border-box;position:fixed;height:100%;width:100%;top:0;left:0;overflow-y:auto;z-index:200;background-color:rgba(18,18,18,0.4)}.ctz-preview div{display:flex;justify-content:center;align-items:center;min-height:100%;width:100%}.ctz-preview div img{cursor:zoom-out;user-select:none;max-width:100%}.ctz-comment-loading,.ctz-answer-loading,.ctz-list-loading{text-align:center;font-size:24px;color:#1677ff;position:relative;padding:0 0 12px;height:24px}.ctz-comment-loading span,.ctz-answer-loading span,.ctz-list-loading span{position:absolute;top:50%;left:50%;animation:rotate 1.5s infinite}.ctz-comment-end,.ctz-answer-end{text-align:center;padding:0 0 12px;color:#75849a}`;
+  var INNER_HTML = `<div id="CTZ_DIALOG" style="display: none"><div class="ctz-header"><span class="ctz-version"></span><div class="ctz-top-operate"><!-- <span id="CTZ_FETCH_STATUS">状态获取中...</span><button class="ctz-button" id="CTZ_CHANGE_FETCH" size="small">切换接口拦截</button> --></div><button id="CTZ_CLOSE_DIALOG">✕</button></div><div class="ctz-menu"></div><div class="ctz-content"><div id="CTZ_BASIS" style="display: none"><div class="ctz-content-top"><a href="#CTZ_BASIS_SHOW">显示</a><a href="#CTZ_BASIS_BACKGROUND">颜色</a><a href="#CTZ_BASIS_SETTING">配置</a></div><div class="ctz-content-center"><div id="CTZ_BASIS_SHOW" style="display: none"></div><div id="CTZ_BASIS_BACKGROUND" style="display: none"><div class="ctz-set-background"><div class="fwb mt8 ctz-background-title">外观</div><div id="CTZ_BACKGROUND" class="ctz-background-content"></div><div class="fwb mt8 ctz-background-title">浅色设置</div><div id="CTZ_BACKGROUND_LIGHT" class="ctz-background-content"></div><div class="fwb mt8 ctz-background-title">深色设置</div><div id="CTZ_BACKGROUND_DARK" class="ctz-background-content"></div></div></div><div id="CTZ_BASIS_SETTING" style="display: none"><button class="ctz-button" name="configExport" style="margin-right: 8px">获取当前配置</button><button class="ctz-button" name="configReset">恢复默认配置</button><div class="ctz-hidden-item-br"></div><div class="ctz-config-import-box"><div>配置导入</div><textarea name="textConfigImport" placeholder="配置参考获取的格式"></textarea><button class="ctz-button" name="configImport">确 定</button></div><div class="ctz-hidden-item-br"></div><div class="ctz-config-import-box"><div>自定义样式</div><textarea name="textStyleCustom" placeholder="示例: body{background: #ffffff;}"></textarea><div class="ctz-btn-box"><button class="ctz-button" name="styleCustom" style="margin-right: 12px">确 定</button><button class="ctz-button" name="styleCustomReset">清 空</button></div></div></div></div></div><div id="CTZ_HIDDEN" style="display: none"><div class="ctz-content-center"></div></div><div id="CTZ_FILTER" style="display: none"><!-- <div class="ctz-content-top"></div> --><div class="ctz-content-center"><div class="ctz-filter-defail-who"><div class="ctz-label">屏蔽以下官方账号的回答</div><div style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px"><label><input class="ctz-i" name="removeZhihuOfficial" type="checkbox" value="on" />所有知乎官方账号</label></div><div class="ctz-flex-wrap" style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px"><label><input class="ctz-i" name="removeStoryAnswer" type="checkbox" value="on" />故事档案局</label><label><input class="ctz-i" name="removeYanxuanAnswer" type="checkbox" value="on" />盐选科普</label><label><input class="ctz-i" name="removeYanxuanRecommend" type="checkbox" value="on" />盐选推荐</label><label><input class="ctz-i" name="removeYanxuanCPRecommend" type="checkbox" value="on" />盐选测评室</label></div></div><div class="ctz-flex-wrap" style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px"><label><span class="ctz-label">屏蔽「匿名用户」回答</span><input class="ctz-i" name="removeAnonymousAnswer" type="checkbox" value="on" /></label></div><div class="ctz-filter-defail-tag"><div class="ctz-label">屏蔽带有以下标签的回答</div><div class="ctz-flex-wrap"><label><input class="ctz-i" name="removeFromYanxuan" type="checkbox" value="on" />选自盐选专栏</label><label><input class="ctz-i" name="removeUnrealAnswer" type="checkbox" value="on" />带有虚构创作</label><label><input class="ctz-i" name="removeFromEBook" type="checkbox" value="on" />选自电子书</label></div></div></div></div><div id="CTZ_BLACKLIST" style="display: none"><div class="ctz-content-top"></div><div class="ctz-content-center">CTZ_BLACKLIST</div></div><div id="CTZ_HISTORY" style="display: none"><div class="ctz-content-top"><a href="#CTZ_HISTORY_LIST">推荐列表缓存</a><a href="#CTZ_HISTORY_VIEW">浏览历史记录</a></div><div class="ctz-content-center"><div id="CTZ_HISTORY_LIST" style="display: none"><button class="ctz-button" name="buttonHistoryClear" data-id="list">清空列表缓存</button><div class="ctz-set-content"></div><div class="ctz-commit ta-c mt8">--- 最多缓存500条，包含已过滤项 ---</div></div><div id="CTZ_HISTORY_VIEW" style="display: none"><button class="ctz-button" name="buttonHistoryClear" data-id="view">清空历史记录</button><div class="ctz-set-content"></div><div class="ctz-commit ta-c mt8">--- 最多缓存500条 ---</div></div></div></div></div></div><div id="CTZ_OPEN_BUTTON">⚙︎</div><div id="CTZ_MESSAGE_BOX"></div><div id="CTZ_LOADING_TOAST" style="display: none"><div class="ctz-loading-toast-icon"><span>↻</span></div><div class="ctz-loading-toast-text">加载中...</div></div><div id="CTZ_COMMENT" style="display: none"><div class="ctz-comment-header"><div class="ctz-comment-header-left"><div class="ctz-comment-count"><span>0</span>条评论</div><div class="ctz-comment-sort"><button name="score">默认</button><button name="ts">最新</button></div></div><button class="ctz-comment-btn" id="CTZ_BUTTON_COMMENT_CLOSE">✕</button></div><div class="ctz-comment-content"><div class="ctz-comment-list"></div></div></div><div id="CTZ_COMMENT_CHILD" style="display: none"><div class="ctz-comment-header"><button class="ctz-comment-btn" id="CTZ_BOTTOM_COMMENT_BACK">◀︎ 评论回复</button></div><div class="ctz-comment-content"><div class="ctz-comment-list"></div></div></div><div style="display: none" class="ctz-preview" id="CTZ_PREVIEW_IMAGE"><div><img src="" /></div></div>`;
+  var INNER_CSS = `@keyframes rotate{from{transform:translate(-50%, -50%) rotate(0deg)}to{transform:translate(-50%, -50%) rotate(360deg)}}.hover-style{cursor:pointer}.hover-style:hover{color:#1677ff !important}.ctz-btn-box{display:flex}.ctz-btn-box button{flex:1;margin-right:12px}.ctz-btn-box button:last-child{margin:0}.ctz-desc,.ctz-commit{font-size:14px;color:#999}.ctz-desc b,.ctz-commit b{color:#e55353}.ctz-desc{padding-left:4px}.dis-if-c{display:inline-flex;align-items:center}.ta-c{text-align:center}.fwb{font-weight:bold}.mt8{margin-top:8px}.bg-ec7259{background:#ec7259}.bg-12c2e9{background:#12c2e9}.bg-00965e{background:#00965e}.bg-9c27b0{background:#9c27b0}.c-ec7259{color:#ec7259}.c-12c2e9{color:#12c2e9}.c-00965e{color:#00965e}.c-9c27b0{color:#9c27b0}.ctz-button{outline:none;position:relative;display:inline-block;font-weight:400;white-space:nowrap;text-align:center;border:1px solid transparent;cursor:pointer;transition:all .3s;user-select:none;touch-action:manipulation;line-height:1.5;font-size:14px;height:32px;padding:4px 15px;border-radius:6px;background-color:#ffffff;border-color:#d9d9d9;color:rgba(0,0,0,0.88);box-shadow:0 2px 0 rgba(0,0,0,0.02)}.ctz-button:hover{color:#1677ff;border-color:#1677ff}.ctz-button:active{background:rgba(0,0,0,0.08) !important}.ctz-button[size='small'],.ctz-button.ctz-button-small{padding:2px 6px;font-size:12px;height:24px}.ctz-button.ctz-button-transparent{background:transparent}.ctz-button-red{color:#e55353 !important;border:1px solid #e55353 !important}.ctz-button-red:hover{color:#ec7259 !important;border:1px solid #ec7259 !important}.ctz-button:disabled{border-color:#d0d0d0;background-color:rgba(0,0,0,0.08);color:#b0b0b0;cursor:not-allowed}[name='buttonHistoryClear']{margin-bottom:12px}#CTZ_BACKGROUND,#CTZ_BACKGROUND_LIGHT,#CTZ_BACKGROUND_DARK{display:grid;gap:8px}#CTZ_BACKGROUND>label,#CTZ_BACKGROUND_LIGHT>label,#CTZ_BACKGROUND_DARK>label{position:relative;cursor:pointer}#CTZ_BACKGROUND>label input,#CTZ_BACKGROUND_LIGHT>label input,#CTZ_BACKGROUND_DARK>label input{position:absolute;pointer-events:none;width:20px;height:20px;top:18px;left:20px}#CTZ_BACKGROUND>label input:checked+div,#CTZ_BACKGROUND_LIGHT>label input:checked+div,#CTZ_BACKGROUND_DARK>label input:checked+div{border:4px solid #1677ff}#CTZ_BACKGROUND>label div,#CTZ_BACKGROUND_LIGHT>label div,#CTZ_BACKGROUND_DARK>label div{pointer-events:none;border:4px double #eee;font-size:14px;border-radius:12px;line-height:56px;padding-left:60px}#CTZ_BACKGROUND_LIGHT{color:#000}.ctz-set-background{margin:-12px}.ctz-set-background .ctz-background-title{padding:12px 12px 0}.ctz-set-background .ctz-background-content{padding:12px;border-bottom:1px solid #d9d9d9}.ctz-set-background .ctz-background-content:last-of-type{border:none}.ErrorPage-text::after{content:'这是知乎因为移动端加载了电脑端网页导致（移动网页端想查看完整的评论和回答内容只能用此方法），会在部分回答中出现这个问题。不是修改器问题，暂时无法解决，刷新或后退返回回答页面。';padding:24px}.css-nk32ej{display:none}.TopstoryMain [itemprop='zhihu:question']{display:inline}.Question-main .ContentItem.AnswerItem .ContentItem-expandButton,.TopstoryMain .ContentItem.AnswerItem .ContentItem-expandButton{display:none !important}.Question-main .ctz-n-button-expend,.TopstoryMain .ctz-n-button-expend{color:#1677ff;position:absolute;border:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;z-index:10;top:0;left:0}.Question-main .ctz-n-button-close,.TopstoryMain .ctz-n-button-close{margin-left:12px;border:0 !important}.Question-main .ctz-n-button-comment,.TopstoryMain .ctz-n-button-comment{margin-left:12px}.ctz-answer-item .AuthorInfo-avatarWrapper .AuthorInfo-avatar,.ctz-recommend-item .AuthorInfo-avatarWrapper .AuthorInfo-avatar{box-sizing:border-box;margin:0;min-width:0;max-width:100%;background-color:#ffffff;width:38px;height:38px;border-radius:2px}.ctz-answer-item .RichContent-inner img,.ctz-recommend-item .RichContent-inner img{width:100%;max-width:100%}.Question-mainEntity .ContentItem-actions>.ContentItem-action{display:none}#CTZ_COMMENT,#CTZ_COMMENT_CHILD{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:2000;font-size:16px;transition:all .2s;flex-direction:column}#CTZ_COMMENT button,#CTZ_COMMENT_CHILD button{padding:0;margin:0;border:0}#CTZ_COMMENT button.ctz-comment-button,#CTZ_COMMENT_CHILD button.ctz-comment-button{display:inline-block;font-size:14px;line-height:32px;text-align:center;cursor:pointer;background:rgba(132,145,165,0.1);border:1px solid transparent;border-radius:3px;margin:10px 0px 10px 54px;padding:0px 6px 0px 12px;height:32px;color:#8491a5;font-weight:500}.ctz-comment-header{height:48px;display:flex;padding:0 24px;align-items:center;border-bottom:1px solid #ebeced}.ctz-comment-header-left{flex:1;display:flex;align-items:center}.ctz-comment-content{flex:1;overflow-y:auto}.ctz-ci{display:flex;padding:10px 20px 14px}.ctz-ci-child{padding:10px 20px 14px 54px}.ctz-ci-avatar img{box-sizing:border-box;margin:0px;min-width:0px;max-width:100%;width:24px;height:24px;border-radius:2px;filter:brightness(.95);display:block;position:relative;background-color:#f8f8fa;flex:0 0 auto;text-indent:-9999px;overflow:hidden}.ctz-ci-right{flex:1;padding-left:10px}.ctz-ci-user a,.ctz-ci-user div{display:inline-block}.ctz-ci-user a{font-size:15px;font-weight:bold}.ctz-ci-user .ctz-tag{padding:0px 4px;color:#999;height:16px;line-height:16px;box-sizing:border-box;margin-left:4px;font-size:12px;border-radius:4px}.ctz-ci-user span{margin:0 6px;font-size:16px;color:#9196a1}.ctz-ci-content{margin:4px 0px 0px;min-width:0px;overflow:hidden;overflow-wrap:break-word;font-size:15px;line-height:21px}.ctz-ci-content>p{display:inline}.ctz-ci-info{display:flex;justify-content:space-between;padding-top:4px;color:#75849a;font-size:14px}.ctz-ci-info-left span{margin-right:6px}.ctz-comment-list{padding:10px 0}.ctz-comment-child-count{padding:0 20px;height:50px;line-height:50px;font-size:16px;font-weight:bold;border-bottom:1px solid #ebeced;border-top:20px solid rgba(132,145,165,0.1)}.ctz-comment-count{font-size:16px;font-weight:bold;padding-right:16px}.ctz-comment-sort{border:2px solid #f8f8fa;background:#f8f8fa}.ctz-comment-sort button{box-sizing:border-box;margin:0px;min-width:0px;border-radius:2px;text-align:center;cursor:pointer;width:50px;height:24px;font-size:12px;line-height:24px;font-weight:600;background:transparent;color:#81858f}.ctz-stop-scroll{height:100% !important;overflow:hidden !important}#CTZ_OPEN_BUTTON{position:fixed;font-size:48px;background:#e1e1e1;color:#000;opacity:.6;width:48px;height:48px;line-height:46px;border-radius:8px;z-index:2000;text-align:center}#CTZ_DIALOG{position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f5f5;z-index:2001;font-size:16px;transition:all .2s;flex-direction:column}#CTZ_DIALOG input[type='checkbox']{width:16px;height:16px}#CTZ_DIALOG textarea{box-sizing:border-box;margin:0;padding:4px 11px;font-size:14px;line-height:1.5;list-style:none;position:relative;display:inline-block;min-width:0;border-width:1px;border-style:solid;border-color:#d9d9d9;border-radius:6px;transition:all .2s}#CTZ_DIALOG a{color:inherit}.ctz-header{font-size:16px;display:flex;align-items:center;height:48px;padding:0 12px}.ctz-top-operate{flex:1;padding:0 12px;font-size:12px}.ctz-version{font-size:16px}#CTZ_CLOSE_DIALOG{font-weight:bold;width:40px;height:40px;color:rgba(0,0,0,0.45);background:transparent;border:none;font-size:18px}#CTZ_CLOSE_DIALOG i{font-size:12px}.ctz-menu{height:36px;display:flex}.ctz-menu>a{border-radius:12px 12px 0 0;flex:1;text-align:center;cursor:pointer;transition:initial !important;position:relative;display:flex;align-items:center;justify-content:center}.ctz-menu>a span{border-radius:8px;transition:all .3s;margin:0 4px;flex:1;box-sizing:border-box;align-items:center;line-height:26px}.ctz-menu>a.target{background:#fff}.ctz-menu>a.target::after,.ctz-menu>a.target::before{position:absolute;bottom:-12px;content:' ';background:radial-gradient(circle at top left, transparent 12px, #fff 0) top left,radial-gradient(circle at top right, transparent 12px, #fff 0) top right,radial-gradient(circle at bottom right, transparent 12px, #fff 0) bottom right,radial-gradient(circle at bottom left, transparent 12px, #fff 0) bottom left;background-size:50% 50%;background-repeat:no-repeat;width:24px;height:24px}.ctz-menu>a.target::before{left:-12px;z-index:-1}.ctz-menu>a.target::after{right:-12px;z-index:-1}.ctz-content{flex:1;overflow:hidden;background:#fff;border-radius:12px;padding:8px 0}.ctz-content>div{height:100%;flex-direction:column}.ctz-content-top{height:28px;display:flex;padding-bottom:8px}.ctz-content-top a{flex:1;text-align:center;line-height:28px;margin:0 8px;border-radius:8px}.ctz-content-top a.target{background-color:#f5f5f5}.ctz-content-top~.ctz-content-center{padding-top:0}.ctz-content-center{flex:1;overflow-y:auto;padding:12px}.ctz-content-center ::-webkit-scrollbar{width:8px;height:8px}.ctz-content-center ::-webkit-scrollbar-track{border-radius:0}.ctz-content-center ::-webkit-scrollbar-thumb{background:#bbb;transition:all .2s;border-radius:8px}.ctz-content-center ::-webkit-scrollbar-thumb:hover{background-color:rgba(95,95,95,0.7)}.ctz-hidden-item-br{margin:12px 0;width:100%;height:1px;position:relative}.ctz-hidden-item-br::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:65%;height:1px;background:#d9d9d9}#CTZ_HIDDEN .ctz-content-center label{margin-right:12px;margin-bottom:4px}#CTZ_BASIS_SHOW label{margin:8px 0}#CTZ_BASIS_SHOW label b{display:inline-block;padding:0 4px;background:#f5f5f5;border-radius:2px;margin-right:2px}.ctz-suspension-pickup{position:fixed;bottom:60px;right:14px;text-align:center;height:40px;line-height:40px;width:68px;border-radius:4px;font-size:14px;background:#fff}.ctz-label{font-size:14px;line-height:24px}.ctz-label::after{content:'：'}.ctz-flex-wrap{display:flex;flex-wrap:wrap;line-height:24px}.ctz-flex-wrap label{margin-right:4px;display:flex;align-items:center}.ctz-flex-wrap label input[type='radio']{margin:0 4px 0 0}.ctz-label-tag{font-weight:normal;padding:2px 4px;border-radius:4px;font-size:12px;color:#ffffff;margin:0 2px}.ctz-label-tag-Answer{background:#ec7259}.ctz-label-tag-ZVideo{background:#12c2e9}.ctz-label-tag-Article{background:#00965e}.ctz-label-tag-Pin{background:#9c27b0}#CTZ_HISTORY_LIST .ctz-set-content a,#CTZ_HISTORY_VIEW .ctz-set-content a{word-break:break-all;display:block;margin-bottom:12px;padding:6px 12px;border:1px solid #eee;border-radius:4px}.ctz-fetch-intercept .ctz-need-fetch{display:none}.ctz-fetch-intercept.ctz-fetch-intercept-close{color:#b0b0b0 !important;cursor:not-allowed}.ctz-fetch-intercept.ctz-fetch-intercept-close span.ctz-need-fetch{display:inline}.ctz-fetch-intercept.ctz-fetch-intercept-close div.ctz-need-fetch{display:block}.ctz-fetch-intercept.ctz-fetch-intercept-close .ctz-remove-block{cursor:not-allowed !important}.ctz-fetch-intercept.ctz-fetch-intercept-close .ctz-black-item .ctz-remove-block:hover,.ctz-fetch-intercept.ctz-fetch-intercept-close .ctz-black-item a:hover{background:transparent !important;color:#b0b0b0 !important}#CTZ_MESSAGE_BOX{position:fixed;left:0;top:10px;width:100%;z-index:2002}.ctz-message{margin:20px auto;width:70%;height:48px;display:flex;align-items:center;justify-content:center;font-size:14px;border-radius:8px;box-shadow:0 0 8px #d0d4d6,0 0 8px #e6eaec;margin-bottom:12px;background:#fff}.ctz-config-import-box{display:flex;flex-direction:column}.ctz-config-import-box>div,.ctz-config-import-box>textarea{margin-bottom:12px !important}.ctz-config-import-box textarea{height:120px;resize:vertical}#CTZ_LOADING_TOAST{position:fixed;top:50%;left:50%;width:100px;height:100px;background:rgba(0,0,0,0.25);color:#fff;transform:translate(-50%, -50%);border-radius:16px;z-index:2002;display:flex;flex-direction:column;align-items:center}#CTZ_LOADING_TOAST .ctz-loading-toast-text{padding-bottom:12px}#CTZ_LOADING_TOAST .ctz-loading-toast-icon{flex:1;position:relative;font-size:34px}#CTZ_LOADING_TOAST .ctz-loading-toast-icon span{position:absolute;top:50%;left:50%;animation:rotate 1.5s infinite}.ctz-preview{box-sizing:border-box;position:fixed;height:100%;width:100%;top:0;left:0;overflow-y:auto;z-index:200;background-color:rgba(18,18,18,0.4)}.ctz-preview div{display:flex;justify-content:center;align-items:center;min-height:100%;width:100%}.ctz-preview div img{cursor:zoom-out;user-select:none;max-width:100%}.ctz-comment-loading,.ctz-answer-loading,.ctz-list-loading{text-align:center;font-size:24px;color:#1677ff;position:relative;padding:0 0 12px;height:24px}.ctz-comment-loading span,.ctz-answer-loading span,.ctz-list-loading span{position:absolute;top:50%;left:50%;animation:rotate 1.5s infinite}.ctz-comment-end,.ctz-answer-end{text-align:center;padding:0 0 12px;color:#75849a}`;
   var INNER_VERSION = `2.0.1`;
   var initHTML = () => {
     document.body.appendChild(domC("div", { id: "CTZ_MAIN", innerHTML: INNER_HTML }));
@@ -1417,9 +1417,216 @@
     open: () => domById("CTZ_LOADING_TOAST").style.display = "flex",
     hide: () => domById("CTZ_LOADING_TOAST").style.display = "none"
   };
+  var myPreview = {
+    // 开启预览弹窗
+    open: function(src, even, isVideo) {
+      const nameDom = isVideo ? this.evenPathVideo : this.evenPathImg;
+      const idDom = isVideo ? this.idVideo : this.idImg;
+      const nodeName = dom(nameDom);
+      const nodeId = domById(idDom);
+      nodeName && (nodeName.src = src);
+      nodeId && (nodeId.style.display = "block");
+      even && (this.even = even);
+      myScroll.stop();
+    },
+    // 关闭预览弹窗
+    hide: function(pEvent) {
+      if (this.even) {
+        this.even.click();
+        this.even = null;
+      }
+      pEvent.style.display = "none";
+      const nodeImg = dom(this.evenPathImg);
+      const nodeVideo = dom(this.evenPathVideo);
+      nodeImg && (nodeImg.src = "");
+      nodeVideo && (nodeVideo.src = "");
+      myScroll.on();
+    },
+    even: null,
+    evenPathImg: "#CTZ_PREVIEW_IMAGE img",
+    evenPathVideo: "#CTZ_PREVIEW_VIDEO video",
+    idImg: "CTZ_PREVIEW_IMAGE",
+    idVideo: "CTZ_PREVIEW_VIDEO"
+  };
+  var CLASS_BTN_EXPEND = "ctz-n-button-expend";
+  var CLASS_BTN_CLOSE = "ctz-n-button-close";
+  var CLASS_BTN_COMMENT = "ctz-n-button-comment";
+  var addListenImage = (event) => {
+    const target = event.target;
+    if (target.nodeName === "IMG") {
+      let src = target.src;
+      if (target.classList.contains("ztext-gif")) {
+        src = src.replace(".jpg", ".webp");
+      }
+      myPreview.open(src);
+      return;
+    }
+  };
+  var eventListenButton = (event) => {
+    addListenImage(event);
+    const target = event.target;
+    Object.keys(eventMainObject).forEach((key) => {
+      if (target.classList.contains(key)) {
+        event.preventDefault();
+        event.stopPropagation();
+        eventMainObject[key](target);
+      }
+    });
+  };
+  var eventMainObject = {
+    /** 展开更多 */
+    [CLASS_BTN_EXPEND]: (currentNode) => {
+      const nodeRich = domP(currentNode, "class", "RichContent");
+      const nodeRichInner = nodeRich.querySelector(".RichContent-inner");
+      const nodeBTNOther = nodeRich.querySelector(`.${CLASS_BTN_CLOSE}`);
+      const nodeImgs = nodeRichInner.querySelectorAll("img");
+      for (let i2 = 0, len = nodeImgs.length; i2 < len; i2++) {
+        const item = nodeImgs[i2];
+        item.src = item.getAttribute("data-original") || "";
+      }
+      nodeRich.classList.remove("is-collapsed");
+      nodeRichInner.style.maxHeight = "max-content";
+      nodeBTNOther.style.display = "block";
+      currentNode.style.display = "none";
+    },
+    /** 收起 */
+    [CLASS_BTN_CLOSE]: (currentNode) => {
+      const nodeRich = domP(currentNode, "class", "RichContent");
+      const nodeRichInner = nodeRich.querySelector(".RichContent-inner");
+      const nodeBTNOther = nodeRich.querySelector(`.${CLASS_BTN_EXPEND}`);
+      const nodeActions = nodeRich.querySelector(".ContentItem-actions");
+      nodeActions.style.cssText = "";
+      nodeRich.classList.add("is-collapsed");
+      nodeRichInner.style.maxHeight = "180px";
+      nodeBTNOther.style.display = "block";
+      currentNode.style.display = "none";
+    },
+    /** 评论 */
+    [CLASS_BTN_COMMENT]: async (currentNode) => {
+      const nodeAnswerItem = domP(currentNode, "class", "AnswerItem");
+      const dataZopJson = nodeAnswerItem.getAttribute("data-zop") || "{}";
+      const dataZop = JSON.parse(dataZopJson);
+      myListenComment.create(dataZop.itemId);
+    }
+  };
+  var openLoading = (box, className) => {
+    if (box.querySelector(`.${className}`))
+      return;
+    box.appendChild(domC("div", { innerHTML: "<span>↻</span>", className }));
+  };
+  var removeByBox = (box, className) => {
+    const nodeFind = box.querySelector(`.${className}`);
+    nodeFind && nodeFind.remove();
+  };
+  var openEnd = (box, className) => {
+    if (box.querySelector(`.${className}`))
+      return;
+    box.appendChild(domC("div", { innerText: "----- 没有更多了 -----", className }));
+  };
+  var innerHTMLContentItemMeta = (data, options) => {
+    const { target } = data;
+    const { extraHTML = "", haveTime } = options || {};
+    return `
+<div class="ContentItem-meta">
+  <div class="AuthorInfo AnswerItem-authorInfo AuthorInfo--plain" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <div class="AuthorInfo AuthorInfo--mobile">
+      <meta itemprop="name" content="${target.author.name}" />
+      <meta itemprop="image" content="${target.author.avatar_url}" />
+      <meta itemprop="url" content="https://www.zhihu.com/people/${target.author.url_token}" />
+      <meta itemprop="zhihu:followerCount" />
+      <span class="UserLink AuthorInfo-avatarWrapper">
+        <a href="//www.zhihu.com/people/${target.author.url_token}" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">
+          <img class="Avatar AuthorInfo-avatar" src="${target.author.avatar_url}" srcset="${target.author.avatar_url} 2x" alt="${target.author.name}" />
+        </a>
+      </span>
+      <div class="AuthorInfo-content">
+        <div class="AuthorInfo-head">
+          <span class="UserLink AuthorInfo-name">
+            <a href="//www.zhihu.com/people/${target.author.url_token}" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">${target.author.name}</a>
+          </span>
+        </div>
+        <div class="AuthorInfo-detail">
+          <div class="AuthorInfo-badge"><div class="ztext AuthorInfo-badgeText">${target.author.headline}</div></div>
+        </div>
+      </div>
+      ${extraHTML}
+    </div>
+  </div>
+  ${haveTime ? createTimeHTML(`${target.created_time}000`, `${target.updated_time}000`) : ""}
+  <div class="LabelContainer-wrapper"></div>
+</div>
+`;
+  };
+  var innerHTMLRichInnerAndAction = (data, options) => {
+    const { moreLength = 400, moreMaxHeight = "180px" } = options || {};
+    const { target } = data;
+    const isVideo = target.type === "zvideo";
+    const isPin = target.type === "pin";
+    const innerHTML = isVideo ? `
+<a
+  class="video-box"
+  href="https://link.zhihu.com/?target=https%3A//www.zhihu.com/video/${target.thumbnail_extra_info.video_id}"
+  target="_blank"
+  data-video-id=""
+  data-video-playable=""
+  data-name=""
+  data-poster="${target.thumbnail_extra_info.url}"
+  data-lens-id="${target.thumbnail_extra_info.video_id}"
+>
+  <img class="thumbnail" src="" />
+  <span class="content">
+    <span class="title">
+      <span class="z-ico-extern-gray"></span>
+      <span class="z-ico-extern-blue"></span>
+    </span>
+    <span class="url">
+      <span class="z-ico-video"></span>
+      https://www.zhihu.com/video/${target.thumbnail_extra_info.video_id}
+    </span>
+  </span>
+</a>
+    ` : isPin ? target.content_html || target.content : target.content;
+    const isMore = isVideo ? true : innerHTML.length > moreLength;
+    const vDomContent = domC("div", { innerHTML });
+    vDomContent.querySelectorAll("img").forEach((item) => {
+      item.src = item.getAttribute("data-original") || "";
+    });
+    vDomContent.querySelectorAll("a.video-box").forEach((item) => {
+      const nItem = item;
+      const nFrame = domC("iframe", {
+        style: `border:none;width: calc(100vw - 32px);height: calc((100vw - 32px)/1.8);`,
+        src: nItem.href
+      });
+      nItem.insertAdjacentElement("afterend", nFrame);
+      nItem.style.display = "none";
+    });
+    const contentHTML = vDomContent.innerHTML;
+    vDomContent.remove();
+    return `
+<meta itemprop="image" />
+<meta itemprop="upvoteCount" content="${target.voteup_count}" />
+<meta itemprop="dateCreated" content="${target.created_time}000" />
+<meta itemprop="dateModified" content="${target.updated_time}000" />
+<meta itemprop="commentCount" content="${target.comment_count}" />
+<div class="RichContent ${isMore ? "is-collapsed" : ""} RichContent--unescapable">
+  <div class="RichContent-inner RichContent-inner--collapsed" style="${isMore ? `max-height: ${moreMaxHeight}` : ""}">${contentHTML}</div>
+  <div class="ContentItem-actions">
+    <button aria-label="赞同 ${target.voteup_count}" aria-live="polite" type="button" class="Button VoteButton VoteButton--up">
+      ▲ 赞同 ${target.voteup_count}
+    </button>
+    <button   aria-label="反对" aria-live="polite" type="button" class="Button VoteButton VoteButton--down VoteButton--mobileDown">
+      ▼
+    </button>
+    <button class="ctz-n-button-comment Button Button--plain Button--withIcon Button--withLabel">评论 ${target.comment_count}</button>
+    ${isMore ? '<button class="ctz-n-button-close Button" style="display: none">收起 ▲</button>' : ""}
+  </div>
+  ${isMore ? '<button class="ctz-n-button-expend">展开更多 ▼</button>' : ""}
+</div>
+`;
+  };
   var QUERY_LIST = ".ctz-comment-list";
-  var QUERY_LOADING = ".ctz-comment-loading";
-  var QUERY_END = ".ctz-comment-end";
+  var CLASS_LOADING = "ctz-comment-loading";
+  var ClASS_END = "ctz-comment-end";
   var ACTIVE_STYLE = "color: rgb(25, 27, 31);background: #fff;";
   var myChangeCommentSort = {
     /** 默认排序 */
@@ -1471,7 +1678,7 @@
         const nodeContentDiv = dom(`#${ID_CTZ_COMMENT} ${QUERY_LIST}`);
         const bounding = nodeContentDiv.getBoundingClientRect();
         if (bounding.bottom - 100 <= window.innerHeight) {
-          me.openLoading();
+          openLoading(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`), CLASS_LOADING);
           me.commentLoadMore();
         }
       }, 300);
@@ -1488,13 +1695,13 @@
       nodeComment.querySelector(".ctz-comment-count>span").innerHTML = `${res.paging.totals}`;
       nodeComment.querySelector(QUERY_LIST).innerHTML = createCommentHTML(res.data);
       myChangeCommentSort[orderBy]();
-      this.hideEnd();
-      this.hideLoading();
+      removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`), ClASS_END);
+      removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`), CLASS_LOADING);
       nodeComment.style.display = "flex";
       this.page = res.paging;
       this.commentData = res.data;
       if (res.paging.is_end) {
-        this.openEnd();
+        openEnd(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`), ClASS_END);
       }
       myScroll.stop();
     },
@@ -1507,15 +1714,11 @@
       this.page = res.paging;
       this.commentData = this.commentData.concat(res.data);
       nodeCommentContentDiv.innerHTML += createCommentHTML(res.data);
-      this.hideLoading();
+      removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`), CLASS_LOADING);
       if (res.paging.is_end) {
-        this.openEnd();
+        openEnd(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`), ClASS_END);
       }
-    },
-    openLoading: () => dom(`#${ID_CTZ_COMMENT} ${QUERY_LOADING}`).style.display = "block",
-    hideLoading: () => dom(`#${ID_CTZ_COMMENT} ${QUERY_LOADING}`).style.display = "none",
-    openEnd: () => dom(`#${ID_CTZ_COMMENT} ${QUERY_END}`).style.display = "block",
-    hideEnd: () => dom(`#${ID_CTZ_COMMENT} ${QUERY_END}`).style.display = "none"
+    }
   };
   var myListenCommentChild = {
     page: {
@@ -1542,7 +1745,7 @@
         const nodeContentDiv = dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_LIST}`);
         const bounding = nodeContentDiv.getBoundingClientRect();
         if (bounding.bottom - 100 <= window.innerHeight) {
-          me.openLoading();
+          openLoading(domById(ID_CTZ_COMMENT_CHILD), CLASS_LOADING);
           me.commentLoadMore();
         }
       }, 300);
@@ -1557,13 +1760,13 @@
       const nodeComment = domById(ID_CTZ_COMMENT_CHILD);
       const parentCommentHTML = parentData ? createCommentHTMLItem(parentData, false, false) : "";
       nodeComment.querySelector(QUERY_LIST).innerHTML = parentCommentHTML + `<div class="ctz-comment-child-count">${res.paging.totals} 条回复</div>` + createCommentHTML(res.data);
-      this.hideEnd();
-      this.hideLoading();
+      removeByBox(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`), ClASS_END);
+      removeByBox(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`), CLASS_LOADING);
       nodeComment.style.display = "flex";
       this.page = res.paging;
       this.commentData = res.data;
       if (res.paging.is_end) {
-        this.openEnd();
+        openEnd(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`), ClASS_END);
       }
       myScroll.stop();
     },
@@ -1575,15 +1778,11 @@
       this.page = res.paging;
       this.commentData = this.commentData.concat(res.data);
       nodeCommentContentDiv.innerHTML += createCommentHTML(res.data);
-      this.hideLoading();
+      removeByBox(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`), CLASS_LOADING);
       if (res.paging.is_end) {
-        this.openEnd();
+        openEnd(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`), ClASS_END);
       }
-    },
-    openLoading: () => dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_LOADING}`).style.display = "block",
-    hideLoading: () => dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_LOADING}`).style.display = "none",
-    openEnd: () => dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_END}`).style.display = "block",
-    hideEnd: () => dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_END}`).style.display = "none"
+    }
   };
   var createCommentHTML = (data, isChild = false) => data.map((i2) => createCommentHTMLItem(i2, isChild)).join("");
   var createCommentHTMLItem = (item, isChild = false, haveChild = true) => {
@@ -1632,71 +1831,34 @@
     const { has_border, border_color, color, text } = item;
     return `<div class="ctz-tag" style="${has_border ? `border: 1px solid ${border_color};` : ""}color: ${color};">${text}</div>`;
   };
-  var CLASS_COPY_LINK = "ctz-copy-answer-link";
-  var addAnswerCopyLink = async (nodeItem) => {
-    const { copyAnswerLink } = await myStorage.getConfig();
-    if (!copyAnswerLink)
-      return;
-    const prevButton = nodeItem.querySelector(`.${CLASS_COPY_LINK}`);
-    prevButton && prevButton.remove();
-    const nodeUser = nodeItem.querySelector(".AnswerItem-authorInfo>.AuthorInfo") || nodeItem.querySelector(".ContentItem-meta");
-    if (!nodeUser)
-      return;
-    const nDomButton = createBtnTr("获取链接", CLASS_COPY_LINK);
-    nDomButton.onclick = function() {
-      const metaUrl = nodeItem.querySelector('.ContentItem>[itemprop="url"]');
-      if (!metaUrl)
-        return;
-      const link = metaUrl.getAttribute("content") || "";
-      if (link) {
-        copy(link);
-        message("链接复制成功");
-        return;
-      }
-    };
-    nodeUser.appendChild(nDomButton);
-  };
   var myListenListRecommend = {
     next: "",
     loading: false,
-    init: function() {
+    init: async function() {
       const nodeJsonData = domById("js-initialData");
+      const config = await myStorage.getConfig();
       if (!nodeJsonData) {
         fnLog("cannot find script #js-initialData");
         return;
       }
       const pageJsData = JSON.parse(nodeJsonData.innerText || "{}");
       const next = pageJsData.initialState.topstory.recommend.next;
-      console.log("next", next);
       this.next = next;
-    },
-    formatInitListItems: function() {
+      const currentData = pageJsData.initialState.topstory.recommend.serverPayloadOrigin;
+      if (!currentData)
+        return;
+      const nodeTopstoryMain = dom(".TopstoryMain");
+      if (!nodeTopstoryMain)
+        return;
+      const nodeListContent = nodeTopstoryMain.querySelector('[role="list"]');
+      nodeListContent.innerHTML = createListHTML(currentData.data, config);
     },
     initOperate: function() {
       const nodeTopStoryRecommend = dom(".TopstoryMain") || dom(".NotLoggedInTopstory");
       if (!nodeTopStoryRecommend)
         return;
-      const classTarget = ["RichContent-cover", "RichContent-inner", "ContentItem-more", "ContentItem-arrowIcon"];
-      const canFindTargeted = (e2) => {
-        let isFind = false;
-        classTarget.forEach((item) => {
-          const parentTarget = domP(e2, "class", item);
-          (e2.classList.contains(item) || parentTarget && parentTarget.classList.contains(item)) && (isFind = true);
-        });
-        return isFind;
-      };
       nodeTopStoryRecommend.addEventListener("click", async function(event) {
-        const target = event.target;
-        const nodeContentItem = domP(target, "class", "ContentItem");
-        if (!nodeContentItem)
-          return;
-        const { releaseTimeForList } = await myStorage.getConfig();
-        if (canFindTargeted(target)) {
-          setTimeout(() => {
-            releaseTimeForList && updateItemTime(nodeContentItem);
-            addAnswerCopyLink(nodeContentItem);
-          }, 100);
-        }
+        eventListenButton(event);
       });
     },
     scroll: function() {
@@ -1707,24 +1869,22 @@
       if (bounding.bottom - 200 <= window.innerHeight && !this.loading) {
         const nodeListContent = nodeTopstoryMain.querySelector('[role="list"]');
         this.requestData(nodeListContent);
-        console.log("????");
       }
     },
     requestData: async function(nodeListContent) {
       this.loading = true;
-      openLoading(nodeListContent);
+      openLoading(nodeListContent, "ctz-list-loading");
       const res = await commonRequest(this.next);
+      removeByBox(nodeListContent, "ctz-list-loading");
+      this.loading = false;
       if (!res)
         return;
-      console.log("res", res.data);
       const { paging, data } = res;
       if (paging.next === this.next)
         return;
       this.next = paging.next;
       const config = await myStorage.getConfig();
       nodeListContent.innerHTML += createListHTML(data, config);
-      hideLoading(nodeListContent);
-      this.loading = false;
       this.checkListHeight();
     },
     checkListHeight: function() {
@@ -1737,24 +1897,67 @@
       }
     }
   };
-  var openLoading = (box) => {
-    if (box.querySelector(".ctz-list-loading"))
-      return;
-    const nNode = domC("div", {
-      innerHTML: "<span>↻</span>",
-      className: "ctz-list-loading"
-    });
-    box.appendChild(nNode);
-  };
-  var hideLoading = (box) => {
-    const nodeFind = box.querySelector(".ctz-list-loading");
-    nodeFind && nodeFind.remove();
+  var itemType = {
+    answer: {
+      name: "问题",
+      bTypeClass: "c-ec7259",
+      contentItem: "AnswerItem",
+      nType: "Answer",
+      formatData: (target) => {
+        return {
+          itemTitle: target.question.title,
+          itemHref: `https://www.zhihu.com/question/${target.question.id}`,
+          itemHref2: `https://www.zhihu.com/question/${target.question.id}/answer/${target.id}`
+        };
+      }
+    },
+    article: {
+      name: "文章",
+      bTypeClass: "c-00965e",
+      contentItem: "ArticleItem",
+      nType: "Post",
+      formatData: (target) => {
+        return {
+          itemTitle: target.title,
+          itemHref: `https://zhuanlan.zhihu.com/p/${target.id}`,
+          itemHref2: `https://zhuanlan.zhihu.com/p/${target.id}`
+        };
+      }
+    },
+    zvideo: {
+      name: "视频",
+      bTypeClass: "c-12c2e9",
+      contentItem: "ZVideoItem",
+      nType: "ZVideo",
+      formatData: (target) => {
+        return {
+          itemTitle: target.title,
+          itemHref: `https://www.zhihu.com/zvideo/${target.id}`,
+          itemHref2: `https://www.zhihu.com/zvideo/${target.id}`
+        };
+      }
+    },
+    pin: {
+      name: "想法",
+      bTypeClass: "c-9c27b0",
+      contentItem: "PinItem",
+      nType: "Pin",
+      formatData: (target) => {
+        return {
+          itemTitle: target.title || "",
+          itemHref: `https://www.zhihu.com/pin/${target.id}`,
+          itemHref2: `https://www.zhihu.com/pin/${target.id}`
+        };
+      }
+    }
   };
   var createListHTML = (data, config) => data.map((i2) => createListItemHTML(i2, config)).join("");
   var createListItemHTML = (data, config) => {
     const { releaseTimeForList } = config;
     const { id, target, attached_info, brief } = data;
     const type = target.type;
+    const { contentItem, nType, formatData } = itemType[type];
+    const { itemHref, itemHref2, itemTitle } = formatData(target);
     return `
 <div class="Card TopstoryItem TopstoryItem-isRecommend ctz-recommend-item" tabindex="0">
   <div
@@ -1764,98 +1967,31 @@
     data-za-extra-module='{"card":{"card_type":"Feed","feed_id":"${id}","has_image":false,"has_video":false,"content":${brief}},"attached_info_bytes":"${attached_info}"}'
   >
     <div
-      class="ContentItem AnswerItem"
-      data-zop='{"authorName":"${target.author.name}","itemId":${target.id},"title":"${target.question.title}","type":"${type}"}'
+      class="ContentItem ${contentItem}"
+      data-zop='{"authorName":"${target.author.name}","itemId":${target.id},"title":"${itemTitle}","type":"${type}"}'
       name="${target.id}"
       itemprop="${type}"
-      itemtype="http://schema.org/Answer"
+      itemtype="http://schema.org/${nType}"
       itemscope=""
-      data-za-detail-view-path-module="AnswerItem"
+      data-za-detail-view-path-module="${contentItem}"
       data-za-detail-view-path-index="4"
-      data-za-extra-module='{"card":{"has_image":false,"has_video":false,"content":{"type":"Answer","token":"${target.id}","upvote_num":${target.voteup_count},"comment_num":${target.comment_count},"publish_timestamp":null,"parent_token":"${target.question.id}","author_member_hash_id":"${target.author.id}"}}}'
+      data-za-extra-module='{"card":{"has_image":false,"has_video":false,"content":{"type":"${nType}","token":"${target.id}","upvote_num":${target.voteup_count},"comment_num":${target.comment_count},"publish_timestamp":null,"author_member_hash_id":"${target.author.id}"}}}'
     >
       <h2 class="ContentItem-title">
-        <div itemprop="zhihu:question" itemtype="http://schema.org/Question" itemscope="">
-          <meta
-            itemprop="url"
-            itemprop="name"
-            content="https://www.zhihu.com/question/${target.question.id}" /><meta
-            content="${target.question.title}"
-          />
-            <a target="_blank" data-za-detail-view-element_name="Title" data-za-detail-view-id="2812" href="//www.zhihu.com/question/${target.question.id}/answer/${target.id}">${target.question.title}</a>
+        <div itemprop="zhihu:${type}" itemtype="http://schema.org/${nType}" itemscope="" style="display:inline;">
+          <meta itemprop="url" itemprop="name" content="${itemHref}" />
+          <meta content="${itemTitle}"/>
+          <a target="_blank" data-za-detail-view-element_name="Title" data-za-detail-view-id="2812" href="${itemHref2}">${itemTitle}</a>
         </div>
       </h2>
-      <div class="ContentItem-meta">
-        <div class="AuthorInfo AnswerItem-authorInfo AuthorInfo--plain" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-          <div class="AuthorInfo AuthorInfo--mobile">
-            <meta itemprop="name" content="${target.author.name}" />
-            <meta itemprop="image" content="${target.author.avatar_url}" />
-            <meta itemprop="url" content="https://www.zhihu.com/people/${target.author.url_token}" />
-            <meta itemprop="zhihu:followerCount" />
-            <span class="UserLink AuthorInfo-avatarWrapper">
-              <a href="//www.zhihu.com/people/sigon-55" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">
-                <img class="Avatar AuthorInfo-avatar" src="${target.author.avatar_url}" srcset="${target.author.avatar_url} 2x" alt="${target.author.name}" />
-              </a>
-            </span>
-            <div class="AuthorInfo-content">
-              <div class="AuthorInfo-head">
-                <span class="UserLink AuthorInfo-name">
-                  <a href="//www.zhihu.com/people/${target.author.url_token}" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">${target.author.name}</a>
-                </span>
-              </div>
-              <div class="AuthorInfo-detail">
-                <div class="AuthorInfo-badge"><div class="ztext AuthorInfo-badgeText">${target.author.headline}</div></div>
-              </div>
-            </div>
-            <button class="ctz-button ctz-button-transparent ctz-copy-answer-link" style="margin: 0px 8px">获取链接</button>
-          </div>
-        </div>
-        ${releaseTimeForList ? createTimeHTML(`${target.created_time}000`, `${target.updated_time}000`) : ""}
-        <div class="LabelContainer-wrapper"></div>
-      </div>
-      <meta itemprop="image" />
-      <meta itemprop="upvoteCount" content="${target.voteup_count}" />
-      <meta itemprop="url" content="https://www.zhihu.com/question/${target.question.id}/answer/${target.id}" />
-      <meta itemprop="dateCreated" content="${target.created_time}000" />
-      <meta itemprop="dateModified" content="${target.updated_time}000" />
-      <meta itemprop="commentCount" content="${target.comment_count}" />
-      <div class="RichContent">
-        <div class="RichContent-inner">${target.content}</div>
-      </div>
+      ${innerHTMLContentItemMeta(data, {
+      extraHTML: '<button class="ctz-button ctz-button-transparent ctz-copy-answer-link" style="margin: 0px 8px">获取链接</button>',
+      haveTime: releaseTimeForList
+    })}
+      ${innerHTMLRichInnerAndAction(data, { moreLength: 40, moreMaxHeight: "100px" })}
     </div>
   </div>
 </div>`;
-  };
-  var myPreview = {
-    // 开启预览弹窗
-    open: function(src, even, isVideo) {
-      const nameDom = isVideo ? this.evenPathVideo : this.evenPathImg;
-      const idDom = isVideo ? this.idVideo : this.idImg;
-      const nodeName = dom(nameDom);
-      const nodeId = domById(idDom);
-      nodeName && (nodeName.src = src);
-      nodeId && (nodeId.style.display = "block");
-      even && (this.even = even);
-      myScroll.stop();
-    },
-    // 关闭预览弹窗
-    hide: function(pEvent) {
-      if (this.even) {
-        this.even.click();
-        this.even = null;
-      }
-      pEvent.style.display = "none";
-      const nodeImg = dom(this.evenPathImg);
-      const nodeVideo = dom(this.evenPathVideo);
-      nodeImg && (nodeImg.src = "");
-      nodeVideo && (nodeVideo.src = "");
-      myScroll.on();
-    },
-    even: null,
-    evenPathImg: "#CTZ_PREVIEW_IMAGE img",
-    evenPathVideo: "#CTZ_PREVIEW_VIDEO video",
-    idImg: "CTZ_PREVIEW_IMAGE",
-    idVideo: "CTZ_PREVIEW_VIDEO"
   };
   var initOperate = () => {
     const myOperation = {
@@ -1930,33 +2066,27 @@
     }
   };
   var store = new Store();
-  var CLASS_BTN_EXPEND = "ctz-n-button-expend";
-  var CLASS_BTN_CLOSE = "ctz-n-button-close";
-  var CLASS_BTN_COMMENT = "ctz-n-button-comment";
   var myListenAnswer = {
     next: "",
     end: false,
     loading: false,
     init: function() {
-      dom(".Question-main").addEventListener("click", eventListenerQuestionMain);
+      dom(".Question-main").addEventListener("click", (event) => {
+        eventListenButton(event);
+      });
       nodesStopPropagation([".RichContent-inner", ".Question-main figure img", ".Question-main a"], [addListenImage]);
       nodesStopPropagation([".RichContent-inner p"], [], "copy");
-      const findNext = () => {
-        try {
-          const nodeJsonData = domById("js-initialData");
-          const pageJsData = JSON.parse(nodeJsonData.innerText || "{}");
-          const questionId = location.pathname.replace("/question/", "");
-          const next = pageJsData.initialState.question.answers[questionId].next;
-          this.next = next;
-          this.end = !next;
-        } catch {
-          setTimeout(() => {
-            findNext.call(myListenAnswer);
-          }, 300);
-        }
-      };
-      findNext();
       this.formatInitAnswers();
+      const nodeJsonData = domById("js-initialData");
+      if (!nodeJsonData) {
+        fnLog("cannot find script #js-initialData");
+        return;
+      }
+      const pageJsData = JSON.parse(nodeJsonData.innerText || "{}");
+      const questionId = location.pathname.replace("/question/", "");
+      const next = pageJsData.initialState.question.answers[questionId].next;
+      this.next = next;
+      this.end = !next;
     },
     /** 处理初始页面数据 */
     formatInitAnswers: async function() {
@@ -2043,16 +2173,16 @@
     },
     requestData: async function(nodeListContent) {
       this.loading = true;
-      openLoading2(nodeListContent);
+      openLoading(nodeListContent, "ctz-answer-loading");
       const res = await commonRequest(this.next);
-      hideLoading2(nodeListContent);
+      removeByBox(nodeListContent, "ctz-answer-loading");
       this.loading = false;
       if (!res)
         return;
       const { paging, data } = res;
       if (paging.next === this.next)
         return;
-      paging.is_end && openEnd(nodeListContent);
+      paging.is_end && openEnd(nodeListContent, "ctz-answer-end");
       this.end = paging.is_end;
       this.next = paging.next;
       const config = await myStorage.getConfig();
@@ -2070,86 +2200,6 @@
       }
     }
   };
-  var openLoading2 = (box) => {
-    if (box.querySelector(".ctz-answer-loading"))
-      return;
-    const nNode = domC("div", {
-      innerHTML: "<span>↻</span>",
-      className: "ctz-answer-loading"
-    });
-    box.appendChild(nNode);
-  };
-  var hideLoading2 = (box) => {
-    const nodeFind = box.querySelector(".ctz-answer-loading");
-    nodeFind && nodeFind.remove();
-  };
-  var openEnd = (box) => {
-    if (box.querySelector(".ctz-answer-end"))
-      return;
-    const nNode = domC("div", {
-      innerText: "----- 没有更多了 -----",
-      className: "ctz-answer-end"
-    });
-    box.appendChild(nNode);
-  };
-  var eventQuestionMain = {
-    /** 展开更多 */
-    [CLASS_BTN_EXPEND]: (currentNode) => {
-      const nodeRich = domP(currentNode, "class", "RichContent");
-      const nodeRichInner = nodeRich.querySelector(".RichContent-inner");
-      const nodeBTNOther = nodeRich.querySelector(`.${CLASS_BTN_CLOSE}`);
-      const nodeImgs = nodeRichInner.querySelectorAll("img");
-      for (let i2 = 0, len = nodeImgs.length; i2 < len; i2++) {
-        const item = nodeImgs[i2];
-        item.src = item.getAttribute("data-original") || "";
-      }
-      nodeRich.classList.remove("is-collapsed");
-      nodeRichInner.style.maxHeight = "max-content";
-      nodeBTNOther.style.display = "block";
-      currentNode.style.display = "none";
-    },
-    /** 收起 */
-    [CLASS_BTN_CLOSE]: (currentNode) => {
-      const nodeRich = domP(currentNode, "class", "RichContent");
-      const nodeRichInner = nodeRich.querySelector(".RichContent-inner");
-      const nodeBTNOther = nodeRich.querySelector(`.${CLASS_BTN_EXPEND}`);
-      const nodeActions = nodeRich.querySelector(".ContentItem-actions");
-      nodeActions.style.cssText = "";
-      nodeRich.classList.add("is-collapsed");
-      nodeRichInner.style.maxHeight = "180px";
-      nodeBTNOther.style.display = "block";
-      currentNode.style.display = "none";
-    },
-    /** 评论 */
-    [CLASS_BTN_COMMENT]: async (currentNode) => {
-      const nodeAnswerItem = domP(currentNode, "class", "AnswerItem");
-      const dataZopJson = nodeAnswerItem.getAttribute("data-zop") || "{}";
-      const dataZop = JSON.parse(dataZopJson);
-      myListenComment.create(dataZop.itemId);
-    }
-  };
-  var eventListenerQuestionMain = (event) => {
-    const target = event.target;
-    addListenImage(event);
-    Object.keys(eventQuestionMain).forEach((key) => {
-      if (target.classList.contains(key)) {
-        event.preventDefault();
-        event.stopPropagation();
-        eventQuestionMain[key](target);
-      }
-    });
-  };
-  var addListenImage = (event) => {
-    const target = event.target;
-    if (target.nodeName === "IMG") {
-      let src = target.src;
-      if (target.classList.contains("ztext-gif")) {
-        src = src.replace(".jpg", ".webp");
-      }
-      myPreview.open(src);
-      return;
-    }
-  };
   var cDomCommentBtn = (count = 0) => {
     return domC("button", {
       className: `${CLASS_BTN_COMMENT} Button Button--plain Button--withIcon Button--withLabel`,
@@ -2161,23 +2211,6 @@
     const { releaseTimeForAnswer } = config;
     const { target_type, target } = data;
     const { hiddenTags, hiddenUsers } = store.getHidden();
-    const questionId = location.pathname.replace("/question/", "");
-    const isMore = target.content.length > 400;
-    const vDomContent = domC("div", { innerHTML: target.content });
-    vDomContent.querySelectorAll("img").forEach((item) => {
-      item.src = item.getAttribute("data-original") || "";
-    });
-    vDomContent.querySelectorAll("a.video-box").forEach((item) => {
-      const nItem = item;
-      const nFrame = domC("iframe", {
-        style: `border:none;width: calc(100vw - 32px);height: calc((100vw - 32px)/1.8);`,
-        src: nItem.href
-      });
-      nItem.insertAdjacentElement("afterend", nFrame);
-      nItem.style.display = "none";
-    });
-    const contentHTML = vDomContent.innerHTML;
-    vDomContent.remove();
     const answerTopCard = [];
     target.label_info && answerTopCard.push(`本回答节选自${target.label_info.text}`);
     target.reward_info.is_rewardable && answerTopCard.push("内容包含虚构创作");
@@ -2203,54 +2236,13 @@
     data-za-detail-view-path-index="0"
     data-za-extra-module='{"card":{"has_image":false,"has_video":false,"content":{"type":"${target_type}","token":"${target.id}","upvote_num":${target.voteup_count},"comment_num":${target.comment_count},"publish_timestamp":null,"parent_token":"${target.question.id}","author_member_hash_id":"${target.author.id}"}}}'
   >
-    <div class="ContentItem-meta">
-      <div class="AuthorInfo AnswerItem-authorInfo AnswerItem-authorInfo--related" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-        <div class="AuthorInfo AuthorInfo--mobile">
-          <meta itemprop="name" content="${target.author.name}" />
-          <meta itemprop="image" content="${target.author.avatar_url}" />
-          <meta itemprop="url" content="https://www.zhihu.com/people/${target.author.id}" />
-          <meta itemprop="zhihu:followerCount" content="${target.author.follower_count}" />
-          <span class="UserLink AuthorInfo-avatarWrapper">
-            <a href="//www.zhihu.com/people/${target.author.id}" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">
-              <img class="Avatar AuthorInfo-avatar" src="${target.author.avatar_url}" srcset="${target.author.avatar_url} 2x" alt="${target.author.name}" />
-            </a>
-          </span>
-          <div class="AuthorInfo-content">
-            <div class="AuthorInfo-head">
-              <span class="UserLink AuthorInfo-name">
-                <a href="//www.zhihu.com/people/${target.author.id}" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">
-                  ${target.author.name}
-                </a>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      ${releaseTimeForAnswer ? createTimeHTML(`${target.created_time}000`, `${target.updated_time}000`) : ""}
-    </div>
+    ${innerHTMLContentItemMeta(data, {
+      haveTime: releaseTimeForAnswer
+    })}
     ${answerTopCard.length ? `<div class="KfeCollection-AnswerTopCard-Container">` + answerTopCard.map(
       (i2) => `<div class="KfeCollection-OrdinaryLabel-newStyle-mobile" style="margin-right: 6px;"><div class="KfeCollection-OrdinaryLabel-content">${i2}</div></div>`
     ).join("") + `</div>` : ""}
-    <meta itemprop="image" />
-    <meta itemprop="upvoteCount" content="${target.voteup_count}" />
-    <meta itemprop="url" content="https://www.zhihu.com/question/${questionId}/answer/${target.id}" />
-    <meta itemprop="dateCreated" content="${target.created_time}000" />
-    <meta itemprop="dateModified" content="${target.updated_time}000" />
-    <meta itemprop="commentCount" content="${target.comment_count}" />
-    <div class="RichContent ${isMore ? "is-collapsed" : ""} RichContent--unescapable">
-      <div class="RichContent-inner RichContent-inner--collapsed" style="${isMore ? "max-height: 180px" : ""}">${contentHTML}</div>
-      <div class="ContentItem-actions">
-        <button aria-label="赞同 ${target.voteup_count}" aria-live="polite" type="button" class="Button VoteButton VoteButton--up">
-          ▲ 赞同 ${target.voteup_count}
-        </button>
-        <button   aria-label="反对" aria-live="polite" type="button" class="Button VoteButton VoteButton--down VoteButton--mobileDown">
-          ▼
-        </button>
-        <button class="ctz-n-button-comment Button Button--plain Button--withIcon Button--withLabel">评论 ${target.comment_count}</button>
-        ${isMore ? '<button class="ctz-n-button-close Button" style="display: none">收起 ▲</button>' : ""}
-      </div>
-      ${isMore ? '<button class="ctz-n-button-expend">展开更多 ▼</button>' : ""}
-    </div>
+    ${innerHTMLRichInnerAndAction(data)}
   </div>
 </div>`;
   };

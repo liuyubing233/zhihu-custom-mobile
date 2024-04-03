@@ -46,6 +46,7 @@ export const myListenComment: myListenComment = {
       const { id, name } = nodeCurrent;
       // 关闭弹窗按钮
       if (id === ID_CTZ_COMMENT_CLOSE) {
+        dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!.scrollTop = 0;
         domById(ID_CTZ_COMMENT)!.style.display = 'none';
         myScroll.on();
       }
@@ -82,7 +83,7 @@ export const myListenComment: myListenComment = {
     const res = await requestComment({ answerId, orderBy, type });
     myLoadingToast.hide();
     if (!res) return;
-    const nRes = formatDataToHump(res)
+    const nRes = formatDataToHump(res);
     const nodeComment = domById(ID_CTZ_COMMENT)!;
     nodeComment.querySelector('.ctz-comment-count>span')!.innerHTML = `${nRes.paging.totals}`;
     nodeComment.querySelector(QUERY_LIST)!.innerHTML = createCommentHTML(nRes.data);
@@ -101,7 +102,7 @@ export const myListenComment: myListenComment = {
   commentLoadMore: async function () {
     const res = await requestComment({ url: this.page.next });
     if (!res || !res.data) return;
-    const nRes = formatDataToHump(res)
+    const nRes = formatDataToHump(res);
     const nodeCommentContentDiv = dom(`#${ID_CTZ_COMMENT} ${QUERY_LIST}`)!;
     this.page = nRes.paging;
     this.commentData = this.commentData.concat(nRes.data);
@@ -129,6 +130,7 @@ export const myListenCommentChild: myListenComment = {
     domById(ID_CTZ_COMMENT_CHILD)!.onclick = (event) => {
       const currentTarget = event.target as IMyElement;
       if (currentTarget.id === ID_CTZ_COMMENT_BACK) {
+        dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!.scrollTop = 0;
         domById(ID_CTZ_COMMENT_CHILD)!.style.display = 'none';
       }
     };
@@ -151,7 +153,7 @@ export const myListenCommentChild: myListenComment = {
     const res = await requestCommentChild({ answerId });
     myLoadingToast.hide();
     if (!res) return;
-    const nRes = formatDataToHump(res)
+    const nRes = formatDataToHump(res);
     const nodeComment = domById(ID_CTZ_COMMENT_CHILD)!;
     const parentCommentHTML = parentData ? createCommentHTMLItem(parentData, false, false) : '';
     nodeComment.querySelector(QUERY_LIST)!.innerHTML =
@@ -169,7 +171,7 @@ export const myListenCommentChild: myListenComment = {
   commentLoadMore: async function () {
     const res = await requestComment({ url: this.page.next });
     if (!res || !res.data) return;
-    const nRes = formatDataToHump(res)
+    const nRes = formatDataToHump(res);
     const nodeCommentContentDiv = dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_LIST}`)!;
     this.page = nRes.paging;
     this.commentData = this.commentData.concat(nRes.data);
@@ -184,19 +186,7 @@ export const myListenCommentChild: myListenComment = {
 const createCommentHTML = (data: ICommentData[], isChild = false) => data.map((i) => createCommentHTMLItem(i, isChild)).join('');
 
 const createCommentHTMLItem = (item: ICommentData, isChild = false, haveChild = true): string => {
-  const {
-    author,
-    id,
-    authorTag,
-    content,
-    createdTime,
-    hot,
-    likeCount,
-    childComments = [],
-    childCommentCount,
-    childCommentNextOffset,
-    replyToAuthor,
-  } = item;
+  const { author, id, authorTag, content, createdTime, hot, likeCount, childComments = [], childCommentCount, childCommentNextOffset, replyToAuthor } = item;
   return `
 <div data-id="${id}">
   <div class="ctz-ci ${isChild ? 'ctz-ci-child' : ''}">

@@ -112,6 +112,7 @@ export const mouseEventClick = (element?: HTMLElement) => {
 
 /** 复制 */
 export const copy = async (value: string) => {
+  console.log('222', navigator.clipboard, navigator.permissions)
   if (navigator.clipboard && navigator.permissions) {
     await navigator.clipboard.writeText(value);
   } else {

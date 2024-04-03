@@ -2,11 +2,17 @@ import { IOptionItem } from '../types';
 
 export const HTML_HOOTS = ['www.zhihu.com', 'zhuanlan.zhihu.com'];
 
-/** 需要修改 navigator.userAgent 的页面路径 */
-export const NEED_CHANGE_NAVIGATOR_URL = ['www.zhihu.com/question/', 'zhuanlan.zhihu.com/p/'];
-
 /** id: 同步黑名单按钮 */
 export const ID_BUTTON_SYNC_BLOCK = 'CTZ-BUTTON-SYNC-BLOCK';
+/** id: 评论弹窗 */
+export const ID_CTZ_COMMENT = 'CTZ_COMMENT';
+/** id: 子评论弹窗（评论回复） */
+export const ID_CTZ_COMMENT_CHILD = 'CTZ_COMMENT_CHILD';
+/** id: 关闭评论弹窗按钮 */
+export const ID_CTZ_COMMENT_CLOSE = 'CTZ_BUTTON_COMMENT_CLOSE';
+/** id: 关闭子评论弹窗（评论回复弹窗按钮 */
+export const ID_CTZ_COMMENT_BACK = 'CTZ_BOTTOM_COMMENT_BACK';
+
 /** class: INPUT 点击元素类名 */
 export const CLASS_INPUT_CLICK = 'ctz-i';
 /** class: INPUT 修改操作元素类名 */
@@ -19,15 +25,10 @@ export const CLASS_NOT_INTERESTED = 'ctz-not-interested';
 export const CLASS_TO_QUESTION = 'ctz-to-question';
 /** class: 自定义的时间元素名称 */
 export const CLASS_TIME_ITEM = 'ctz-list-item-time';
-
-/** id: 评论弹窗 */
-export const ID_CTZ_COMMENT = 'CTZ_COMMENT';
-/** id: 子评论弹窗（评论回复） */
-export const ID_CTZ_COMMENT_CHILD = 'CTZ_COMMENT_CHILD';
-/** id: 关闭评论弹窗按钮 */
-export const ID_CTZ_COMMENT_CLOSE = 'CTZ_BUTTON_COMMENT_CLOSE';
-/** id: 关闭子评论弹窗（评论回复弹窗按钮 */
-export const ID_CTZ_COMMENT_BACK = 'CTZ_BOTTOM_COMMENT_BACK';
+/** class: 一键获取回答链接 */
+export const CLASS_COPY_LINK = 'ctz-copy-link';
+/** class: 直达问题 */
+export const CLASS_TO_ANSWER = 'ctz-to-answer';
 
 /** html 添加额外的类名 */
 export const EXTRA_CLASS_HTML: Record<string, string> = {
@@ -59,9 +60,3 @@ export const FONT_SIZE_INPUT: IOptionItem[][] = [
     { value: 'fontSizeForArticle', label: '文章内容文字大小' },
   ],
 ];
-
-/** 回答收起展开插入的类名 */
-export const OB_CLASS_FOLD = {
-  on: 'ctz-fold-open',
-  off: 'ctz-fold-close',
-};

@@ -1,4 +1,5 @@
 import { domC, domP } from '../commons/tools';
+import { CLASS_COPY_LINK } from '../configs';
 import { IMyElement, IZhihuDataZop } from '../types';
 import { myListenComment } from './listen-comment';
 import { myPreview } from './preview';
@@ -106,7 +107,7 @@ export const innerHTMLContentItemMeta = (data: any, options?: { extraHTML?: stri
   const { extraHTML = '', haveTime } = options || {};
   return `
 <div class="ContentItem-meta">
-  <div class="AuthorInfo AnswerItem-authorInfo AuthorInfo--plain" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  <div class="AuthorInfo AnswerItem-authorInfo AnswerItem-authorInfo--related" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
     <div class="AuthorInfo AuthorInfo--mobile">
       <meta itemprop="name" content="${target.author.name}" />
       <meta itemprop="image" content="${target.author.avatarUrl}" />
@@ -140,7 +141,7 @@ export const innerHTMLContentItemMeta = (data: any, options?: { extraHTML?: stri
 
 /** innerHTML for 内容和操作栏 */
 export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: number; moreMaxHeight?: string }) => {
-  const {moreLength = 400, moreMaxHeight = '180px'} = options || {}
+  const { moreLength = 400, moreMaxHeight = '180px' } = options || {};
   const { target } = data;
   const isVideo = target.type === 'zvideo';
   const isPin = target.type === 'pin';
@@ -211,3 +212,6 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
 </div>
 `;
 };
+
+export const createHTMLCopyLink = (link: string) =>
+  `<button class="ctz-button ctz-button-transparent ${CLASS_COPY_LINK}" data-link="${link}" style="margin: 0px 8px">获取链接</button>`;

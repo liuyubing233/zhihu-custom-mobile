@@ -1,5 +1,5 @@
 import { myStorage } from '../commons/storage';
-import { createBtnTr, dom } from '../commons/tools';
+import { dom, domC } from '../commons/tools';
 
 /** 添加问题日志按钮 */
 export const addQuestionLogButton = async () => {
@@ -8,7 +8,10 @@ export const addQuestionLogButton = async () => {
   const className = 'ctz-question-log';
   const prevBtn = dom(`.${className}`);
   if (!showQuestionLog || !nodeBtnGroup || prevBtn) return;
-  const nBtn = createBtnTr('查看问题日志', className);
+  const nBtn = domC('button', {
+    innerHTML: '查看问题日志',
+    className: `ctz-button ctz-button-transparent ${className}`,
+  })
   nBtn.addEventListener('touchend', () => {
     const findPath = location.pathname.match(/\/question\/\d+/);
     if (findPath && findPath.length) {

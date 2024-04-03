@@ -1,6 +1,6 @@
 import { myDialog } from '../../src/methods/dialog-open-close';
-import { dom, domA, domById } from '../commons/tools';
-import { CLASS_INPUT_CHANGE, CLASS_INPUT_CLICK } from '../configs';
+import { copy, dom, domA, domById, message } from '../commons/tools';
+import { CLASS_COPY_LINK, CLASS_INPUT_CHANGE, CLASS_INPUT_CLICK } from '../configs';
 import { myButtonOperate } from '../methods/dialog-button-operate';
 import { fnChanger } from '../methods/fn-changer';
 import { myListenComment, myListenCommentChild } from '../methods/listen-comment';
@@ -35,7 +35,7 @@ export const initOperate = () => {
   domA('.ctz-content-top').forEach((i) => (i.onclick = myMenu2.click));
   domById('CTZ_OPEN_BUTTON')!.onclick = myDialog.open;
   domById('CTZ_CLOSE_DIALOG')!.onclick = myDialog.hide;
-  myListenListRecommend.initOperate()
+  myListenListRecommend.initOperate();
   myListenComment.initOperate();
   myListenCommentChild.initOperate();
   domById('CTZ_PREVIEW_IMAGE')!.onclick = function () {
@@ -43,11 +43,11 @@ export const initOperate = () => {
   };
 
   document.body.addEventListener('click', function (event: MouseEvent) {
-    const { target } = event;
-    if ((target as HTMLElement).classList.contains('css-hzocic')) {
-      // 点击到了手动添加的关闭伪元素
-      const nodeClose = dom('[aria-label="关闭"]');
-      nodeClose && nodeClose.click();
+    const target = event.target as HTMLElement;
+    if (target.classList.contains(CLASS_COPY_LINK)) {
+      const link = target.getAttribute('data-link')!;
+      copy(link);
+      message('链接复制成功');
     }
   });
 };

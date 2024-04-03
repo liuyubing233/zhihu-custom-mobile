@@ -4,6 +4,7 @@ declare const GM: {
 };
 
 declare const unsafeWindow: Window & {
+  ctzLog: (c: string) => void;
   [key: string]: any;
 };
 declare const GM_info: ScriptGetInfo;
@@ -112,5 +113,4 @@ type WebRequestRule = {
       };
 };
 
-// declare module '*/third/zhihu-enc.js';
 declare module '*.js'

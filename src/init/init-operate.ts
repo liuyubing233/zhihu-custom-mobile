@@ -35,7 +35,6 @@ export const initOperate = () => {
   domA('.ctz-content-top').forEach((i) => (i.onclick = myMenu2.click));
   domById('CTZ_OPEN_BUTTON')!.onclick = myDialog.open;
   domById('CTZ_CLOSE_DIALOG')!.onclick = myDialog.hide;
-  // initTopStoryRecommendEvent();
   myListenListRecommend.initOperate()
   myListenComment.initOperate();
   myListenCommentChild.initOperate();

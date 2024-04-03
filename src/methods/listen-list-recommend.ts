@@ -1,6 +1,6 @@
-import { commonRequest } from '../commons/request';
+import { commonRequest, formatDataToHump } from '../commons/request';
 import { myStorage } from '../commons/storage';
-import { dom, domById, fnLog } from '../commons/tools';
+import { dom, domById } from '../commons/tools';
 import { IConfig } from '../types';
 import { IZhihuListRecommendResponse, IZhihuRecommendData, IZhihuRecommendDataTarget } from '../types/zhihu-list-response.type';
 import { eventListenButton, innerHTMLContentItemMeta, innerHTMLRichInnerAndAction, openLoading, removeByBox } from './listen-common';
@@ -13,7 +13,7 @@ export const myListenListRecommend = {
     const nodeJsonData = domById('js-initialData');
     const config = await myStorage.getConfig();
     if (!nodeJsonData) {
-      fnLog('cannot find script #js-initialData');
+      unsafeWindow.ctzLog('cannot find script #js-initialData recommend');
       return;
     }
     const pageJsData = JSON.parse(nodeJsonData.innerText || '{}');
@@ -25,7 +25,7 @@ export const myListenListRecommend = {
     if (!nodeTopstoryMain) return;
     const nodeListContent = nodeTopstoryMain.querySelector('[role="list"]') as HTMLElement;
     // 替换原有数据
-    nodeListContent.innerHTML = createListHTML(currentData.data, config);
+    nodeListContent.innerHTML = createListHTML(formatDataToHump(currentData.data), config);
   },
   initOperate: function () {
     const nodeTopStoryRecommend = dom('.TopstoryMain') || dom('.NotLoggedInTopstory');
@@ -50,7 +50,8 @@ export const myListenListRecommend = {
     removeByBox(nodeListContent, 'ctz-list-loading');
     this.loading = false;
     if (!res) return;
-    const { paging, data } = res as IZhihuListRecommendResponse;
+    const nRes = formatDataToHump(res)
+    const { paging, data } = nRes as IZhihuListRecommendResponse;
     if (paging.next === this.next) return;
     this.next = paging.next;
     const config = await myStorage.getConfig();

@@ -35,8 +35,32 @@ const createCommentHeaders = (url: string) => {
   };
 };
 
+/** 转驼峰 */
+export function formatDataToHump(data: any): any {
+  if (!data) return data;
+  if (Array.isArray(data)) {
+    return data.map((item) => {
+      return typeof item === 'object' ? formatDataToHump(item) : item;
+    });
+  } else if (typeof data === 'object') {
+    const nData: any = {};
+    Object.keys(data).forEach((prevKey) => {
+      const nKey = prevKey.replace(/\_(\w)/g, (_, $1) => $1.toUpperCase());
+      nData[nKey] = formatDataToHump(data[prevKey]);
+    });
+    return nData;
+  }
+  return data;
+}
+
 /** 获取知乎评论区内容 */
-export const requestComment = async ({ url, answerId, orderBy = 'score', offset = '', type = 'answers' }: IRequestCommentParams): Promise<IZhihuCommentResponse | undefined> => {
+export const requestComment = async ({
+  url,
+  answerId,
+  orderBy = 'score',
+  offset = '',
+  type = 'answers',
+}: IRequestCommentParams): Promise<IZhihuCommentResponse | undefined> => {
   // order_by: ts, score
   if (!answerId && !url) return undefined;
   const nUrl = url || `https://www.zhihu.com/api/v4/comment_v5/${type}/${answerId}/root_comment?order_by=${orderBy}&limit=20&offset=${offset}`;

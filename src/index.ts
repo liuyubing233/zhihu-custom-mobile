@@ -1,9 +1,10 @@
 import { myStorage } from './commons/storage';
-import { dom, domA, fnInitDomStyle, fnLog, pathnameHasFn, throttle } from './commons/tools';
+import { dom, domA, fnInitDomStyle, pathnameHasFn, throttle } from './commons/tools';
 import { EXTRA_CLASS_HTML, HTML_HOOTS } from './configs/dom-name';
 import { initHTML } from './init/init-html';
 import { initOperate } from './init/init-operate';
 import { onInitStyleExtra } from './init/init-style-extra';
+import { initWindow } from './init/init-window';
 import { loadBackground, myCustomStyle } from './methods/background';
 import { myDialog } from './methods/dialog-open-close';
 import { echoData } from './methods/echo-data';
@@ -19,18 +20,19 @@ import { INNER_CSS } from './web-resources';
 
 (function () {
   const { hostname, host } = location;
+  if (!HTML_HOOTS.includes(hostname) || window.frameElement) return;
   /** 挂载脚本时 document.head 是否渲染 */
   let isHaveHeadWhenInit = true;
   GM_registerMenuCommand('⚙️ 设置', () => {
     myDialog.open();
   });
   store.initSetHidden();
+  initWindow();
 
   /** 在启动时注入的内容 */
   async function onDocumentStart() {
-    if (!HTML_HOOTS.includes(hostname) || window.frameElement) return;
     if (!document.head) {
-      fnLog('not find document.head, waiting for reload...');
+      unsafeWindow.ctzLog('not find document.head, waiting for reload...');
       isHaveHeadWhenInit = false;
       return;
     }
@@ -49,25 +51,23 @@ import { INNER_CSS } from './web-resources';
       if (!isHaveHeadWhenInit) {
         await onDocumentStart();
       }
-      if (HTML_HOOTS.includes(hostname) && !window.frameElement) {
-        initHTML();
-        initOperate();
-        echoData();
-        // 页面加载完成后再进行加载背景色, 解决存在顶部推广的 header 颜色
-        loadBackground();
-        myCustomStyle.init();
-        echoHistory();
-      }
+      initHTML();
+      initOperate();
+      echoData();
+      // 页面加载完成后再进行加载背景色, 解决存在顶部推广的 header 颜色
+      loadBackground();
+      myCustomStyle.init();
+      echoHistory();
+
+      setTimeout(() => {
+        myListenListRecommend.init();
+      }, 0);
 
       historyToChangePathname();
       if (host === 'zhuanlan.zhihu.com') {
         addTimeForArticle();
         fnListenArticle();
       }
-
-      setTimeout(() => {
-        myListenListRecommend.init();
-      }, 0);
     },
     false
   );
@@ -124,7 +124,7 @@ import { INNER_CSS } from './web-resources';
         fnSuspensionPickup(domA('.AnswerCard'));
       }
       myListenAnswer.scroll();
-      myListenListRecommend.scroll()
+      myListenListRecommend.scroll();
     }, 100),
     false
   );

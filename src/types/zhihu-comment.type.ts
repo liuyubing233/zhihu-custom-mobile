@@ -2,12 +2,12 @@
  * 评论接口返回值
  */
 export interface IZhihuCommentResponse {
-  comment_status: ICommentStatus;
+  commentStatus: ICommentStatus;
   counts: ICommentCounts;
   data: ICommentData[];
-  edit_status: ICommentEditStatus;
+  editStatus: ICommentEditStatus;
   header: any[];
-  is_content_author: boolean;
+  isContentAuthor: boolean;
   paging: ICommentPaging;
   sorter: ICommentSorter[];
 }
@@ -15,105 +15,105 @@ export interface IZhihuCommentResponse {
 export interface ICommentStatus {
   type: number;
   text: string;
-  induce_text: string;
+  induceText: string;
 }
 
 export interface ICommentCounts {
-  total_counts: number;
-  collapsed_counts: number;
-  reviewing_counts: number;
+  totalCounts: number;
+  collapsedCounts: number;
+  reviewingCounts: number;
 }
 
 export interface ICommentData {
   id: string;
   type: ChildCommentType;
-  resource_type: ResourceType;
-  member_id: number;
+  resourceType: ResourceType;
+  memberId: number;
   url: string;
   hot: boolean;
   top: boolean;
   content: string;
   score: number;
-  created_time: number;
-  is_delete: boolean;
+  createdTime: number;
+  isDelete: boolean;
   collapsed: boolean;
   reviewing: boolean;
-  reply_comment_id: string;
-  reply_root_comment_id: string;
+  replyCommentId: string;
+  replyRootCommentId: string;
   liked: boolean;
-  like_count: number;
+  likeCount: number;
   disliked: boolean;
-  dislike_count: number;
-  is_author: boolean;
-  can_like: boolean;
-  can_dislike: boolean;
-  can_delete: boolean;
-  can_reply: boolean;
-  can_hot: boolean;
-  can_author_top: boolean;
-  is_author_top: boolean;
-  can_collapse: boolean;
-  can_share: boolean;
-  can_unfold: boolean;
-  can_truncate: boolean;
-  can_more: boolean;
+  dislikeCount: number;
+  isAuthor: boolean;
+  canLike: boolean;
+  canDislike: boolean;
+  canDelete: boolean;
+  canReply: boolean;
+  canHot: boolean;
+  canAuthorTop: boolean;
+  isAuthorTop: boolean;
+  canCollapse: boolean;
+  canShare: boolean;
+  canUnfold: boolean;
+  canTruncate: boolean;
+  canMore: boolean;
   author: DatumAuthor;
-  reply_to_author?: DatumAuthor;
-  author_tag: IAuthorTag[];
-  reply_author_tag: any[];
-  content_tag: any[];
-  comment_tag: any[];
-  child_comment_count: number;
-  child_comment_next_offset: null | string;
-  child_comments?: ICommentData[];
-  is_visible_only_to_myself: boolean;
+  replyToAuthor?: DatumAuthor;
+  authorTag: IAuthorTag[];
+  replyAuthorTag: any[];
+  contentTag: any[];
+  commentTag: any[];
+  childCommentCount: number;
+  childCommentNextOffset: null | string;
+  childComments?: ICommentData[];
+  isVisibleOnlyToMyself: boolean;
   _: null;
 }
 
 export interface IAuthorTag {
-  border_color: string;
-  border_night_color: string;
+  borderColor: string;
+  borderNightColor: string;
   color: string;
-  has_border: boolean;
-  night_color: string;
+  hasBorder: boolean;
+  nightColor: string;
   text: string;
   type: string;
 }
 
 export interface DatumAuthor {
   id: string;
-  url_token: string;
+  urlToken: string;
   name: string;
-  avatar_url: string;
-  avatar_url_template: string;
-  is_org: boolean;
+  avatarUrl: string;
+  avatarUrlTemplate: string;
+  isOrg: boolean;
   type: UserTypeEnum;
   url: string;
-  user_type: UserTypeEnum;
+  userType: UserTypeEnum;
   headline: string;
   gender: number;
-  is_advertiser: boolean;
-  badge_v2: BadgeV2;
-  exposed_medal: ExposedMedal;
-  vip_info: PurpleVipInfo;
-  level_info: null;
-  is_anonymous: boolean;
+  isAdvertiser: boolean;
+  badgeV2: BadgeV2;
+  exposedMedal: ExposedMedal;
+  vipInfo: PurpleVipInfo;
+  levelInfo: null;
+  isAnonymous: boolean;
 }
 
 export interface BadgeV2 {
   title: string;
-  merged_badges: null;
-  detail_badges: null;
+  mergedBadges: null;
+  detailBadges: null;
 }
 
 export interface ExposedMedal {
-  medal_id: string;
-  medal_name: MedalName;
-  avatar_url: string;
+  medalId: string;
+  medalName: MedalName;
+  avatarUrl: string;
   description: string;
-  medal_avatar_frame: string;
-  can_click: boolean;
-  mini_avatar_url?: string;
+  medalAvatar_frame: string;
+  canClick: boolean;
+  miniAvatarUrl?: string;
 }
 
 export enum MedalName {
@@ -128,13 +128,13 @@ export enum UserTypeEnum {
 }
 
 export interface PurpleVipInfo {
-  is_vip: boolean;
-  vip_icon?: VipIcon;
+  isVip: boolean;
+  vipIcon?: VipIcon;
 }
 
 export interface VipIcon {
   url: string;
-  night_mode_url: string;
+  nightModeUrl: string;
 }
 
 export enum ResourceType {
@@ -146,13 +146,13 @@ export enum ChildCommentType {
 }
 
 export interface ICommentEditStatus {
-  can_reply: boolean;
+  canReply: boolean;
   toast: string;
 }
 
 export interface ICommentPaging {
-  is_end: boolean;
-  is_start: boolean;
+  isEnd: boolean;
+  isStart: boolean;
   next: string;
   previous: string;
   totals: number;

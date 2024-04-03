@@ -40,9 +40,6 @@ export const insertAfter = (newElement: any, targetElement: any) => {
 /** 判断是否返回空字符串 */
 export const fnReturnStr = (str: string, isHave = false, strFalse = '') => (isHave ? str : strFalse);
 
-/** 带前缀的 log */
-export const fnLog = (...str: string[]) => console.log('%c「修改器」', 'color: green;font-weight: bold;', ...str);
-
 /** 注入样式文件的方法 */
 export const fnInitDomStyle = (id: string, innerHTML: string) => {
   const element = domById(id);
@@ -198,8 +195,8 @@ export const nodesStopPropagation = (names: string[], fnArr: Function[] = [], ty
     nodeArray[i].addEventListener(type, (event) => {
       event.stopPropagation();
       fnArr.forEach((fn) => {
-        fn(event)
-      })
+        fn(event);
+      });
     });
   }
 };

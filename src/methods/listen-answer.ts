@@ -7,12 +7,13 @@ import { IZhihuAnswerDataItem, IZhihuAnswerResponse } from '../types/zhihu-answe
 import {
   CLASS_BTN_CLOSE,
   addListenImage,
+  createHTMLCopyLink,
   eventListenButton,
   innerHTMLContentItemMeta,
   innerHTMLRichInnerAndAction,
   openEnd,
   openLoading,
-  removeByBox
+  removeByBox,
 } from './listen-common';
 
 /** 新的回答内容监听，用于处理移动端网页 */
@@ -120,7 +121,7 @@ export const myListenAnswer = {
 const createListHTML = (data: IZhihuAnswerDataItem[], config: IConfig) => data.map((i) => createListItemHTML(i, config)).join('');
 
 const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
-  const { releaseTimeForAnswer } = config;
+  const { releaseTimeForAnswer, copyAnswerLink } = config;
   const { targetType, target } = data;
   const { hiddenTags, hiddenUsers } = store.getHidden();
   const answerTopCard = [];
@@ -133,6 +134,9 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
   for (let i = 0, len = hiddenUsers.length; i < len; i++) {
     if (target.author.name === hiddenUsers[i]) return '';
   }
+
+  let extraHTML = '';
+  copyAnswerLink && (extraHTML += createHTMLCopyLink(`https://www.zhihu.com/question/${target.question.id}/answer/${target.id}`));
 
   return `
 <div class="List-item ctz-answer-item" tabindex="0">
@@ -150,8 +154,9 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
     target.voteupCount
   },"comment_num":${target.commentCount},"publish_timestamp":null,"parent_token":"${target.question.id}","author_member_hash_id":"${target.author.id}"}}}'
   >
-    ${innerHTMLContentItemMeta(data, {
+    ${innerHTMLContentItemMeta(data,  {
       haveTime: releaseTimeForAnswer,
+      extraHTML,
     })}
     ${
       answerTopCard.length

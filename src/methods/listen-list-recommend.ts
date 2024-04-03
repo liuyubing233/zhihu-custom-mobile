@@ -3,7 +3,7 @@ import { myStorage } from '../commons/storage';
 import { dom, domById } from '../commons/tools';
 import { IConfig } from '../types';
 import { IZhihuListRecommendResponse, IZhihuRecommendData, IZhihuRecommendDataTarget } from '../types/zhihu-list-response.type';
-import { eventListenButton, innerHTMLContentItemMeta, innerHTMLRichInnerAndAction, openLoading, removeByBox } from './listen-common';
+import { createHTMLCopyLink, eventListenButton, innerHTMLContentItemMeta, innerHTMLRichInnerAndAction, openLoading, removeByBox } from './listen-common';
 
 /** 加载推荐列表 */
 export const myListenListRecommend = {
@@ -50,7 +50,7 @@ export const myListenListRecommend = {
     removeByBox(nodeListContent, 'ctz-list-loading');
     this.loading = false;
     if (!res) return;
-    const nRes = formatDataToHump(res)
+    const nRes = formatDataToHump(res);
     const { paging, data } = nRes as IZhihuListRecommendResponse;
     if (paging.next === this.next) return;
     this.next = paging.next;
@@ -139,12 +139,16 @@ const itemType = {
 const createListHTML = (data: IZhihuRecommendData[], config: IConfig) => data.map((i) => createListItemHTML(i, config)).join('');
 
 const createListItemHTML = (data: IZhihuRecommendData, config: IConfig) => {
-  const { releaseTimeForList } = config;
-  const { id, target, attached_info, brief } = data;
+  const { releaseTimeForList, copyAnswerLink, showToAnswer } = config;
+  const { id, target, attachedInfo, brief } = data;
   const type = target.type as IItemType;
   const { contentItem, nType, formatData } = itemType[type];
   const { itemHref, itemHref2, itemTitle } = formatData(target);
-  addHistoryItem(data)
+  addHistoryItem(data);
+
+  let extraHTML = '';
+  copyAnswerLink && (extraHTML += createHTMLCopyLink(itemHref2));
+  showToAnswer && type === 'answer' && (extraHTML += `<a href="${itemHref}" target="_blank" class="ctz-button ctz-button-transparent">直达问题</a>`);
 
   return `
 <div class="Card TopstoryItem TopstoryItem-isRecommend ctz-recommend-item" tabindex="0">
@@ -152,7 +156,7 @@ const createListItemHTML = (data: IZhihuRecommendData, config: IConfig) => {
     class="Feed"
     data-za-detail-view-path-module="FeedItem"
     data-za-detail-view-path-index="0"
-    data-za-extra-module='{"card":{"card_type":"Feed","feed_id":"${id}","has_image":false,"has_video":false,"content":${brief}},"attached_info_bytes":"${attached_info}"}'
+    data-za-extra-module='{"card":{"card_type":"Feed","feed_id":"${id}","has_image":false,"has_video":false,"content":${brief}},"attached_info_bytes":"${attachedInfo}"}'
   >
     <div
       class="ContentItem ${contentItem}"
@@ -164,8 +168,8 @@ const createListItemHTML = (data: IZhihuRecommendData, config: IConfig) => {
       data-za-detail-view-path-module="${contentItem}"
       data-za-detail-view-path-index="4"
       data-za-extra-module='{"card":{"has_image":false,"has_video":false,"content":{"type":"${nType}","token":"${target.id}","upvote_num":${
-    target.voteup_count
-  },"comment_num":${target.comment_count},"publish_timestamp":null,"author_member_hash_id":"${target.author.id}"}}}'
+    target.voteupCount
+  },"comment_num":${target.commentCount},"publish_timestamp":null,"author_member_hash_id":"${target.author.id}"}}}'
     >
       <h2 class="ContentItem-title">
         <div itemprop="zhihu:${type}" itemtype="http://schema.org/${nType}" itemscope="" style="display:inline;">
@@ -175,7 +179,7 @@ const createListItemHTML = (data: IZhihuRecommendData, config: IConfig) => {
         </div>
       </h2>
       ${innerHTMLContentItemMeta(data, {
-        extraHTML: '<button class="ctz-button ctz-button-transparent ctz-copy-answer-link" style="margin: 0px 8px">获取链接</button>',
+        extraHTML,
         haveTime: releaseTimeForList,
       })}
       ${innerHTMLRichInnerAndAction(data, { moreLength: 40, moreMaxHeight: '100px' })}

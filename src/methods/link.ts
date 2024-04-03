@@ -1,5 +1,4 @@
-import { myStorage } from '../commons/storage';
-import { copy, createBtnTr, domA, message } from '../commons/tools';
+import { domA } from '../commons/tools';
 import { IMyElement } from '../types';
 
 /** 知乎外链直接打开(修改外链内容，去除知乎重定向) */
@@ -25,27 +24,4 @@ export const initLinkChanger = () => {
       hrefChanger(links[index]);
     }
   }
-};
-
-const CLASS_COPY_LINK = 'ctz-copy-answer-link';
-/** 回答内容意见分享 */
-export const addAnswerCopyLink = async (nodeItem: HTMLElement) => {
-  const { copyAnswerLink } = await myStorage.getConfig();
-  if (!copyAnswerLink) return;
-  const prevButton = nodeItem.querySelector(`.${CLASS_COPY_LINK}`);
-  prevButton && prevButton.remove();
-  const nodeUser = nodeItem.querySelector('.AnswerItem-authorInfo>.AuthorInfo') || nodeItem.querySelector('.ContentItem-meta');
-  if (!nodeUser) return;
-  const nDomButton = createBtnTr('获取链接', CLASS_COPY_LINK);
-  nDomButton.onclick = function () {
-    const metaUrl = nodeItem.querySelector('.ContentItem>[itemprop="url"]');
-    if (!metaUrl) return;
-    const link = metaUrl.getAttribute('content') || '';
-    if (link) {
-      copy(link);
-      message('链接复制成功');
-      return;
-    }
-  };
-  nodeUser.appendChild(nDomButton);
 };

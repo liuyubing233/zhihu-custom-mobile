@@ -48,6 +48,7 @@ export const CONFIG_DEFAULT: IConfig = {
   copyAnswerLink: true,
   showQuestionLog: true,
   showAllContent: true,
+  showToAnswer: true,
 };
 
 /** 缓存的历史记录数量 */

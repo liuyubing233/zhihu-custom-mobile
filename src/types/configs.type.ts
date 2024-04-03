@@ -255,4 +255,6 @@ export interface IConfig extends IConfigHidden, IConfigFilter {
   t?: number;
   /** 回答、文章显示完整内容和评论 */
   showAllContent?: boolean;
+  /** 列表显示直达问题按钮 */
+  showToAnswer?: boolean;
 }

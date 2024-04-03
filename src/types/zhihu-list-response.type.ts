@@ -1,7 +1,7 @@
 export interface IZhihuListRecommendResponse {
   data: IZhihuRecommendData[];
   paging: IZhihuRecommendPaging;
-  fresh_text: string;
+  freshText: string;
 }
 
 export interface IZhihuRecommendData {
@@ -9,12 +9,12 @@ export interface IZhihuRecommendData {
   type: string;
   offset: number;
   verb: string;
-  created_time: number;
-  updated_time: number;
+  createdTime: number;
+  updatedTime: number;
   target: IZhihuRecommendDataTarget;
   brief: string;
-  attached_info: string;
-  action_card: boolean;
+  attachedInfo: string;
+  actionCard: boolean;
 }
 
 export interface IZhihuRecommendDataTarget {
@@ -22,40 +22,40 @@ export interface IZhihuRecommendDataTarget {
   type: string;
   url: string;
   author: Author;
-  created_time: number;
-  updated_time: number;
-  voteup_count: number;
-  thanks_count: number;
-  comment_count: number;
-  is_copyable: boolean;
+  createdTime: number;
+  updatedTime: number;
+  voteupCount: number;
+  thanksCount: number;
+  commentCount: number;
+  isCopyable: boolean;
   question: Question;
   excerpt: string;
-  excerpt_new: string;
-  preview_type: string;
-  preview_text: string;
-  reshipment_settings: string;
+  excerptNew: string;
+  previewType: string;
+  previewText: string;
+  reshipmentSettings: string;
   content: string;
   relationship: TargetRelationship;
-  is_labeled: boolean;
-  visited_count: number;
-  favorite_count: number;
-  answer_type: string;
+  isLabeled: boolean;
+  visitedCount: number;
+  favoriteCount: number;
+  answerType: string;
   title?: string;
 }
 
 export interface Author {
   id: string;
   url: string;
-  user_type: UserType;
-  url_token: string;
+  userType: UserType;
+  urlToken: string;
   name: string;
   headline: string;
-  avatar_url: string;
-  is_org: boolean;
+  avatarUrl: string;
+  isOrg: boolean;
   gender: number;
-  followers_count: number;
-  is_following: boolean;
-  is_followed: boolean;
+  followersCount: number;
+  isFollowing: boolean;
+  isFollowed: boolean;
   badge?: Badge[];
 }
 
@@ -75,30 +75,30 @@ export interface Question {
   author: Author;
   title: string;
   created: number;
-  answer_count: number;
-  follower_count: number;
-  comment_count: number;
-  bound_topic_ids: number[];
-  is_following: boolean;
+  answerCount: number;
+  followerCount: number;
+  commentCount: number;
+  boundTopicIds: number[];
+  isFollowing: boolean;
   excerpt: string;
   relationship: QuestionRelationship;
   detail: string;
-  question_type: string;
+  questionType: string;
 }
 
 export interface QuestionRelationship {
-  is_author: boolean;
+  isAuthor: boolean;
 }
 
 export interface TargetRelationship {
-  is_thanked: boolean;
-  is_nothelp: boolean;
+  isThanked: boolean;
+  isNothelp: boolean;
   voting: number;
 }
 
 export interface IZhihuRecommendPaging {
-  is_end: boolean;
-  is_start: boolean;
+  isEnd: boolean;
+  isStart: boolean;
   next: string;
   previous: string;
   totals: number;

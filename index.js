@@ -1644,6 +1644,7 @@
         const nodeCurrent = event.target;
         const { id, name } = nodeCurrent;
         if (id === ID_CTZ_COMMENT_CLOSE) {
+          dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`).scrollTop = 0;
           domById(ID_CTZ_COMMENT).style.display = "none";
           myScroll.on();
         }
@@ -1725,6 +1726,7 @@
       domById(ID_CTZ_COMMENT_CHILD).onclick = (event) => {
         const currentTarget = event.target;
         if (currentTarget.id === ID_CTZ_COMMENT_BACK) {
+          dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`).scrollTop = 0;
           domById(ID_CTZ_COMMENT_CHILD).style.display = "none";
         }
       };
@@ -1778,19 +1780,7 @@
   };
   var createCommentHTML = (data, isChild = false) => data.map((i2) => createCommentHTMLItem(i2, isChild)).join("");
   var createCommentHTMLItem = (item, isChild = false, haveChild = true) => {
-    const {
-      author,
-      id,
-      authorTag,
-      content,
-      createdTime,
-      hot,
-      likeCount,
-      childComments = [],
-      childCommentCount,
-      childCommentNextOffset,
-      replyToAuthor
-    } = item;
+    const { author, id, authorTag, content, createdTime, hot, likeCount, childComments = [], childCommentCount, childCommentNextOffset, replyToAuthor } = item;
     return `
 <div data-id="${id}">
   <div class="ctz-ci ${isChild ? "ctz-ci-child" : ""}">

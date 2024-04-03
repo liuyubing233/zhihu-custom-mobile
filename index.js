@@ -1897,6 +1897,18 @@
       }
     }
   };
+  var addHistoryItem = async (data) => {
+    const { target } = data;
+    const type = target.type;
+    const { name, bTypeClass, formatData } = itemType[type];
+    const pfHistory = await myStorage.getHistory();
+    const historyList = pfHistory.list;
+    const { itemHref2, itemTitle } = formatData(target);
+    let bType = `<b class="${bTypeClass}">「${name}」</b>`;
+    const itemA = `<a href="${itemHref2}" target="_blank">${bType + itemTitle}</a>`;
+    !historyList.includes(itemA) && historyList.unshift(itemA);
+    myStorage.setHistoryItem("list", historyList);
+  };
   var itemType = {
     answer: {
       name: "问题",
@@ -1958,6 +1970,7 @@
     const type = target.type;
     const { contentItem, nType, formatData } = itemType[type];
     const { itemHref, itemHref2, itemTitle } = formatData(target);
+    addHistoryItem(data);
     return `
 <div class="Card TopstoryItem TopstoryItem-isRecommend ctz-recommend-item" tabindex="0">
   <div
@@ -2084,7 +2097,10 @@
       }
       const pageJsData = JSON.parse(nodeJsonData.innerText || "{}");
       const questionId = location.pathname.replace("/question/", "");
-      const next = pageJsData.initialState.question.answers[questionId].next;
+      const currentQuestion = pageJsData.initialState.question.answers[questionId];
+      if (!currentQuestion)
+        return;
+      const next = currentQuestion.next;
       this.next = next;
       this.end = !next;
     },
@@ -2182,11 +2198,11 @@
       const { paging, data } = res;
       if (paging.next === this.next)
         return;
-      paging.is_end && openEnd(nodeListContent, "ctz-answer-end");
       this.end = paging.is_end;
       this.next = paging.next;
       const config = await myStorage.getConfig();
       nodeListContent.innerHTML += createListHTML2(data, config);
+      paging.is_end && openEnd(nodeListContent, "ctz-answer-end");
       this.checkListHeight();
     },
     /** 检测元素高度 */

@@ -1,48 +1,45 @@
 import { commonRequest } from '../commons/request';
 import { myStorage } from '../commons/storage';
-import { dom, domA, domById, domC, domP, nodesStopPropagation } from '../commons/tools';
+import { dom, domA, domById, domC, domP, fnLog, nodesStopPropagation } from '../commons/tools';
 import { store } from '../store';
-import { IConfig, IMyElement, IZhihuDataZop } from '../types';
+import { IConfig } from '../types';
 import { IZhihuAnswerDataItem, IZhihuAnswerResponse } from '../types/zhihu-answer.type';
-import { myListenComment } from './listen-comment';
-import { myPreview } from './preview';
-import { createTimeHTML, updateItemTime } from './time';
+import {
+  CLASS_BTN_CLOSE,
+  CLASS_BTN_COMMENT,
+  CLASS_BTN_EXPEND,
+  addListenImage,
+  eventListenButton,
+  innerHTMLContentItemMeta,
+  innerHTMLRichInnerAndAction,
+  openEnd,
+  openLoading,
+  removeByBox
+} from './listen-common';
+import { updateItemTime } from './time';
 
-/** 自定义展开按钮类名 */
-const CLASS_BTN_EXPEND = 'ctz-n-button-expend';
-/** 自定义收起按钮类名 */
-const CLASS_BTN_CLOSE = 'ctz-n-button-close';
-/** 自定义评论按钮类名 */
-const CLASS_BTN_COMMENT = 'ctz-n-button-comment';
-
-/**
- * 新的回答内容监听，用于处理移动端网页
- * 旧文件后续删除（./listen-answer-item.ts）
- */
+/** 新的回答内容监听，用于处理移动端网页 */
 export const myListenAnswer = {
   next: '',
   end: false,
   loading: false,
   init: function () {
-    dom('.Question-main')!.addEventListener('click', eventListenerQuestionMain);
+    dom('.Question-main')!.addEventListener('click', (event: MouseEvent) => {
+      eventListenButton(event);
+    });
     nodesStopPropagation(['.RichContent-inner', '.Question-main figure img', '.Question-main a'], [addListenImage]);
     nodesStopPropagation(['.RichContent-inner p'], [], 'copy'); // 去除禁止复制
-    const findNext = () => {
-      try {
-        const nodeJsonData = domById('js-initialData')!;
-        const pageJsData = JSON.parse(nodeJsonData.innerText || '{}');
-        const questionId = location.pathname.replace('/question/', '');
-        const next = pageJsData.initialState.question.answers[questionId].next;
-        this.next = next;
-        this.end = !next;
-      } catch {
-        setTimeout(() => {
-          findNext.call(myListenAnswer);
-        }, 300);
-      }
-    };
-    findNext();
     this.formatInitAnswers();
+    const nodeJsonData = domById('js-initialData')!;
+    if (!nodeJsonData) {
+      fnLog('cannot find script #js-initialData');
+      return;
+    }
+    const pageJsData = JSON.parse(nodeJsonData.innerText || '{}');
+    const questionId = location.pathname.replace('/question/', '');
+    const next = pageJsData.initialState.question.answers[questionId].next;
+    this.next = next;
+    this.end = !next;
   },
   /** 处理初始页面数据 */
   formatInitAnswers: async function () {
@@ -72,7 +69,6 @@ export const myListenAnswer = {
             return;
           }
         }
-
 
         // 过滤用户名
         const nodeUsername = nodeItem.querySelector('.AuthorInfo-head .UserLink-link');
@@ -139,14 +135,14 @@ export const myListenAnswer = {
   },
   requestData: async function (nodeListContent: HTMLElement) {
     this.loading = true;
-    openLoading(nodeListContent);
+    openLoading(nodeListContent, 'ctz-answer-loading');
     const res = await commonRequest(this.next);
-    hideLoading(nodeListContent);
+    removeByBox(nodeListContent, 'ctz-answer-loading');
     this.loading = false;
     if (!res) return;
     const { paging, data } = res as IZhihuAnswerResponse;
     if (paging.next === this.next) return;
-    paging.is_end && openEnd(nodeListContent);
+    paging.is_end && openEnd(nodeListContent, 'ctz-answer-end');
     this.end = paging.is_end;
     this.next = paging.next;
     const config = await myStorage.getConfig();
@@ -164,93 +160,6 @@ export const myListenAnswer = {
   },
 };
 
-const openLoading = (box: HTMLElement) => {
-  if (box.querySelector('.ctz-answer-loading')) return;
-  const nNode = domC('div', {
-    innerHTML: '<span>↻</span>',
-    className: 'ctz-answer-loading',
-  });
-  box.appendChild(nNode);
-};
-
-const hideLoading = (box: HTMLElement) => {
-  const nodeFind = box.querySelector('.ctz-answer-loading');
-  nodeFind && nodeFind.remove();
-};
-
-const openEnd = (box: HTMLElement) => {
-  if (box.querySelector('.ctz-answer-end')) return;
-  const nNode = domC('div', {
-    innerText: '----- 没有更多了 -----',
-    className: 'ctz-answer-end',
-  });
-  box.appendChild(nNode);
-};
-
-const eventQuestionMain: Record<string, Function> = {
-  /** 展开更多 */
-  [CLASS_BTN_EXPEND]: (currentNode: HTMLElement) => {
-    const nodeRich = domP(currentNode, 'class', 'RichContent')!;
-    const nodeRichInner = nodeRich.querySelector('.RichContent-inner') as HTMLElement;
-    const nodeBTNOther = nodeRich.querySelector(`.${CLASS_BTN_CLOSE}`) as HTMLElement;
-    const nodeImgs = nodeRichInner.querySelectorAll('img');
-    for (let i = 0, len = nodeImgs.length; i < len; i++) {
-      const item = nodeImgs[i];
-      item.src = item.getAttribute('data-original') || '';
-    }
-    nodeRich.classList.remove('is-collapsed');
-    nodeRichInner.style.maxHeight = 'max-content';
-    nodeBTNOther.style.display = 'block';
-    currentNode.style.display = 'none';
-  },
-  /** 收起 */
-  [CLASS_BTN_CLOSE]: (currentNode: HTMLElement) => {
-    const nodeRich = domP(currentNode, 'class', 'RichContent')!;
-    const nodeRichInner = nodeRich.querySelector('.RichContent-inner') as HTMLElement;
-    const nodeBTNOther = nodeRich.querySelector(`.${CLASS_BTN_EXPEND}`) as HTMLElement;
-    const nodeActions = nodeRich.querySelector('.ContentItem-actions') as HTMLElement;
-    nodeActions.style.cssText = '';
-    nodeRich.classList.add('is-collapsed');
-    nodeRichInner.style.maxHeight = '180px';
-    nodeBTNOther.style.display = 'block';
-    currentNode.style.display = 'none';
-  },
-  /** 评论 */
-  [CLASS_BTN_COMMENT]: async (currentNode: HTMLElement) => {
-    const nodeAnswerItem = domP(currentNode, 'class', 'AnswerItem')!;
-    const dataZopJson = nodeAnswerItem.getAttribute('data-zop') || '{}';
-    const dataZop: IZhihuDataZop = JSON.parse(dataZopJson);
-    myListenComment.create(dataZop.itemId);
-  },
-};
-
-/** 监听问答详情最顶层 */
-const eventListenerQuestionMain = (event: MouseEvent) => {
-  const target = event.target as IMyElement;
-  addListenImage(event);
-  Object.keys(eventQuestionMain).forEach((key) => {
-    if (target.classList.contains(key)) {
-      event.preventDefault();
-      event.stopPropagation();
-      eventQuestionMain[key](target);
-    }
-  });
-};
-
-/** 监听图片操作 */
-const addListenImage = (event: MouseEvent) => {
-  const target = event.target as IMyElement;
-  if (target.nodeName === 'IMG') {
-    let src = target.src;
-    if (target.classList.contains('ztext-gif')) {
-      // 动图
-      src = src.replace('.jpg', '.webp');
-    }
-    myPreview.open(src);
-    return;
-  }
-};
-
 /** 创建元素：评论按钮 */
 const cDomCommentBtn = (count: string | number = 0) => {
   return domC('button', {
@@ -265,23 +174,6 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
   const { releaseTimeForAnswer } = config;
   const { target_type, target } = data;
   const { hiddenTags, hiddenUsers } = store.getHidden();
-  const questionId = location.pathname.replace('/question/', '');
-  const isMore = target.content.length > 400;
-  const vDomContent = domC('div', { innerHTML: target.content });
-  vDomContent.querySelectorAll('img').forEach((item) => {
-    item.src = item.getAttribute('data-original') || '';
-  });
-  vDomContent.querySelectorAll('a.video-box').forEach((item) => {
-    const nItem = item as HTMLAnchorElement;
-    const nFrame = domC('iframe', {
-      style: `border:none;width: calc(100vw - 32px);height: calc((100vw - 32px)/1.8);`,
-      src: nItem.href,
-    });
-    nItem.insertAdjacentElement('afterend', nFrame);
-    nItem.style.display = 'none';
-  });
-  const contentHTML = vDomContent.innerHTML;
-  vDomContent.remove();
 
   const answerTopCard = [];
   target.label_info && answerTopCard.push(`本回答节选自${target.label_info.text}`);
@@ -310,31 +202,9 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
     target.voteup_count
   },"comment_num":${target.comment_count},"publish_timestamp":null,"parent_token":"${target.question.id}","author_member_hash_id":"${target.author.id}"}}}'
   >
-    <div class="ContentItem-meta">
-      <div class="AuthorInfo AnswerItem-authorInfo AnswerItem-authorInfo--related" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-        <div class="AuthorInfo AuthorInfo--mobile">
-          <meta itemprop="name" content="${target.author.name}" />
-          <meta itemprop="image" content="${target.author.avatar_url}" />
-          <meta itemprop="url" content="https://www.zhihu.com/people/${target.author.id}" />
-          <meta itemprop="zhihu:followerCount" content="${target.author.follower_count}" />
-          <span class="UserLink AuthorInfo-avatarWrapper">
-            <a href="//www.zhihu.com/people/${target.author.id}" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">
-              <img class="Avatar AuthorInfo-avatar" src="${target.author.avatar_url}" srcset="${target.author.avatar_url} 2x" alt="${target.author.name}" />
-            </a>
-          </span>
-          <div class="AuthorInfo-content">
-            <div class="AuthorInfo-head">
-              <span class="UserLink AuthorInfo-name">
-                <a href="//www.zhihu.com/people/${target.author.id}" target="_blank" class="UserLink-link" data-za-detail-view-element_name="User">
-                  ${target.author.name}
-                </a>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      ${releaseTimeForAnswer ? createTimeHTML(`${target.created_time}000`, `${target.updated_time}000`) : ''}
-    </div>
+    ${innerHTMLContentItemMeta(data, {
+      haveTime: releaseTimeForAnswer,
+    })}
     ${
       answerTopCard.length
         ? `<div class="KfeCollection-AnswerTopCard-Container">` +
@@ -349,27 +219,7 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
           `</div>`
         : ''
     }
-    <meta itemprop="image" />
-    <meta itemprop="upvoteCount" content="${target.voteup_count}" />
-    <meta itemprop="url" content="https://www.zhihu.com/question/${questionId}/answer/${target.id}" />
-    <meta itemprop="dateCreated" content="${target.created_time}000" />
-    <meta itemprop="dateModified" content="${target.updated_time}000" />
-    <meta itemprop="commentCount" content="${target.comment_count}" />
-    <div class="RichContent ${isMore ? 'is-collapsed' : ''} RichContent--unescapable">
-      <div class="RichContent-inner RichContent-inner--collapsed" style="${isMore ? 'max-height: 180px' : ''}">${contentHTML}</div>
-      <div class="ContentItem-actions">
-        <button aria-label="赞同 ${target.voteup_count}" aria-live="polite" type="button" class="Button VoteButton VoteButton--up">
-          ▲ 赞同 ${target.voteup_count}
-        </button>
-        <button   aria-label="反对" aria-live="polite" type="button" class="Button VoteButton VoteButton--down VoteButton--mobileDown">
-          ▼
-        </button>
-        <button class="ctz-n-button-comment Button Button--plain Button--withIcon Button--withLabel">评论 ${target.comment_count}</button>
-        ${isMore ? '<button class="ctz-n-button-close Button" style="display: none">收起 ▲</button>' : ''}
-      </div>
-      ${isMore ? '<button class="ctz-n-button-expend">展开更多 ▼</button>' : ''}
-    </div>
+    ${innerHTMLRichInnerAndAction(data)}
   </div>
 </div>`;
 };
-

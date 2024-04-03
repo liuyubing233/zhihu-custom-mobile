@@ -32,7 +32,7 @@ export const HIDDEN_ARRAY: IOptionItem[][] = [
     { value: 'hiddenAnswers', label: '隐藏列表回答内容' },
     { value: 'hiddenListVideoContent', label: '隐藏列表视频回答的内容' },
     { value: 'hiddenListImg', label: '隐藏列表图片' },
-    { value: 'hiddenReadMoreText', label: '隐藏列表「阅读全文」文字' },
+    // { value: 'hiddenReadMoreText', label: '隐藏列表「阅读全文」文字' },
   ],
   [
     { value: 'hiddenItemActions', label: '隐藏列表回答操作栏' },

@@ -56,7 +56,6 @@ import { INNER_CSS } from './web-resources';
         // 页面加载完成后再进行加载背景色, 解决存在顶部推广的 header 颜色
         loadBackground();
         myCustomStyle.init();
-        // initResizeObserver();
         echoHistory();
       }
 
@@ -88,9 +87,6 @@ import { INNER_CSS } from './web-resources';
   /** 页面路由变化, 部分操作方法 */
   const changeHistory = () => {
     historyToChangePathname();
-
-    // 重置监听起点
-    // myListenListItem.reset();
   };
   /** history 变化 */
   window.addEventListener('popstate', changeHistory);

@@ -14,7 +14,6 @@ export const fnChanger = async (ev: HTMLInputElement) => {
   const changeBackground = () => {
     myVersion.change();
     loadBackground();
-    // myListenListItem.restart();
     onUseThemeDark();
   };
 

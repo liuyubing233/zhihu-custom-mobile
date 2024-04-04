@@ -212,7 +212,7 @@
   var SAVE_HISTORY_NUMBER = 500;
   var HIDDEN_ANSWER_TAG = {
     removeFromYanxuan: "盐选专栏",
-    removeUnrealAnswer: "虚构创作",
+    // removeUnrealAnswer: '虚构创作',
     removeFromEBook: "电子书"
   };
   var HIDDEN_ANSWER_ACCOUNT = {
@@ -1687,7 +1687,8 @@
       const nRes = formatDataToHump(res);
       const nodeComment = domById(ID_CTZ_COMMENT);
       nodeComment.querySelector(".ctz-comment-count>span").innerHTML = `${nRes.paging.totals}`;
-      nodeComment.querySelector(QUERY_LIST).innerHTML = createCommentHTML(nRes.data);
+      const innerHTML = nRes.commentStatus.type ? `<div style="text-align:center;">${nRes.commentStatus.text}</div>` : createCommentHTML(nRes.data);
+      nodeComment.querySelector(QUERY_LIST).innerHTML = innerHTML;
       myChangeCommentSort[orderBy]();
       removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`), ClASS_END);
       removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`), CLASS_LOADING);
@@ -1785,6 +1786,18 @@
   var createCommentHTML = (data, isChild = false) => data.map((i2) => createCommentHTMLItem(i2, isChild)).join("");
   var createCommentHTMLItem = (item, isChild = false, haveChild = true) => {
     const { author, id, authorTag, content, createdTime, hot, likeCount, childComments = [], childCommentCount, childCommentNextOffset, replyToAuthor } = item;
+    const vDomContent = domC("div", { innerHTML: content });
+    vDomContent.querySelectorAll(".comment_img").forEach((item2) => {
+      const nItem = item2;
+      const nImage = domC("img", {
+        src: nItem.href,
+        style: " margin: 12px 0px 0px; display:block:width: 100px; height: 200px;"
+      });
+      nItem.insertAdjacentElement("afterend", nImage);
+      nItem.style.display = "none";
+    });
+    const contentHTML = vDomContent.innerHTML;
+    vDomContent.remove();
     return `
 <div data-id="${id}">
   <div class="ctz-ci ${isChild ? "ctz-ci-child" : ""}">
@@ -1797,7 +1810,7 @@
         ${authorTag.map(createUserTagHTML).join("")}
         ${replyToAuthor && replyToAuthor.name ? `<span>‣</span><a href="//www.zhihu.com/people/${replyToAuthor.id}" target="_blank">${replyToAuthor.name}</a>` : ""}
       </div>
-      <div class="ctz-ci-content">${content}</div>
+      <div class="ctz-ci-content">${contentHTML}</div>
       <div class="ctz-ci-info">
         <div class="ctz-ci-info-left">
           <span>${timeFormatter(+`${createdTime}000`, "YYYY-MM-DD")}</span>
@@ -2184,7 +2197,6 @@
     const { hiddenTags, hiddenUsers } = store.getHidden();
     const answerTopCard = [];
     target.labelInfo && answerTopCard.push(`本回答节选自${target.labelInfo.text}`);
-    target.rewardInfo.isRewardable && answerTopCard.push("内容包含虚构创作");
     for (let i2 = 0, len = hiddenTags.length; i2 < len; i2++) {
       if (answerTopCard.join().includes(hiddenTags[i2]))
         return "";

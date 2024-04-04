@@ -1,10 +1,10 @@
 import { formatDataToHump, requestComment, requestCommentChild } from '../commons/request';
 import { myScroll } from '../commons/scroll-stop-on';
-import { dom, domById, throttle } from '../commons/tools';
+import { dom, domById, domC, throttle } from '../commons/tools';
 import { ID_CTZ_COMMENT, ID_CTZ_COMMENT_BACK, ID_CTZ_COMMENT_CHILD, ID_CTZ_COMMENT_CLOSE } from '../configs';
 import { IMyElement } from '../types';
 import { myLoadingToast } from '../types/loading-toast';
-import { IAuthorTag, ICommentData, ICommentPaging } from '../types/zhihu-comment.type';
+import { IAuthorTag, ICommentData, ICommentPaging, IZhihuCommentResponse } from '../types/zhihu-comment.type';
 import { openEnd, openLoading, removeByBox } from './listen-common';
 import { timeFormatter } from './time';
 
@@ -83,10 +83,11 @@ export const myListenComment: myListenComment = {
     const res = await requestComment({ answerId, orderBy, type });
     myLoadingToast.hide();
     if (!res) return;
-    const nRes = formatDataToHump(res);
+    const nRes = formatDataToHump(res) as IZhihuCommentResponse;
     const nodeComment = domById(ID_CTZ_COMMENT)!;
     nodeComment.querySelector('.ctz-comment-count>span')!.innerHTML = `${nRes.paging.totals}`;
-    nodeComment.querySelector(QUERY_LIST)!.innerHTML = createCommentHTML(nRes.data);
+    const innerHTML = nRes.commentStatus.type ? `<div style="text-align:center;">${nRes.commentStatus.text}</div>` : createCommentHTML(nRes.data);
+    nodeComment.querySelector(QUERY_LIST)!.innerHTML = innerHTML;
     myChangeCommentSort[orderBy]();
     removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!, ClASS_END);
     removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!, CLASS_LOADING);
@@ -186,6 +187,19 @@ const createCommentHTML = (data: ICommentData[], isChild = false) => data.map((i
 
 const createCommentHTMLItem = (item: ICommentData, isChild = false, haveChild = true): string => {
   const { author, id, authorTag, content, createdTime, hot, likeCount, childComments = [], childCommentCount, childCommentNextOffset, replyToAuthor } = item;
+  const vDomContent = domC('div', { innerHTML: content });
+  vDomContent.querySelectorAll('.comment_img').forEach((item) => {
+    const nItem = item as HTMLAnchorElement;
+    const nImage = domC('img', {
+      src: nItem.href,
+      style: ' margin: 12px 0px 0px; display:block:width: 100px; height: 200px;'
+    });
+    nItem.insertAdjacentElement('afterend', nImage);
+    nItem.style.display = 'none';
+  });
+  const contentHTML = vDomContent.innerHTML;
+  vDomContent.remove();
+
   return `
 <div data-id="${id}">
   <div class="ctz-ci ${isChild ? 'ctz-ci-child' : ''}">
@@ -204,7 +218,7 @@ const createCommentHTMLItem = (item: ICommentData, isChild = false, haveChild = 
             : ''
         }
       </div>
-      <div class="ctz-ci-content">${content}</div>
+      <div class="ctz-ci-content">${contentHTML}</div>
       <div class="ctz-ci-info">
         <div class="ctz-ci-info-left">
           <span>${timeFormatter(+`${createdTime}000`, 'YYYY-MM-DD')}</span>

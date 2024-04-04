@@ -126,7 +126,7 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
   const { hiddenTags, hiddenUsers } = store.getHidden();
   const answerTopCard = [];
   target.labelInfo && answerTopCard.push(`本回答节选自${target.labelInfo.text}`);
-  target.rewardInfo.isRewardable && answerTopCard.push('内容包含虚构创作');
+  // target.rewardInfo.isRewardable && answerTopCard.push('内容包含虚构创作');
 
   for (let i = 0, len = hiddenTags.length; i < len; i++) {
     if (answerTopCard.join().includes(hiddenTags[i])) return '';

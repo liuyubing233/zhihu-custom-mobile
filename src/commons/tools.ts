@@ -200,3 +200,6 @@ export const nodesStopPropagation = (names: string[], fnArr: Function[] = [], ty
     });
   }
 };
+
+/** 带前缀的 log */
+export const fnLog = (...str: string[]) => console.log('%c「修改器」', 'color: green;font-weight: bold;', ...str);

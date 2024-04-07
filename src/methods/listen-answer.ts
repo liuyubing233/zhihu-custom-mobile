@@ -30,7 +30,6 @@ export const myListenAnswer = {
     nodesStopPropagation(['.RichContent-inner p'], [], 'copy'); // 去除禁止复制
     const nodeJsonData = domById('js-initialData')!;
     if (!nodeJsonData) {
-      unsafeWindow.ctzLog('cannot find script #js-initialData answer');
       return;
     }
     const pageJsData = JSON.parse(nodeJsonData.innerText || '{}');

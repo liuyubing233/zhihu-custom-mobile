@@ -123,6 +123,7 @@
       });
     }
   };
+  var fnLog = (...str) => console.log("%c「修改器」", "color: green;font-weight: bold;", ...str);
   var HTML_HOOTS = ["www.zhihu.com", "zhuanlan.zhihu.com"];
   var ID_CTZ_COMMENT = "CTZ_COMMENT";
   var ID_CTZ_COMMENT_CHILD = "CTZ_COMMENT_CHILD";
@@ -1837,7 +1838,6 @@
       const nodeJsonData = domById("js-initialData");
       const config = await myStorage.getConfig();
       if (!nodeJsonData) {
-        unsafeWindow.ctzLog("cannot find script #js-initialData recommend");
         return;
       }
       const pageJsData = JSON.parse(nodeJsonData.innerText || "{}");
@@ -2048,11 +2048,6 @@
       }
     });
   };
-  var initWindow = () => {
-    if (!unsafeWindow.ctzLog) {
-      unsafeWindow.ctzLog = (...str) => console.log("%c「修改器」", "color: green;font-weight: bold;", ...str);
-    }
-  };
   var Store = class {
     constructor() {
       /** 页面高度 */
@@ -2101,7 +2096,6 @@
       nodesStopPropagation([".RichContent-inner p"], [], "copy");
       const nodeJsonData = domById("js-initialData");
       if (!nodeJsonData) {
-        unsafeWindow.ctzLog("cannot find script #js-initialData answer");
         return;
       }
       const pageJsData = JSON.parse(nodeJsonData.innerText || "{}");
@@ -2272,10 +2266,9 @@
       myDialog.open();
     });
     store.initSetHidden();
-    initWindow();
     async function onDocumentStart() {
       if (!document.head) {
-        unsafeWindow.ctzLog("not find document.head, waiting for reload...");
+        fnLog("not find document.head, waiting for reload...");
         isHaveHeadWhenInit = false;
         return;
       }

@@ -13,7 +13,6 @@ export const myListenListRecommend = {
     const nodeJsonData = domById('js-initialData');
     const config = await myStorage.getConfig();
     if (!nodeJsonData) {
-      unsafeWindow.ctzLog('cannot find script #js-initialData recommend');
       return;
     }
     const pageJsData = JSON.parse(nodeJsonData.innerText || '{}');

@@ -1,9 +1,8 @@
-import { dom, fnInitDomStyle, pathnameHasFn, throttle } from './commons/tools';
+import { dom, fnInitDomStyle, fnLog, pathnameHasFn, throttle } from './commons/tools';
 import { EXTRA_CLASS_HTML, HTML_HOOTS } from './configs/dom-name';
 import { initHTML } from './init/init-html';
 import { initOperate } from './init/init-operate';
 import { onInitStyleExtra } from './init/init-style-extra';
-import { initWindow } from './init/init-window';
 import { loadBackground, myCustomStyle } from './methods/background';
 import { myDialog } from './methods/dialog-open-close';
 import { echoData } from './methods/echo-data';
@@ -25,12 +24,11 @@ import { INNER_CSS } from './web-resources';
     myDialog.open();
   });
   store.initSetHidden();
-  initWindow();
 
   /** 在启动时注入的内容 */
   async function onDocumentStart() {
     if (!document.head) {
-      unsafeWindow.ctzLog('not find document.head, waiting for reload...');
+      fnLog('not find document.head, waiting for reload...');
       isHaveHeadWhenInit = false;
       return;
     }

@@ -10,6 +10,12 @@ export const myListenListRecommend = {
   next: '',
   loading: false,
   init: async function () {
+    const nodeTopStoryRecommend = dom('.TopstoryMain') || dom('.NotLoggedInTopstory');
+    if (!nodeTopStoryRecommend) return;
+    nodeTopStoryRecommend.addEventListener('touchend', async function (event) {
+      eventListenButton(event);
+    });
+
     const nodeJsonData = domById('js-initialData');
     const config = await myStorage.getConfig();
     if (!nodeJsonData) {
@@ -25,13 +31,6 @@ export const myListenListRecommend = {
     const nodeListContent = nodeTopstoryMain.querySelector('[role="list"]') as HTMLElement;
     // 替换原有数据
     nodeListContent.innerHTML = createListHTML(formatDataToHump(currentData.data), config);
-  },
-  initOperate: function () {
-    const nodeTopStoryRecommend = dom('.TopstoryMain') || dom('.NotLoggedInTopstory');
-    if (!nodeTopStoryRecommend) return;
-    nodeTopStoryRecommend.addEventListener('click', async function (event) {
-      eventListenButton(event);
-    });
   },
   scroll: function () {
     const nodeTopstoryMain = dom('.TopstoryMain');

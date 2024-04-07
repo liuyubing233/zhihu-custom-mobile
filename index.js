@@ -60,12 +60,6 @@
       }, time);
     };
   }
-  var pathnameHasFn = (obj) => {
-    const { pathname } = location;
-    for (let name in obj) {
-      pathname.includes(name) && obj[name]();
-    }
-  };
   var copy = async (value) => {
     if (navigator.clipboard && navigator.permissions) {
       await navigator.clipboard.writeText(value);
@@ -109,7 +103,7 @@
   var hexToRgba = (hex, opacity) => {
     return "rgba(" + parseInt("0x" + hex.slice(1, 3)) + "," + parseInt("0x" + hex.slice(3, 5)) + "," + parseInt("0x" + hex.slice(5, 7)) + "," + opacity + ")";
   };
-  var nodesStopPropagation = (names, fnArr = [], type = "click") => {
+  var nodesStopPropagation = (names, fnArr = [], type = "touchend") => {
     let nodeArray = [];
     names.forEach((item) => {
       nodeArray = nodeArray.concat(Array.prototype.slice.call(domA(item)));
@@ -1645,7 +1639,7 @@
     answerId: void 0,
     initOperate: function() {
       const me = this;
-      domById(ID_CTZ_COMMENT).onclick = async (event) => {
+      domById(ID_CTZ_COMMENT)?.addEventListener("touchend", async (event) => {
         const nodeCurrent = event.target;
         const { id, name } = nodeCurrent;
         if (id === ID_CTZ_COMMENT_CLOSE) {
@@ -1664,7 +1658,7 @@
           myChangeCommentSort[name] && myChangeCommentSort[name]();
           me.create(me.answerId, void 0, name);
         }
-      };
+      });
       dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`).onscroll = throttle(() => {
         const { isEnd, next, totals } = me.page;
         if (isEnd || !next || me.commentData.length >= totals)
@@ -1729,13 +1723,13 @@
     answerId: void 0,
     initOperate: function() {
       const me = this;
-      domById(ID_CTZ_COMMENT_CHILD).onclick = (event) => {
+      domById(ID_CTZ_COMMENT_CHILD).addEventListener("touchend", (event) => {
         const currentTarget = event.target;
         if (currentTarget.id === ID_CTZ_COMMENT_BACK) {
           dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`).scrollTop = 0;
           domById(ID_CTZ_COMMENT_CHILD).style.display = "none";
         }
-      };
+      });
       dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`).onscroll = throttle(() => {
         const { isEnd, next, totals } = me.page;
         if (isEnd || !next || me.commentData.length >= totals)
@@ -1831,10 +1825,245 @@
     const { hasBorder, borderColor, color, text } = item;
     return `<div class="ctz-tag" style="${hasBorder ? `border: 1px solid ${borderColor};` : ""}color: ${color};">${text}</div>`;
   };
+  var initOperate = () => {
+    const myOperation = {
+      [CLASS_INPUT_CLICK]: fnChanger,
+      [CLASS_INPUT_CHANGE]: fnChanger,
+      "ctz-button": (even) => {
+        myButtonOperate[even.name] && myButtonOperate[even.name](even);
+      }
+    };
+    const operation = (even) => {
+      const target = even.target;
+      const classList = target.classList;
+      for (let key in myOperation) {
+        classList.contains(key) && myOperation[key](even.target);
+      }
+    };
+    const nodeCTZContent = dom(".ctz-content");
+    if (nodeCTZContent) {
+      nodeCTZContent.addEventListener("touchend", operation);
+      nodeCTZContent.onchange = operation;
+    }
+    dom(".ctz-menu").onclick = myMenu.click;
+    domA(".ctz-content-top").forEach((i2) => {
+      i2.addEventListener("touchend", myMenu2.click);
+    });
+    domById("CTZ_OPEN_BUTTON").addEventListener("touchend", myDialog.open);
+    domById("CTZ_CLOSE_DIALOG").addEventListener("touchend", myDialog.hide);
+    myListenComment.initOperate();
+    myListenCommentChild.initOperate();
+    domById("CTZ_PREVIEW_IMAGE").addEventListener("touchend", function() {
+      myPreview.hide(this);
+    });
+    document.body.addEventListener("touchend", function(event) {
+      const target = event.target;
+      if (target.classList.contains(CLASS_COPY_LINK)) {
+        const link = target.getAttribute("data-link");
+        copy(link);
+        message("链接复制成功");
+      }
+    });
+  };
+  var Store = class {
+    constructor() {
+      /** 页面高度 */
+      this.pageHeight = 0;
+      /** 回答屏蔽的标签 */
+      this.hiddenTags = [];
+      /** 回答屏蔽的用户 */
+      this.hiddenUsers = [];
+      this.setPageHeight = this.setPageHeight.bind(this);
+      this.getPageHeight = this.getPageHeight.bind(this);
+      this.initSetHidden = this.initSetHidden.bind(this);
+      this.getHidden = this.getHidden.bind(this);
+    }
+    setPageHeight(height) {
+      this.pageHeight = height;
+    }
+    getPageHeight() {
+      return this.pageHeight;
+    }
+    async initSetHidden() {
+      const config = await myStorage.getConfig();
+      const nHiddenTags = Object.keys(HIDDEN_ANSWER_TAG).filter((i2) => !!config[i2]).map((i2) => HIDDEN_ANSWER_TAG[i2]);
+      this.hiddenTags = nHiddenTags;
+      const nHiddenUsers = Object.keys(HIDDEN_ANSWER_ACCOUNT).filter((i2) => !!config[i2]).map((i2) => HIDDEN_ANSWER_ACCOUNT[i2]);
+      config.removeAnonymousAnswer && nHiddenUsers.push("匿名用户");
+      this.hiddenUsers = nHiddenUsers;
+    }
+    getHidden() {
+      return {
+        hiddenTags: this.hiddenTags,
+        hiddenUsers: this.hiddenUsers
+      };
+    }
+  };
+  var store = new Store();
+  var myListenAnswer = {
+    next: "",
+    end: false,
+    loading: false,
+    init: async function() {
+      const config = await myStorage.getConfig();
+      dom(".Question-main").addEventListener("touchend", (event) => {
+        eventListenButton(event);
+      });
+      nodesStopPropagation([".RichContent-inner", ".Question-main figure img", ".Question-main a"], [addListenImage]);
+      nodesStopPropagation([".RichContent-inner p"], [], "copy");
+      const nodeJsonData = domById("js-initialData");
+      if (!nodeJsonData) {
+        return;
+      }
+      const pageJsData = JSON.parse(nodeJsonData.innerText || "{}");
+      const questionId = location.pathname.replace("/question/", "");
+      const currentQuestion = pageJsData.initialState.question.answers[questionId];
+      if (currentQuestion) {
+        const next = currentQuestion.next;
+        this.next = next;
+        this.end = !next;
+      }
+      const prevAnswers = pageJsData.initialState.entities.answers;
+      const prevDataList = Object.keys(prevAnswers).map((i2) => ({
+        target: formatDataToHump(prevAnswers[i2]),
+        targetType: "answer"
+      }));
+      const topCurrentData = prevDataList.pop();
+      if (!topCurrentData)
+        return;
+      const nodeQuestionAnswerContent = dom(".QuestionAnswer-content");
+      if (nodeQuestionAnswerContent) {
+        nodeQuestionAnswerContent.innerHTML = createListItemHTML(topCurrentData, config);
+      } else {
+        const nodeTopList = dom(".List .List");
+        nodeTopList.innerHTML = createListItemHTML(topCurrentData, config);
+        const nodeLists = domA(".Question-main .List");
+        const nodeListContent = nodeLists[nodeLists.length - 1];
+        nodeListContent.innerHTML = createListHTML(prevDataList, config);
+        this.checkListHeight();
+      }
+    },
+    /** 滚动时回答内容处理 */
+    scroll: async function() {
+      const nodeAnswers = domA(".ContentItem.AnswerItem");
+      const windowHeight = window.innerHeight;
+      for (let i2 = 0, len = nodeAnswers.length; i2 < len; i2++) {
+        const nodeItem = nodeAnswers[i2];
+        const nodeClose = nodeItem.querySelector(`.${CLASS_BTN_CLOSE}`);
+        if (!nodeClose || nodeClose.style.display === "none")
+          continue;
+        const bounding2 = nodeItem.getBoundingClientRect();
+        const nodeActions = nodeItem.querySelector(".ContentItem-actions");
+        if (bounding2.bottom < windowHeight || bounding2.top > windowHeight) {
+          if (nodeActions.style.cssText) {
+            nodeActions.style.cssText = "";
+          }
+          continue;
+        }
+        nodeActions.style.cssText += `position: fixed; bottom: 0; left: 0; width: 100%!important; margin: 0;box-shadow: 0 -1px 3px rgba(25,27,31,0.1);`;
+      }
+      const nodeLists = domA(".Question-main .List");
+      if (!nodeLists.length)
+        return;
+      const nodeListContent = nodeLists[nodeLists.length - 1];
+      const bounding = nodeListContent.getBoundingClientRect();
+      if (bounding.bottom - 200 <= window.innerHeight && !this.end && !this.loading) {
+        this.requestData(nodeListContent);
+      }
+    },
+    requestData: async function(nodeListContent) {
+      this.loading = true;
+      openLoading(nodeListContent, "ctz-answer-loading");
+      const res = await commonRequest(this.next);
+      removeByBox(nodeListContent, "ctz-answer-loading");
+      this.loading = false;
+      if (!res)
+        return;
+      const nRes = formatDataToHump(res);
+      const { paging, data } = nRes;
+      if (paging.next === this.next)
+        return;
+      this.end = paging.isEnd;
+      this.next = paging.next;
+      const config = await myStorage.getConfig();
+      nodeListContent.innerHTML += createListHTML(data, config);
+      paging.isEnd && openEnd(nodeListContent, "ctz-answer-end");
+      this.checkListHeight();
+    },
+    /** 检测元素高度 */
+    checkListHeight: function() {
+      const nodeLists = domA(".Question-main .List");
+      if (!nodeLists.length)
+        return;
+      const nodeListContent = nodeLists[nodeLists.length - 1];
+      if (nodeListContent.offsetHeight < window.innerHeight) {
+        this.requestData(nodeListContent);
+      }
+    }
+  };
+  var createListHTML = (data, config) => data.map((i2) => createListItemHTML(i2, config)).join("");
+  var createListItemHTML = (data, config) => {
+    const { releaseTimeForAnswer, copyAnswerLink } = config;
+    const { targetType, target } = data;
+    const { hiddenTags, hiddenUsers } = store.getHidden();
+    const answerTopCard = [];
+    target.labelInfo && answerTopCard.push(`本回答节选自${target.labelInfo.text}`);
+    for (let i2 = 0, len = hiddenTags.length; i2 < len; i2++) {
+      if (answerTopCard.join().includes(hiddenTags[i2]))
+        return "";
+    }
+    for (let i2 = 0, len = hiddenUsers.length; i2 < len; i2++) {
+      if (target.author.name === hiddenUsers[i2])
+        return "";
+    }
+    let extraHTML = "";
+    copyAnswerLink && (extraHTML += createHTMLCopyLink(`https://www.zhihu.com/question/${target.question.id}/answer/${target.id}`));
+    return `
+<div class="List-item ctz-answer-item" tabindex="0">
+  <div
+    class="ContentItem AnswerItem ctz-self-item"
+    data-za-index="0"
+    data-zop='{"authorName":"${target.author.name}","itemId":${target.id},"title":"${target.question.title}","type":"${targetType}"}'
+    name="${target.id}"
+    itemprop="suggestedAnswer"
+    itemtype="http://schema.org/Answer"
+    itemscope=""
+    data-za-detail-view-path-module="AnswerItem"
+    data-za-detail-view-path-index="0"
+    data-za-extra-module='{"card":{"has_image":false,"has_video":false,"content":{"type":"${targetType}","token":"${target.id}","upvote_num":${target.voteupCount},"comment_num":${target.commentCount},"publish_timestamp":null,"parent_token":"${target.question.id}","author_member_hash_id":"${target.author.id}"}}}'
+  >
+    ${innerHTMLContentItemMeta(data, {
+      haveTime: releaseTimeForAnswer,
+      extraHTML
+    })}
+    ${answerTopCard.length ? `<div class="KfeCollection-AnswerTopCard-Container">` + answerTopCard.map(
+      (i2) => `<div class="KfeCollection-OrdinaryLabel-newStyle-mobile" style="margin-right: 6px;"><div class="KfeCollection-OrdinaryLabel-content">${i2}</div></div>`
+    ).join("") + `</div>` : ""}
+    ${innerHTMLRichInnerAndAction(data)}
+  </div>
+</div>`;
+  };
+  var fnListenArticle = () => {
+    nodesStopPropagation([".RichContent-actions .VoteButton", ".BottomActions-CommentBtn"], [clickCommit]);
+    nodesStopPropagation([".Post-content p"], [], "copy");
+  };
+  var clickCommit = (event) => {
+    const target = event.target;
+    if (target.classList.contains("BottomActions-CommentBtn")) {
+      const id = location.pathname.replace("/p/", "");
+      myListenComment.create(id, void 0, void 0, "articles");
+    }
+  };
   var myListenListRecommend = {
     next: "",
     loading: false,
     init: async function() {
+      const nodeTopStoryRecommend = dom(".TopstoryMain") || dom(".NotLoggedInTopstory");
+      if (!nodeTopStoryRecommend)
+        return;
+      nodeTopStoryRecommend.addEventListener("touchend", async function(event) {
+        eventListenButton(event);
+      });
       const nodeJsonData = domById("js-initialData");
       const config = await myStorage.getConfig();
       if (!nodeJsonData) {
@@ -1850,15 +2079,7 @@
       if (!nodeTopstoryMain)
         return;
       const nodeListContent = nodeTopstoryMain.querySelector('[role="list"]');
-      nodeListContent.innerHTML = createListHTML(formatDataToHump(currentData.data), config);
-    },
-    initOperate: function() {
-      const nodeTopStoryRecommend = dom(".TopstoryMain") || dom(".NotLoggedInTopstory");
-      if (!nodeTopStoryRecommend)
-        return;
-      nodeTopStoryRecommend.addEventListener("click", async function(event) {
-        eventListenButton(event);
-      });
+      nodeListContent.innerHTML = createListHTML2(formatDataToHump(currentData.data), config);
     },
     scroll: function() {
       const nodeTopstoryMain = dom(".TopstoryMain");
@@ -1884,7 +2105,7 @@
         return;
       this.next = paging.next;
       const config = await myStorage.getConfig();
-      nodeListContent.innerHTML += createListHTML(data, config);
+      nodeListContent.innerHTML += createListHTML2(data, config);
       this.checkListHeight();
     },
     checkListHeight: function() {
@@ -1963,8 +2184,8 @@
       }
     }
   };
-  var createListHTML = (data, config) => data.map((i2) => createListItemHTML(i2, config)).join("");
-  var createListItemHTML = (data, config) => {
+  var createListHTML2 = (data, config) => data.map((i2) => createListItemHTML2(i2, config)).join("");
+  var createListItemHTML2 = (data, config) => {
     const { releaseTimeForList, copyAnswerLink, showToAnswer } = config;
     const { id, target, attachedInfo, brief } = data;
     const type = target.type;
@@ -2009,234 +2230,6 @@
   </div>
 </div>`;
   };
-  var initOperate = () => {
-    const myOperation = {
-      [CLASS_INPUT_CLICK]: fnChanger,
-      [CLASS_INPUT_CHANGE]: fnChanger,
-      "ctz-button": (even) => {
-        myButtonOperate[even.name] && myButtonOperate[even.name](even);
-      }
-    };
-    const operation = (even) => {
-      const target = even.target;
-      const classList = target.classList;
-      for (let key in myOperation) {
-        classList.contains(key) && myOperation[key](even.target);
-      }
-    };
-    const nodeCTZContent = dom(".ctz-content");
-    if (nodeCTZContent) {
-      nodeCTZContent.onclick = operation;
-      nodeCTZContent.onchange = operation;
-    }
-    dom(".ctz-menu").onclick = myMenu.click;
-    domA(".ctz-content-top").forEach((i2) => i2.onclick = myMenu2.click);
-    domById("CTZ_OPEN_BUTTON").onclick = myDialog.open;
-    domById("CTZ_CLOSE_DIALOG").onclick = myDialog.hide;
-    myListenListRecommend.initOperate();
-    myListenComment.initOperate();
-    myListenCommentChild.initOperate();
-    domById("CTZ_PREVIEW_IMAGE").onclick = function() {
-      myPreview.hide(this);
-    };
-    document.body.addEventListener("click", function(event) {
-      const target = event.target;
-      if (target.classList.contains(CLASS_COPY_LINK)) {
-        const link = target.getAttribute("data-link");
-        copy(link);
-        message("链接复制成功");
-      }
-    });
-  };
-  var Store = class {
-    constructor() {
-      /** 页面高度 */
-      this.pageHeight = 0;
-      /** 回答屏蔽的标签 */
-      this.hiddenTags = [];
-      /** 回答屏蔽的用户 */
-      this.hiddenUsers = [];
-      this.setPageHeight = this.setPageHeight.bind(this);
-      this.getPageHeight = this.getPageHeight.bind(this);
-      this.initSetHidden = this.initSetHidden.bind(this);
-      this.getHidden = this.getHidden.bind(this);
-    }
-    setPageHeight(height) {
-      this.pageHeight = height;
-    }
-    getPageHeight() {
-      return this.pageHeight;
-    }
-    async initSetHidden() {
-      const config = await myStorage.getConfig();
-      const nHiddenTags = Object.keys(HIDDEN_ANSWER_TAG).filter((i2) => !!config[i2]).map((i2) => HIDDEN_ANSWER_TAG[i2]);
-      this.hiddenTags = nHiddenTags;
-      const nHiddenUsers = Object.keys(HIDDEN_ANSWER_ACCOUNT).filter((i2) => !!config[i2]).map((i2) => HIDDEN_ANSWER_ACCOUNT[i2]);
-      config.removeAnonymousAnswer && nHiddenUsers.push("匿名用户");
-      this.hiddenUsers = nHiddenUsers;
-    }
-    getHidden() {
-      return {
-        hiddenTags: this.hiddenTags,
-        hiddenUsers: this.hiddenUsers
-      };
-    }
-  };
-  var store = new Store();
-  var myListenAnswer = {
-    next: "",
-    end: false,
-    loading: false,
-    init: async function() {
-      const config = await myStorage.getConfig();
-      dom(".Question-main").addEventListener("click", (event) => {
-        eventListenButton(event);
-      });
-      nodesStopPropagation([".RichContent-inner", ".Question-main figure img", ".Question-main a"], [addListenImage]);
-      nodesStopPropagation([".RichContent-inner p"], [], "copy");
-      const nodeJsonData = domById("js-initialData");
-      if (!nodeJsonData) {
-        return;
-      }
-      const pageJsData = JSON.parse(nodeJsonData.innerText || "{}");
-      const questionId = location.pathname.replace("/question/", "");
-      const currentQuestion = pageJsData.initialState.question.answers[questionId];
-      if (currentQuestion) {
-        const next = currentQuestion.next;
-        this.next = next;
-        this.end = !next;
-      }
-      const prevAnswers = pageJsData.initialState.entities.answers;
-      const prevDataList = Object.keys(prevAnswers).map((i2) => ({
-        target: formatDataToHump(prevAnswers[i2]),
-        targetType: "answer"
-      }));
-      const topCurrentData = prevDataList.pop();
-      if (!topCurrentData)
-        return;
-      const nodeQuestionAnswerContent = dom(".QuestionAnswer-content");
-      if (nodeQuestionAnswerContent) {
-        nodeQuestionAnswerContent.innerHTML = createListItemHTML2(topCurrentData, config);
-      } else {
-        const nodeTopList = dom(".List .List");
-        nodeTopList.innerHTML = createListItemHTML2(topCurrentData, config);
-        const nodeLists = domA(".Question-main .List");
-        const nodeListContent = nodeLists[nodeLists.length - 1];
-        nodeListContent.innerHTML = createListHTML2(prevDataList, config);
-        this.checkListHeight();
-      }
-    },
-    /** 滚动时回答内容处理 */
-    scroll: async function() {
-      const nodeAnswers = domA(".ContentItem.AnswerItem");
-      const windowHeight = window.innerHeight;
-      for (let i2 = 0, len = nodeAnswers.length; i2 < len; i2++) {
-        const nodeItem = nodeAnswers[i2];
-        const nodeClose = nodeItem.querySelector(`.${CLASS_BTN_CLOSE}`);
-        if (!nodeClose || nodeClose.style.display === "none")
-          continue;
-        const bounding2 = nodeItem.getBoundingClientRect();
-        const nodeActions = nodeItem.querySelector(".ContentItem-actions");
-        if (bounding2.bottom < windowHeight || bounding2.top > windowHeight) {
-          if (nodeActions.style.cssText) {
-            nodeActions.style.cssText = "";
-          }
-          continue;
-        }
-        nodeActions.style.cssText += `position: fixed; bottom: 0; left: 0; width: 100%!important; margin: 0;box-shadow: 0 -1px 3px rgba(25,27,31,0.1);`;
-      }
-      const nodeLists = domA(".Question-main .List");
-      if (!nodeLists.length)
-        return;
-      const nodeListContent = nodeLists[nodeLists.length - 1];
-      const bounding = nodeListContent.getBoundingClientRect();
-      if (bounding.bottom - 200 <= window.innerHeight && !this.end && !this.loading) {
-        this.requestData(nodeListContent);
-      }
-    },
-    requestData: async function(nodeListContent) {
-      this.loading = true;
-      openLoading(nodeListContent, "ctz-answer-loading");
-      const res = await commonRequest(this.next);
-      removeByBox(nodeListContent, "ctz-answer-loading");
-      this.loading = false;
-      if (!res)
-        return;
-      const nRes = formatDataToHump(res);
-      const { paging, data } = nRes;
-      if (paging.next === this.next)
-        return;
-      this.end = paging.isEnd;
-      this.next = paging.next;
-      const config = await myStorage.getConfig();
-      nodeListContent.innerHTML += createListHTML2(data, config);
-      paging.isEnd && openEnd(nodeListContent, "ctz-answer-end");
-      this.checkListHeight();
-    },
-    /** 检测元素高度 */
-    checkListHeight: function() {
-      const nodeLists = domA(".Question-main .List");
-      if (!nodeLists.length)
-        return;
-      const nodeListContent = nodeLists[nodeLists.length - 1];
-      if (nodeListContent.offsetHeight < window.innerHeight) {
-        this.requestData(nodeListContent);
-      }
-    }
-  };
-  var createListHTML2 = (data, config) => data.map((i2) => createListItemHTML2(i2, config)).join("");
-  var createListItemHTML2 = (data, config) => {
-    const { releaseTimeForAnswer, copyAnswerLink } = config;
-    const { targetType, target } = data;
-    const { hiddenTags, hiddenUsers } = store.getHidden();
-    const answerTopCard = [];
-    target.labelInfo && answerTopCard.push(`本回答节选自${target.labelInfo.text}`);
-    for (let i2 = 0, len = hiddenTags.length; i2 < len; i2++) {
-      if (answerTopCard.join().includes(hiddenTags[i2]))
-        return "";
-    }
-    for (let i2 = 0, len = hiddenUsers.length; i2 < len; i2++) {
-      if (target.author.name === hiddenUsers[i2])
-        return "";
-    }
-    let extraHTML = "";
-    copyAnswerLink && (extraHTML += createHTMLCopyLink(`https://www.zhihu.com/question/${target.question.id}/answer/${target.id}`));
-    return `
-<div class="List-item ctz-answer-item" tabindex="0">
-  <div
-    class="ContentItem AnswerItem ctz-self-item"
-    data-za-index="0"
-    data-zop='{"authorName":"${target.author.name}","itemId":${target.id},"title":"${target.question.title}","type":"${targetType}"}'
-    name="${target.id}"
-    itemprop="suggestedAnswer"
-    itemtype="http://schema.org/Answer"
-    itemscope=""
-    data-za-detail-view-path-module="AnswerItem"
-    data-za-detail-view-path-index="0"
-    data-za-extra-module='{"card":{"has_image":false,"has_video":false,"content":{"type":"${targetType}","token":"${target.id}","upvote_num":${target.voteupCount},"comment_num":${target.commentCount},"publish_timestamp":null,"parent_token":"${target.question.id}","author_member_hash_id":"${target.author.id}"}}}'
-  >
-    ${innerHTMLContentItemMeta(data, {
-      haveTime: releaseTimeForAnswer,
-      extraHTML
-    })}
-    ${answerTopCard.length ? `<div class="KfeCollection-AnswerTopCard-Container">` + answerTopCard.map(
-      (i2) => `<div class="KfeCollection-OrdinaryLabel-newStyle-mobile" style="margin-right: 6px;"><div class="KfeCollection-OrdinaryLabel-content">${i2}</div></div>`
-    ).join("") + `</div>` : ""}
-    ${innerHTMLRichInnerAndAction(data)}
-  </div>
-</div>`;
-  };
-  var fnListenArticle = () => {
-    nodesStopPropagation([".RichContent-actions .VoteButton", ".BottomActions-CommentBtn"], [clickCommit]);
-    nodesStopPropagation([".Post-content p"], [], "copy");
-  };
-  var clickCommit = (event) => {
-    const target = event.target;
-    if (target.classList.contains("BottomActions-CommentBtn")) {
-      const id = location.pathname.replace("/p/", "");
-      myListenComment.create(id, void 0, void 0, "articles");
-    }
-  };
   var addQuestionLogButton = async () => {
     const { showQuestionLog } = await myStorage.getConfig();
     const nodeBtnGroup = dom(".MobileQuestionButtonGroup");
@@ -2258,65 +2251,47 @@
     nodeBtnGroup.appendChild(nBtn);
   };
   (function() {
-    const { hostname, host } = location;
+    const { hostname, host, pathname } = location;
     if (!HTML_HOOTS.includes(hostname) || window.frameElement)
       return;
-    let isHaveHeadWhenInit = true;
     GM_registerMenuCommand("⚙️ 设置", () => {
       myDialog.open();
     });
     store.initSetHidden();
     async function onDocumentStart() {
-      if (!document.head) {
-        fnLog("not find document.head, waiting for reload...");
-        isHaveHeadWhenInit = false;
+      if (!document.head || !document.body) {
+        fnLog("not find head and body, waiting for reload...");
+        setTimeout(() => {
+          onDocumentStart();
+        }, 500);
         return;
       }
       fnInitDomStyle("CTZ_STYLE", INNER_CSS);
       addHistoryView();
       onInitStyleExtra();
       EXTRA_CLASS_HTML[host] && dom("html").classList.add(EXTRA_CLASS_HTML[host]);
+      initHTML();
+      initOperate();
+      echoData();
+      loadBackground();
+      myCustomStyle.init();
+      echoHistory();
+      setTimeout(() => {
+        myListenListRecommend.init();
+      }, 0);
+      if (host === "zhuanlan.zhihu.com") {
+        addTimeForArticle();
+        fnListenArticle();
+      }
+      if (/question/.test(pathname)) {
+        addTimeForQuestion();
+        addQuestionLogButton();
+        setTimeout(() => {
+          myListenAnswer.init();
+        }, 0);
+      }
     }
     onDocumentStart();
-    window.addEventListener(
-      "DOMContentLoaded",
-      async () => {
-        if (!isHaveHeadWhenInit) {
-          await onDocumentStart();
-        }
-        initHTML();
-        initOperate();
-        echoData();
-        loadBackground();
-        myCustomStyle.init();
-        echoHistory();
-        setTimeout(() => {
-          myListenListRecommend.init();
-        }, 0);
-        historyToChangePathname();
-        if (host === "zhuanlan.zhihu.com") {
-          addTimeForArticle();
-          fnListenArticle();
-        }
-      },
-      false
-    );
-    const historyToChangePathname = () => {
-      pathnameHasFn({
-        question: () => {
-          addTimeForQuestion();
-          addQuestionLogButton();
-          setTimeout(() => {
-            myListenAnswer.init();
-          }, 0);
-        }
-      });
-    };
-    const changeHistory = () => {
-      historyToChangePathname();
-    };
-    window.addEventListener("popstate", changeHistory);
-    window.addEventListener("pushState", changeHistory);
     window.addEventListener("load", () => {
       const nodeSignModal = dom(".signFlowModal");
       const nodeSignClose = nodeSignModal && nodeSignModal.querySelector(".Modal-closeButton");

@@ -13,7 +13,7 @@ export const CLASS_BTN_CLOSE = 'ctz-n-button-close';
 export const CLASS_BTN_COMMENT = 'ctz-n-button-comment';
 
 /** 监听图片操作 */
-export const addListenImage = (event: MouseEvent) => {
+export const addListenImage = (event: TouchEvent) => {
   const target = event.target as IMyElement;
   if (target.nodeName === 'IMG') {
     let src = target.src;
@@ -27,7 +27,7 @@ export const addListenImage = (event: MouseEvent) => {
 };
 
 /** 自定义按钮的处理方式 */
-export const eventListenButton = (event: MouseEvent) => {
+export const eventListenButton = (event: TouchEvent) => {
   addListenImage(event);
   const target = event.target as IMyElement;
   Object.keys(eventMainObject).forEach((key) => {

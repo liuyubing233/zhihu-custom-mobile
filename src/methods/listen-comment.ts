@@ -41,7 +41,8 @@ export const myListenComment: myListenComment = {
   answerId: undefined,
   initOperate: function () {
     const me = this as myListenComment;
-    domById(ID_CTZ_COMMENT)!.onclick = async (event) => {
+
+    domById(ID_CTZ_COMMENT)?.addEventListener('touchend', async (event) => {
       const nodeCurrent = event.target as IMyElement;
       const { id, name } = nodeCurrent;
       // 关闭弹窗按钮
@@ -63,7 +64,7 @@ export const myListenComment: myListenComment = {
         myChangeCommentSort[name] && myChangeCommentSort[name]();
         me.create(me.answerId, undefined, name);
       }
-    };
+    });
 
     dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!.onscroll = throttle(() => {
       const { isEnd, next, totals } = me.page;
@@ -128,13 +129,13 @@ export const myListenCommentChild: myListenComment = {
   answerId: undefined,
   initOperate: function () {
     const me = this;
-    domById(ID_CTZ_COMMENT_CHILD)!.onclick = (event) => {
+    domById(ID_CTZ_COMMENT_CHILD)!.addEventListener('touchend', (event) => {
       const currentTarget = event.target as IMyElement;
       if (currentTarget.id === ID_CTZ_COMMENT_BACK) {
         dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!.scrollTop = 0;
         domById(ID_CTZ_COMMENT_CHILD)!.style.display = 'none';
       }
-    };
+    });
 
     dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!.onscroll = throttle(() => {
       const { isEnd, next, totals } = me.page;
@@ -192,7 +193,7 @@ const createCommentHTMLItem = (item: ICommentData, isChild = false, haveChild = 
     const nItem = item as HTMLAnchorElement;
     const nImage = domC('img', {
       src: nItem.href,
-      style: ' margin: 12px 0px 0px; display:block:width: 100px; height: 200px;'
+      style: ' margin: 12px 0px 0px; display:block:width: 100px; height: 200px;',
     });
     nItem.insertAdjacentElement('afterend', nImage);
     nItem.style.display = 'none';

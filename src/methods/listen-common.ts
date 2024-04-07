@@ -13,7 +13,7 @@ export const CLASS_BTN_CLOSE = 'ctz-n-button-close';
 export const CLASS_BTN_COMMENT = 'ctz-n-button-comment';
 
 /** 监听图片操作 */
-export const addListenImage = (event: TouchEvent) => {
+export const addListenImage = (event: MouseEvent) => {
   const target = event.target as IMyElement;
   if (target.nodeName === 'IMG') {
     let src = target.src;
@@ -27,7 +27,7 @@ export const addListenImage = (event: TouchEvent) => {
 };
 
 /** 自定义按钮的处理方式 */
-export const eventListenButton = (event: TouchEvent) => {
+export const eventListenButton = (event: MouseEvent) => {
   addListenImage(event);
   const target = event.target as IMyElement;
   Object.keys(eventMainObject).forEach((key) => {
@@ -64,7 +64,7 @@ const eventMainObject: Record<string, Function> = {
   },
   /** 评论 */
   [CLASS_BTN_COMMENT]: async (currentNode: HTMLElement) => {
-    const nodeAnswerItem = domP(currentNode, 'class', 'AnswerItem')!;
+    const nodeAnswerItem = domP(currentNode, 'class', 'ContentItem')!;
     const dataZopJson = nodeAnswerItem.getAttribute('data-zop') || '{}';
     const dataZop: IZhihuDataZop = JSON.parse(dataZopJson);
     myListenComment.create(dataZop.itemId);
@@ -103,7 +103,7 @@ export const openEnd = (box: HTMLElement, className: string) => {
 
 /** innerHTML for 用户信息栏及下面扩展 */
 export const innerHTMLContentItemMeta = (data: any, options?: { extraHTML?: string; haveTime?: boolean }) => {
-  const { target } = data;
+  const { target, createdTime, updatedTime } = data;
   const { extraHTML = '', haveTime } = options || {};
   return `
 <div class="ContentItem-meta">
@@ -133,7 +133,7 @@ export const innerHTMLContentItemMeta = (data: any, options?: { extraHTML?: stri
       ${extraHTML}
     </div>
   </div>
-  ${haveTime ? createTimeHTML(`${target.createdTime}000`, `${target.updatedTime}000`) : ''}
+  ${haveTime ? createTimeHTML(`${createdTime}000`, `${updatedTime}000`) : ''}
   <div class="LabelContainer-wrapper"></div>
 </div>
 `;
@@ -142,7 +142,7 @@ export const innerHTMLContentItemMeta = (data: any, options?: { extraHTML?: stri
 /** innerHTML for 内容和操作栏 */
 export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: number; moreMaxHeight?: string }) => {
   const { moreLength = 400, moreMaxHeight = '180px' } = options || {};
-  const { target } = data;
+  const { target, createdTime, updatedTime } = data;
   const isVideo = target.type === 'zvideo';
   const isPin = target.type === 'pin';
   const innerHTML = isVideo
@@ -190,17 +190,19 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
   });
   const contentHTML = vDomContent.innerHTML;
   vDomContent.remove();
+
+  const voteCount = target.voteupCount || target.voteCount;
   return `
 <meta itemprop="image" />
-<meta itemprop="upvoteCount" content="${target.voteupCount}" />
-<meta itemprop="dateCreated" content="${target.createdTime}000" />
-<meta itemprop="dateModified" content="${target.updatedTime}000" />
+<meta itemprop="upvoteCount" content="${voteCount}" />
+<meta itemprop="dateCreated" content="${createdTime}000" />
+<meta itemprop="dateModified" content="${updatedTime}000" />
 <meta itemprop="commentCount" content="${target.commentCount}" />
 <div class="RichContent ${isMore ? 'is-collapsed' : ''} RichContent--unescapable">
   <div class="RichContent-inner RichContent-inner--collapsed" style="${isMore ? `max-height: ${moreMaxHeight}` : ''}">${contentHTML}</div>
   <div class="ContentItem-actions">
-    <button aria-label="赞同 ${target.voteupCount}" aria-live="polite" type="button" class="Button VoteButton VoteButton--up">
-      ▲ 赞同 ${target.voteupCount}
+    <button aria-label="赞同 ${voteCount}" aria-live="polite" type="button" class="Button VoteButton VoteButton--up">
+      ▲ 赞同 ${voteCount}
     </button>
     <button   aria-label="反对" aria-live="polite" type="button" class="Button VoteButton VoteButton--down VoteButton--mobileDown">
       ▼

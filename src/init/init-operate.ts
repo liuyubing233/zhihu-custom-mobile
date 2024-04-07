@@ -26,26 +26,26 @@ export const initOperate = () => {
 
   const nodeCTZContent = dom('.ctz-content');
   if (nodeCTZContent) {
-    nodeCTZContent.addEventListener('touchend', operation);
+    nodeCTZContent.addEventListener('click', operation);
     nodeCTZContent.onchange = operation;
   }
 
   dom('.ctz-menu')!.onclick = myMenu.click;
   domA('.ctz-content-top').forEach((i) => {
-    i.addEventListener('touchend', myMenu2.click);
+    i.addEventListener('click', myMenu2.click);
   });
 
-  domById('CTZ_OPEN_BUTTON')!.addEventListener('touchend', myDialog.open);
-  domById('CTZ_CLOSE_DIALOG')!.addEventListener('touchend', myDialog.hide);
+  domById('CTZ_OPEN_BUTTON')!.addEventListener('click', myDialog.open);
+  domById('CTZ_CLOSE_DIALOG')!.addEventListener('click', myDialog.hide);
 
   myListenComment.initOperate();
   myListenCommentChild.initOperate();
 
-  domById('CTZ_PREVIEW_IMAGE')!.addEventListener('touchend', function () {
+  domById('CTZ_PREVIEW_IMAGE')!.addEventListener('click', function () {
     myPreview.hide(this);
   });
 
-  document.body.addEventListener('touchend', function (event: TouchEvent) {
+  document.body.addEventListener('click', function (event) {
     const target = event.target as HTMLElement;
     if (target.classList.contains(CLASS_COPY_LINK)) {
       const link = target.getAttribute('data-link')!;

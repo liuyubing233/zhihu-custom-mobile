@@ -4,7 +4,6 @@ import { CLASS_COPY_LINK, CLASS_INPUT_CHANGE, CLASS_INPUT_CLICK } from '../confi
 import { myButtonOperate } from '../methods/dialog-button-operate';
 import { fnChanger } from '../methods/fn-changer';
 import { myListenComment, myListenCommentChild } from '../methods/listen-comment';
-import { myListenListRecommend } from '../methods/listen-list-recommend';
 import { myMenu, myMenu2 } from '../methods/menu';
 import { myPreview } from '../methods/preview';
 
@@ -27,22 +26,26 @@ export const initOperate = () => {
 
   const nodeCTZContent = dom('.ctz-content');
   if (nodeCTZContent) {
-    nodeCTZContent.onclick = operation;
+    nodeCTZContent.addEventListener('touchend', operation);
     nodeCTZContent.onchange = operation;
   }
 
   dom('.ctz-menu')!.onclick = myMenu.click;
-  domA('.ctz-content-top').forEach((i) => (i.onclick = myMenu2.click));
-  domById('CTZ_OPEN_BUTTON')!.onclick = myDialog.open;
-  domById('CTZ_CLOSE_DIALOG')!.onclick = myDialog.hide;
-  myListenListRecommend.initOperate();
+  domA('.ctz-content-top').forEach((i) => {
+    i.addEventListener('touchend', myMenu2.click);
+  });
+
+  domById('CTZ_OPEN_BUTTON')!.addEventListener('touchend', myDialog.open);
+  domById('CTZ_CLOSE_DIALOG')!.addEventListener('touchend', myDialog.hide);
+
   myListenComment.initOperate();
   myListenCommentChild.initOperate();
-  domById('CTZ_PREVIEW_IMAGE')!.onclick = function () {
-    myPreview.hide(this);
-  };
 
-  document.body.addEventListener('click', function (event: MouseEvent) {
+  domById('CTZ_PREVIEW_IMAGE')!.addEventListener('touchend', function () {
+    myPreview.hide(this);
+  });
+
+  document.body.addEventListener('touchend', function (event: TouchEvent) {
     const target = event.target as HTMLElement;
     if (target.classList.contains(CLASS_COPY_LINK)) {
       const link = target.getAttribute('data-link')!;

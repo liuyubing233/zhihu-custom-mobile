@@ -5,7 +5,7 @@ import { echoHistory } from './history';
 
 /** 编辑器弹窗打开关闭方法 */
 export const myDialog = {
-  open: (e?: MouseEvent) => {
+  open: (e?: TouchEvent) => {
     e && e.preventDefault();
     const nodeDialog = domById('CTZ_DIALOG');
     nodeDialog && (nodeDialog.style.display = 'flex');

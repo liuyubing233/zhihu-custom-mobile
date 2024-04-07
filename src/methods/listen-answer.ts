@@ -23,7 +23,7 @@ export const myListenAnswer = {
   loading: false,
   init: async function () {
     const config = await myStorage.getConfig();
-    dom('.Question-main')!.addEventListener('click', (event: MouseEvent) => {
+    dom('.Question-main')!.addEventListener('touchend', (event: TouchEvent) => {
       eventListenButton(event);
     });
     nodesStopPropagation(['.RichContent-inner', '.Question-main figure img', '.Question-main a'], [addListenImage]);

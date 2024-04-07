@@ -23,7 +23,7 @@ export const myListenAnswer = {
   loading: false,
   init: async function () {
     const config = await myStorage.getConfig();
-    dom('.Question-main')!.addEventListener('touchend', (event: TouchEvent) => {
+    dom('.Question-main')!.addEventListener('click', (event) => {
       eventListenButton(event);
     });
     nodesStopPropagation(['.RichContent-inner', '.Question-main figure img', '.Question-main a'], [addListenImage]);
@@ -64,7 +64,7 @@ export const myListenAnswer = {
   },
   /** 滚动时回答内容处理 */
   scroll: async function () {
-    const nodeAnswers = domA('.ContentItem.AnswerItem');
+    const nodeAnswers = domA('.ContentItem');
     const windowHeight = window.innerHeight;
     for (let i = 0, len = nodeAnswers.length; i < len; i++) {
       // 悬浮底部操作栏

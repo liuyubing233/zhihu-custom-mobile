@@ -12,7 +12,7 @@ export const addQuestionLogButton = async () => {
     innerHTML: '查看问题日志',
     className: `ctz-button ctz-button-transparent ${className}`,
   })
-  nBtn.addEventListener('touchend', () => {
+  nBtn.addEventListener('click', () => {
     const findPath = location.pathname.match(/\/question\/\d+/);
     if (findPath && findPath.length) {
       const nPathname = findPath[0];

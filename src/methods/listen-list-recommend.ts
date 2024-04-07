@@ -1,6 +1,6 @@
 import { commonRequest, formatDataToHump } from '../commons/request';
 import { myStorage } from '../commons/storage';
-import { dom, domById } from '../commons/tools';
+import { dom, domById, fnLog } from '../commons/tools';
 import { IConfig } from '../types';
 import { IZhihuListRecommendResponse, IZhihuRecommendData, IZhihuRecommendDataTarget } from '../types/zhihu-list-response.type';
 import { createHTMLCopyLink, eventListenButton, innerHTMLContentItemMeta, innerHTMLRichInnerAndAction, openLoading, removeByBox } from './listen-common';
@@ -12,7 +12,7 @@ export const myListenListRecommend = {
   init: async function () {
     const nodeTopStoryRecommend = dom('.TopstoryMain') || dom('.NotLoggedInTopstory');
     if (!nodeTopStoryRecommend) return;
-    nodeTopStoryRecommend.addEventListener('touchend', async function (event) {
+    nodeTopStoryRecommend.addEventListener('click', async function (event) {
       eventListenButton(event);
     });
 
@@ -49,6 +49,7 @@ export const myListenListRecommend = {
     this.loading = false;
     if (!res) return;
     const nRes = formatDataToHump(res);
+    fnLog(nRes)
     const { paging, data } = nRes as IZhihuListRecommendResponse;
     if (paging.next === this.next) return;
     this.next = paging.next;

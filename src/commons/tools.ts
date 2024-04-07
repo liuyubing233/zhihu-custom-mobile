@@ -102,7 +102,7 @@ export const promisePercent = (requests: any[] = [], callback: (pro: IPromisePer
  */
 export const mouseEventClick = (element?: HTMLElement) => {
   if (!element) return;
-  const event = new TouchEvent('touchend', {
+  const event = new TouchEvent('click', {
     view: unsafeWindow,
     bubbles: true,
     cancelable: true,
@@ -186,7 +186,7 @@ export const hexToRgba = (hex: string, opacity: number | string) => {
  * @param names 查询的名称列表，用于 document.querySelectAll
  * @param fnArr 可添加的方法
  */
-export const nodesStopPropagation = (names: string[], fnArr: Function[] = [], type = 'touchend') => {
+export const nodesStopPropagation = (names: string[], fnArr: Function[] = [], type = 'click') => {
   let nodeArray: HTMLElement[] = [];
   names.forEach((item) => {
     nodeArray = nodeArray.concat(Array.prototype.slice.call(domA(item)));

@@ -41,8 +41,7 @@ export const myListenComment: myListenComment = {
   answerId: undefined,
   initOperate: function () {
     const me = this as myListenComment;
-
-    domById(ID_CTZ_COMMENT)?.addEventListener('touchend', async (event) => {
+    domById(ID_CTZ_COMMENT)?.addEventListener('click', async (event) => {
       const nodeCurrent = event.target as IMyElement;
       const { id, name } = nodeCurrent;
       // 关闭弹窗按钮
@@ -129,7 +128,7 @@ export const myListenCommentChild: myListenComment = {
   answerId: undefined,
   initOperate: function () {
     const me = this;
-    domById(ID_CTZ_COMMENT_CHILD)!.addEventListener('touchend', (event) => {
+    domById(ID_CTZ_COMMENT_CHILD)!.addEventListener('click', (event) => {
       const currentTarget = event.target as IMyElement;
       if (currentTarget.id === ID_CTZ_COMMENT_BACK) {
         dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!.scrollTop = 0;

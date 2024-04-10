@@ -1,6 +1,6 @@
 import { commonRequest, formatDataToHump } from '../commons/request';
 import { myStorage } from '../commons/storage';
-import { dom, domA, domById, nodesStopPropagation } from '../commons/tools';
+import { dom, domA, domById, fnLog, nodesStopPropagation } from '../commons/tools';
 import { store } from '../store';
 import { IConfig } from '../types';
 import { IZhihuAnswerDataItem, IZhihuAnswerResponse } from '../types/zhihu-answer.type';
@@ -48,7 +48,6 @@ export const myListenAnswer = {
     }));
     const topCurrentData = prevDataList.pop();
     if (!topCurrentData) return;
-
     const nodeQuestionAnswerContent = dom('.QuestionAnswer-content');
     if (nodeQuestionAnswerContent) {
       // 为列表跳转进来的当前回答
@@ -97,6 +96,7 @@ export const myListenAnswer = {
     this.loading = false;
     if (!res) return;
     const nRes = formatDataToHump(res);
+    fnLog(nRes)
     const { paging, data } = nRes as IZhihuAnswerResponse;
     if (paging.next === this.next) return;
     this.end = paging.isEnd;
@@ -156,6 +156,7 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
     ${innerHTMLContentItemMeta(data,  {
       haveTime: releaseTimeForAnswer,
       extraHTML,
+      config
     })}
     ${
       answerTopCard.length

@@ -21,4 +21,5 @@ export const BASIC_SHOW_CONTENT = [
   { label: '<b>列表</b>显示直达问题按钮', value: 'showToAnswer' },
   { label: '<b>问题详情</b>显示<b>查看问题日志</b>按钮', value: 'showQuestionLog' },
   { label: '<b>评论</b>顺序、关闭操作栏置于底部', value: 'commentHeaderToBottom' },
+  { label: '显示用户IP（存在历史回答IP缺失的情况）', value: 'showIP' },
 ];

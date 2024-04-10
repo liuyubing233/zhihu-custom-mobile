@@ -1,5 +1,7 @@
 # 知乎修改器移动版
 
+#### <span style="color: red;font-weight: bold;">注意：重写了首页和回答列表用来持续加载内容，不兼容其他内容处理脚本。</span>
+
 ![样式](https://pic.imgdb.cn/item/65ded2999f345e8d0394c926.png)
 
 **隐藏修改器唤起按钮仍可以在脚本菜单处打开**

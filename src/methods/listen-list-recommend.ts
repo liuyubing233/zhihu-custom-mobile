@@ -180,6 +180,7 @@ const createListItemHTML = (data: IZhihuRecommendData, config: IConfig) => {
       ${innerHTMLContentItemMeta(data, {
         extraHTML,
         haveTime: releaseTimeForList,
+        config,
       })}
       ${innerHTMLRichInnerAndAction(data, { moreLength: 40, moreMaxHeight: '100px' })}
     </div>

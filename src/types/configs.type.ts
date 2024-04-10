@@ -259,4 +259,6 @@ export interface IConfig extends IConfigHidden, IConfigFilter {
   showToAnswer?: boolean;
   /** 评论顺序、关闭操作栏置于底部 */
   commentHeaderToBottom?: boolean;
+  /** 显示IP */
+  showIP?: boolean;
 }

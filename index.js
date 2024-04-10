@@ -18,7 +18,7 @@
 // @grant        GM.getValue
 // @grant        GM.setValue
 // @grant        GM_registerMenuCommand
-// @run-at       document-start
+// @run-at       document-end
 // ==/UserScript==
 
 "use strict";
@@ -202,7 +202,8 @@
     copyAnswerLink: true,
     showQuestionLog: true,
     showAllContent: true,
-    showToAnswer: true
+    showToAnswer: true,
+    showIP: true
   };
   var SAVE_HISTORY_NUMBER = 500;
   var HIDDEN_ANSWER_TAG = {
@@ -284,7 +285,8 @@
     { label: "一键获取内容链接", value: "copyAnswerLink" },
     { label: "<b>列表</b>显示直达问题按钮", value: "showToAnswer" },
     { label: "<b>问题详情</b>显示<b>查看问题日志</b>按钮", value: "showQuestionLog" },
-    { label: "<b>评论</b>顺序、关闭操作栏置于底部", value: "commentHeaderToBottom" }
+    { label: "<b>评论</b>顺序、关闭操作栏置于底部", value: "commentHeaderToBottom" },
+    { label: "显示用户IP（存在历史回答IP缺失的情况）", value: "showIP" }
   ];
   var myStorage = {
     set: async function(name, value) {
@@ -1511,9 +1513,9 @@
   };
   var innerHTMLContentItemMeta = (data, options) => {
     const { target } = data;
+    const { extraHTML = "", haveTime, config } = options;
     const createdTime = data.createdTime || target.createdTime;
     const updatedTime = data.updatedTime || target.updatedTime;
-    const { extraHTML = "", haveTime } = options || {};
     return `
 <div class="ContentItem-meta">
   <div class="AuthorInfo AnswerItem-authorInfo AnswerItem-authorInfo--related" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1541,6 +1543,7 @@
     </div>
   </div>
   ${haveTime ? createTimeHTML(`${createdTime}000`, `${updatedTime}000`) : ""}
+  ${config.showIP ? `<div>${target.ipInfo || ""}</div>` : ""}
   <div class="LabelContainer-wrapper"></div>
 </div>
 `;
@@ -1981,6 +1984,7 @@
       if (!res)
         return;
       const nRes = formatDataToHump(res);
+      fnLog(nRes);
       const { paging, data } = nRes;
       if (paging.next === this.next)
         return;
@@ -2035,7 +2039,8 @@
   >
     ${innerHTMLContentItemMeta(data, {
       haveTime: releaseTimeForAnswer,
-      extraHTML
+      extraHTML,
+      config
     })}
     ${answerTopCard.length ? `<div class="KfeCollection-AnswerTopCard-Container">` + answerTopCard.map(
       (i2) => `<div class="KfeCollection-OrdinaryLabel-newStyle-mobile" style="margin-right: 6px;"><div class="KfeCollection-OrdinaryLabel-content">${i2}</div></div>`
@@ -2225,7 +2230,8 @@
       </h2>
       ${innerHTMLContentItemMeta(data, {
       extraHTML,
-      haveTime: releaseTimeForList
+      haveTime: releaseTimeForList,
+      config
     })}
       ${innerHTMLRichInnerAndAction(data, { moreLength: 40, moreMaxHeight: "100px" })}
     </div>

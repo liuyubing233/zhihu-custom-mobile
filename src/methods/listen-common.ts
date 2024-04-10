@@ -1,6 +1,6 @@
 import { domC, domP } from '../commons/tools';
 import { CLASS_COPY_LINK } from '../configs';
-import { IMyElement, IZhihuDataZop } from '../types';
+import { IConfig, IMyElement, IZhihuDataZop } from '../types';
 import { myListenComment } from './listen-comment';
 import { myPreview } from './preview';
 import { createTimeHTML } from './time';
@@ -102,11 +102,11 @@ export const openEnd = (box: HTMLElement, className: string) => {
 };
 
 /** innerHTML for 用户信息栏及下面扩展 */
-export const innerHTMLContentItemMeta = (data: any, options?: { extraHTML?: string; haveTime?: boolean }) => {
+export const innerHTMLContentItemMeta = (data: any, options: { extraHTML?: string; haveTime?: boolean, config: IConfig }) => {
   const { target } = data;
+  const { extraHTML = '', haveTime, config } = options;
   const createdTime = data.createdTime || target.createdTime;
   const updatedTime = data.updatedTime || target.updatedTime;
-  const { extraHTML = '', haveTime } = options || {};
   return `
 <div class="ContentItem-meta">
   <div class="AuthorInfo AnswerItem-authorInfo AnswerItem-authorInfo--related" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -136,6 +136,7 @@ export const innerHTMLContentItemMeta = (data: any, options?: { extraHTML?: stri
     </div>
   </div>
   ${haveTime ? createTimeHTML(`${createdTime}000`, `${updatedTime}000`) : ''}
+  ${config.showIP ? `<div>${target.ipInfo || ''}</div>` : ''}
   <div class="LabelContainer-wrapper"></div>
 </div>
 `;

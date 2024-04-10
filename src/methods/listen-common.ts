@@ -103,7 +103,9 @@ export const openEnd = (box: HTMLElement, className: string) => {
 
 /** innerHTML for 用户信息栏及下面扩展 */
 export const innerHTMLContentItemMeta = (data: any, options?: { extraHTML?: string; haveTime?: boolean }) => {
-  const { target, createdTime, updatedTime } = data;
+  const { target } = data;
+  const createdTime = data.createdTime || target.createdTime;
+  const updatedTime = data.updatedTime || target.updatedTime;
   const { extraHTML = '', haveTime } = options || {};
   return `
 <div class="ContentItem-meta">
@@ -142,7 +144,7 @@ export const innerHTMLContentItemMeta = (data: any, options?: { extraHTML?: stri
 /** innerHTML for 内容和操作栏 */
 export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: number; moreMaxHeight?: string }) => {
   const { moreLength = 400, moreMaxHeight = '180px' } = options || {};
-  const { target, createdTime, updatedTime } = data;
+  const { target } = data;
   const isVideo = target.type === 'zvideo';
   const isPin = target.type === 'pin';
   const innerHTML = isVideo
@@ -195,8 +197,6 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
   return `
 <meta itemprop="image" />
 <meta itemprop="upvoteCount" content="${voteCount}" />
-<meta itemprop="dateCreated" content="${createdTime}000" />
-<meta itemprop="dateModified" content="${updatedTime}000" />
 <meta itemprop="commentCount" content="${target.commentCount}" />
 <div class="RichContent ${isMore ? 'is-collapsed' : ''} RichContent--unescapable">
   <div class="RichContent-inner RichContent-inner--collapsed" style="${isMore ? `max-height: ${moreMaxHeight}` : ''}">${contentHTML}</div>

@@ -1510,7 +1510,9 @@
     box.appendChild(domC("div", { innerText: "----- 没有更多了 -----", className }));
   };
   var innerHTMLContentItemMeta = (data, options) => {
-    const { target, createdTime, updatedTime } = data;
+    const { target } = data;
+    const createdTime = data.createdTime || target.createdTime;
+    const updatedTime = data.updatedTime || target.updatedTime;
     const { extraHTML = "", haveTime } = options || {};
     return `
 <div class="ContentItem-meta">
@@ -1545,7 +1547,7 @@
   };
   var innerHTMLRichInnerAndAction = (data, options) => {
     const { moreLength = 400, moreMaxHeight = "180px" } = options || {};
-    const { target, createdTime, updatedTime } = data;
+    const { target } = data;
     const isVideo = target.type === "zvideo";
     const isPin = target.type === "pin";
     const innerHTML = isVideo ? `
@@ -1592,8 +1594,6 @@
     return `
 <meta itemprop="image" />
 <meta itemprop="upvoteCount" content="${voteCount}" />
-<meta itemprop="dateCreated" content="${createdTime}000" />
-<meta itemprop="dateModified" content="${updatedTime}000" />
 <meta itemprop="commentCount" content="${target.commentCount}" />
 <div class="RichContent ${isMore ? "is-collapsed" : ""} RichContent--unescapable">
   <div class="RichContent-inner RichContent-inner--collapsed" style="${isMore ? `max-height: ${moreMaxHeight}` : ""}">${contentHTML}</div>

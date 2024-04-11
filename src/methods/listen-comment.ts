@@ -1,10 +1,10 @@
-import { formatDataToHump, requestComment, requestCommentChild } from '../commons/request';
+import { requestComment, requestCommentChild } from '../commons/request';
 import { myScroll } from '../commons/scroll-stop-on';
 import { dom, domById, domC, throttle } from '../commons/tools';
 import { ID_CTZ_COMMENT, ID_CTZ_COMMENT_BACK, ID_CTZ_COMMENT_CHILD, ID_CTZ_COMMENT_CLOSE } from '../configs';
 import { IMyElement } from '../types';
 import { myLoadingToast } from '../types/loading-toast';
-import { IAuthorTag, ICommentData, ICommentPaging, IZhihuCommentResponse } from '../types/zhihu-comment.type';
+import { IAuthorTag, ICommentData, ICommentPaging } from '../types/zhihu-comment.type';
 import { openEnd, openLoading, removeByBox } from './listen-common';
 import { timeFormatter } from './time';
 
@@ -83,18 +83,17 @@ export const myListenComment: myListenComment = {
     const res = await requestComment({ answerId, orderBy, type });
     myLoadingToast.hide();
     if (!res) return;
-    const nRes = formatDataToHump(res) as IZhihuCommentResponse;
     const nodeComment = domById(ID_CTZ_COMMENT)!;
-    nodeComment.querySelector('.ctz-comment-count>span')!.innerHTML = `${nRes.paging.totals}`;
-    const innerHTML = nRes.commentStatus.type ? `<div style="text-align:center;">${nRes.commentStatus.text}</div>` : createCommentHTML(nRes.data);
+    nodeComment.querySelector('.ctz-comment-count>span')!.innerHTML = `${res.paging.totals}`;
+    const innerHTML = res.commentStatus.type ? `<div style="text-align:center;">${res.commentStatus.text}</div>` : createCommentHTML(res.data);
     nodeComment.querySelector(QUERY_LIST)!.innerHTML = innerHTML;
     myChangeCommentSort[orderBy]();
     removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!, ClASS_END);
     removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!, CLASS_LOADING);
     nodeComment.style.display = 'flex';
-    this.page = nRes.paging;
-    this.commentData = nRes.data;
-    if (nRes.paging.isEnd) {
+    this.page = res.paging;
+    this.commentData = res.data;
+    if (res.paging.isEnd) {
       openEnd(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!, ClASS_END);
     }
     myScroll.stop();
@@ -103,13 +102,12 @@ export const myListenComment: myListenComment = {
   commentLoadMore: async function () {
     const res = await requestComment({ url: this.page.next });
     if (!res || !res.data) return;
-    const nRes = formatDataToHump(res);
     const nodeCommentContentDiv = dom(`#${ID_CTZ_COMMENT} ${QUERY_LIST}`)!;
-    this.page = nRes.paging;
-    this.commentData = this.commentData.concat(nRes.data);
-    nodeCommentContentDiv.innerHTML += createCommentHTML(nRes.data);
+    this.page = res.paging;
+    this.commentData = this.commentData.concat(res.data);
+    nodeCommentContentDiv.innerHTML += createCommentHTML(res.data);
     removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!, CLASS_LOADING);
-    if (nRes.paging.isEnd) {
+    if (res.paging.isEnd) {
       openEnd(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!, ClASS_END);
     }
   },
@@ -153,17 +151,16 @@ export const myListenCommentChild: myListenComment = {
     const res = await requestCommentChild({ answerId });
     myLoadingToast.hide();
     if (!res) return;
-    const nRes = formatDataToHump(res);
     const nodeComment = domById(ID_CTZ_COMMENT_CHILD)!;
     const parentCommentHTML = parentData ? createCommentHTMLItem(parentData, false, false) : '';
     nodeComment.querySelector(QUERY_LIST)!.innerHTML =
-      parentCommentHTML + `<div class="ctz-comment-child-count">${nRes.paging.totals} 条回复</div>` + createCommentHTML(nRes.data);
+      parentCommentHTML + `<div class="ctz-comment-child-count">${res.paging.totals} 条回复</div>` + createCommentHTML(res.data);
     removeByBox(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!, ClASS_END);
     removeByBox(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!, CLASS_LOADING);
     nodeComment.style.display = 'flex';
-    this.page = nRes.paging;
-    this.commentData = nRes.data;
-    if (nRes.paging.isEnd) {
+    this.page = res.paging;
+    this.commentData = res.data;
+    if (res.paging.isEnd) {
       openEnd(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!, ClASS_END);
     }
     myScroll.stop();
@@ -171,13 +168,12 @@ export const myListenCommentChild: myListenComment = {
   commentLoadMore: async function () {
     const res = await requestComment({ url: this.page.next });
     if (!res || !res.data) return;
-    const nRes = formatDataToHump(res);
     const nodeCommentContentDiv = dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_LIST}`)!;
-    this.page = nRes.paging;
-    this.commentData = this.commentData.concat(nRes.data);
-    nodeCommentContentDiv.innerHTML += createCommentHTML(nRes.data);
+    this.page = res.paging;
+    this.commentData = this.commentData.concat(res.data);
+    nodeCommentContentDiv.innerHTML += createCommentHTML(res.data);
     removeByBox(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!, CLASS_LOADING);
-    if (nRes.paging.isEnd) {
+    if (res.paging.isEnd) {
       openEnd(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!, ClASS_END);
     }
   },

@@ -3,7 +3,7 @@ import { myStorage } from '../commons/storage';
 import { dom, domA, domById, fnLog, nodesStopPropagation } from '../commons/tools';
 import { store } from '../store';
 import { IConfig } from '../types';
-import { IZhihuAnswerDataItem, IZhihuAnswerResponse } from '../types/zhihu-answer.type';
+import { IZhihuAnswerDataItem } from '../types/zhihu-answer.type';
 import {
   CLASS_BTN_CLOSE,
   addListenImage,
@@ -95,9 +95,8 @@ export const myListenAnswer = {
     removeByBox(nodeListContent, 'ctz-answer-loading');
     this.loading = false;
     if (!res) return;
-    const nRes = formatDataToHump(res);
-    fnLog(nRes)
-    const { paging, data } = nRes as IZhihuAnswerResponse;
+    fnLog(res);
+    const { paging, data } = res;
     if (paging.next === this.next) return;
     this.end = paging.isEnd;
     this.next = paging.next;
@@ -153,10 +152,10 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
     target.voteupCount
   },"comment_num":${target.commentCount},"publish_timestamp":null,"parent_token":"${target.question.id}","author_member_hash_id":"${target.author.id}"}}}'
   >
-    ${innerHTMLContentItemMeta(data,  {
+    ${innerHTMLContentItemMeta(data, {
       haveTime: releaseTimeForAnswer,
       extraHTML,
-      config
+      config,
     })}
     ${
       answerTopCard.length

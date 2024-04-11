@@ -1,6 +1,8 @@
+import { requestVote } from '../commons/request';
 import { domC, domP } from '../commons/tools';
 import { CLASS_COPY_LINK } from '../configs';
-import { IConfig, IMyElement, IZhihuDataZop } from '../types';
+import { EVoteType, EZhihuType, IConfig, IContentResType, IMyElement } from '../types';
+import { IZhihuRecommendDataTarget } from '../types/zhihu-list-response.type';
 import { myListenComment } from './listen-comment';
 import { myPreview } from './preview';
 import { createTimeHTML } from './time';
@@ -11,6 +13,10 @@ export const CLASS_BTN_EXPEND = 'ctz-n-button-expend';
 export const CLASS_BTN_CLOSE = 'ctz-n-button-close';
 /** 自定义评论按钮类名 */
 export const CLASS_BTN_COMMENT = 'ctz-n-button-comment';
+
+const CLASS_ACTIVE = 'is-active';
+const CLASS_VOTE_UP = 'VoteButton--up';
+const CLASS_VOTE_DOWN = 'VoteButton--down';
 
 /** 监听图片操作 */
 export const addListenImage = (event: MouseEvent) => {
@@ -64,10 +70,29 @@ const eventMainObject: Record<string, Function> = {
   },
   /** 评论 */
   [CLASS_BTN_COMMENT]: async (currentNode: HTMLElement) => {
-    const nodeAnswerItem = domP(currentNode, 'class', 'ContentItem')!;
-    const dataZopJson = nodeAnswerItem.getAttribute('data-zop') || '{}';
-    const dataZop: IZhihuDataZop = JSON.parse(dataZopJson);
+    const nodeContentItem = domP(currentNode, 'class', 'ContentItem')!;
+    const dataZopJson = nodeContentItem.getAttribute('data-zop') || '{}';
+    const dataZop = JSON.parse(dataZopJson);
     myListenComment.create(dataZop.itemId);
+  },
+  VoteButton: async (currentNode: HTMLButtonElement) => {
+    const nodeContentItem = domP(currentNode, 'class', 'ContentItem')!;
+    const contentType = (nodeContentItem.querySelector('[itemprop="contentType"]') as HTMLMetaElement).content as EZhihuType;
+    const contentId = (nodeContentItem.querySelector('[itemprop="contentId"]') as HTMLMetaElement).content;
+    let voteType = EVoteType.中立;
+    const currentClassList = currentNode.classList;
+    if (!currentClassList.contains(CLASS_ACTIVE)) {
+      voteType = currentClassList.contains(CLASS_VOTE_UP) ? EVoteType.赞同 : EVoteType.反对;
+    }
+    const res = await requestVote(contentType, voteType, contentId);
+    if (!res) return;
+    const { voting } = res;
+    nodeContentItem.querySelectorAll('.VoteButton').forEach((item) => {
+      item.classList.remove(CLASS_ACTIVE);
+    });
+    if (typeof voting !== 'undefined') {
+      voting !== 0 && currentNode.classList.add(CLASS_ACTIVE);
+    }
   },
 };
 
@@ -102,7 +127,7 @@ export const openEnd = (box: HTMLElement, className: string) => {
 };
 
 /** innerHTML for 用户信息栏及下面扩展 */
-export const innerHTMLContentItemMeta = (data: any, options: { extraHTML?: string; haveTime?: boolean, config: IConfig }) => {
+export const innerHTMLContentItemMeta = (data: any, options: { extraHTML?: string; haveTime?: boolean; config: IConfig }) => {
   const { target } = data;
   const { extraHTML = '', haveTime, config } = options;
   const createdTime = data.createdTime || target.createdTime;
@@ -146,8 +171,9 @@ export const innerHTMLContentItemMeta = (data: any, options: { extraHTML?: strin
 export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: number; moreMaxHeight?: string }) => {
   const { moreLength = 400, moreMaxHeight = '180px' } = options || {};
   const { target } = data;
-  const isVideo = target.type === 'zvideo';
-  const isPin = target.type === 'pin';
+  const type = target.type as IContentResType;
+  const isVideo = type === 'zvideo';
+  const isPin = type === 'pin';
   const innerHTML = isVideo
     ? `
 <a
@@ -193,19 +219,22 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
   });
   const contentHTML = vDomContent.innerHTML;
   vDomContent.remove();
-
-  const voteCount = target.voteupCount || target.voteCount;
+  const voteCount = target.voteupCount || target.voteCount || 0;
+  const voting = target.relationship ? target.relationship.voting : 0;
   return `
-<meta itemprop="image" />
 <meta itemprop="upvoteCount" content="${voteCount}" />
 <meta itemprop="commentCount" content="${target.commentCount}" />
+<meta itemprop="contentType" content="${CONTENT_TYPE_OBJ[type].voteFetchType}" />
+<meta itemprop="contentId" content="${target.id}" />
 <div class="RichContent ${isMore ? 'is-collapsed' : ''} RichContent--unescapable">
   <div class="RichContent-inner RichContent-inner--collapsed" style="${isMore ? `max-height: ${moreMaxHeight}` : ''}">${contentHTML}</div>
   <div class="ContentItem-actions">
-    <button aria-label="赞同 ${voteCount}" aria-live="polite" type="button" class="Button VoteButton VoteButton--up">
+    <button aria-label="赞同 ${voteCount}" aria-live="polite" type="button" class="Button VoteButton ${CLASS_VOTE_UP} ${voting === 1 ? CLASS_ACTIVE : ''}">
       ▲ 赞同 ${voteCount}
     </button>
-    <button   aria-label="反对" aria-live="polite" type="button" class="Button VoteButton VoteButton--down VoteButton--mobileDown">
+    <button   aria-label="反对" aria-live="polite" type="button" class="Button VoteButton ${CLASS_VOTE_DOWN} VoteButton--mobileDown ${
+    voting === -1 ? CLASS_ACTIVE : ''
+  }">
       ▼
     </button>
     <button class="ctz-n-button-comment Button Button--plain Button--withIcon Button--withLabel">评论 ${target.commentCount}</button>
@@ -218,3 +247,62 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
 
 export const createHTMLCopyLink = (link: string) =>
   `<button class="ctz-button ctz-button-transparent ${CLASS_COPY_LINK}" data-link="${link}" style="margin: 0px 8px">获取链接</button>`;
+
+export const CONTENT_TYPE_OBJ = {
+  answer: {
+    name: '问题',
+    bTypeClass: 'c-ec7259',
+    contentItem: 'AnswerItem',
+    nType: 'Answer',
+    voteFetchType: EZhihuType.回答,
+    formatData: (target: IZhihuRecommendDataTarget) => {
+      return {
+        itemTitle: target.question.title,
+        itemHref: `https://www.zhihu.com/question/${target.question.id}`,
+        itemHref2: `https://www.zhihu.com/question/${target.question.id}/answer/${target.id}`,
+      };
+    },
+  },
+  article: {
+    name: '文章',
+    bTypeClass: 'c-00965e',
+    contentItem: 'ArticleItem',
+    nType: 'Post',
+    voteFetchType: EZhihuType.文章,
+    formatData: (target: IZhihuRecommendDataTarget) => {
+      return {
+        itemTitle: target.title,
+        itemHref: `https://zhuanlan.zhihu.com/p/${target.id}`,
+        itemHref2: `https://zhuanlan.zhihu.com/p/${target.id}`,
+      };
+    },
+  },
+  zvideo: {
+    name: '视频',
+    bTypeClass: 'c-12c2e9',
+    contentItem: 'ZVideoItem',
+    nType: 'ZVideo',
+    voteFetchType: EZhihuType.视频,
+    formatData: (target: IZhihuRecommendDataTarget) => {
+      return {
+        itemTitle: target.title,
+        itemHref: `https://www.zhihu.com/zvideo/${target.id}`,
+        itemHref2: `https://www.zhihu.com/zvideo/${target.id}`,
+      };
+    },
+  },
+  pin: {
+    name: '想法',
+    bTypeClass: 'c-9c27b0',
+    contentItem: 'PinItem',
+    nType: 'Pin',
+    voteFetchType: '',
+    formatData: (target: IZhihuRecommendDataTarget) => {
+      return {
+        itemTitle: target.title || '',
+        itemHref: `https://www.zhihu.com/pin/${target.id}`,
+        itemHref2: `https://www.zhihu.com/pin/${target.id}`,
+      };
+    },
+  },
+};

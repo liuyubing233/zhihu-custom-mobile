@@ -1,4 +1,4 @@
-import { IRequestCommentParams } from '../types';
+import { EVoteType, EZhihuType, IRequestCommentParams, IResponseVote, VoteTypeOb } from '../types';
 import { IZhihuCommentResponse } from '../types/zhihu-comment.type';
 import md5 from './third/md5.js';
 import zhihu_enc from './third/zhihu-enc.js';
@@ -67,7 +67,9 @@ export const requestComment = async ({
   return fetch(nUrl, {
     method: 'GET',
     headers: createCommentHeaders(nUrl),
-  }).then((res) => res.json());
+  })
+    .then((res) => res.json())
+    .then((res) => formatDataToHump(res));
 };
 
 /** 获取知乎评论区子评论内容 */
@@ -83,11 +85,37 @@ export const requestCommentChild = async ({
   return fetch(nUrl, {
     method: 'GET',
     headers: createCommentHeaders(nUrl),
-  }).then((res) => res.json());
+  })
+    .then((res) => res.json())
+    .then((res) => formatDataToHump(res));
 };
 
 /** 默认请求方法 */
 export const commonRequest = async (url: string, method = 'GET', headers = new Headers()): Promise<any> => {
   if (!url) return undefined;
-  return fetch(url, { method, headers }).then((res) => res.json());
+  return fetch(url, { method, headers })
+    .then((res) => res.json())
+    .then((res) => formatDataToHump(res));
+};
+
+/**
+ * 内容点赞接口
+ * @param contentType 内容类型
+ * @param voteType 点赞类型
+ * @param contentId 内容ID
+ * @returns {IResponseVote}
+ */
+export const requestVote = async (contentType: EZhihuType, voteType: EVoteType, contentId: string | number): Promise<IResponseVote | undefined> => {
+  const body = VoteTypeOb[voteType][contentType];
+  if (!body) return undefined;
+  return fetch(`https://www.zhihu.com/api/v4/${contentType}/${contentId}/voters`, {
+    method: 'POST',
+    headers: {
+      ...new Headers(),
+      'Content-Type': 'application/json',
+    },
+    body,
+  })
+    .then((res) => res.json())
+    .then((res) => formatDataToHump(res));
 };

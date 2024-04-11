@@ -162,6 +162,23 @@
   var INPUT_NAME_THEME = "theme";
   var INPUT_NAME_THEME_DARK = "themeDark";
   var INPUT_NAME_ThEME_LIGHT = "themeLight";
+  var VoteTypeOb = {
+    [0 /* 赞同 */]: {
+      ["answers" /* 回答 */]: '{"type":"up"}',
+      ["articles" /* 文章 */]: '{"voting":1}',
+      ["zvideos" /* 视频 */]: '{"voting":1}'
+    },
+    [1 /* 中立 */]: {
+      ["answers" /* 回答 */]: '{"type":"neutral"}',
+      ["articles" /* 文章 */]: '{"voting":0}',
+      ["zvideos" /* 视频 */]: '{"voting":0}'
+    },
+    [2 /* 反对 */]: {
+      ["answers" /* 回答 */]: '{"type":"down"}',
+      ["articles" /* 文章 */]: '{"voting":-1}',
+      ["zvideos" /* 视频 */]: '{"voting":-1}'
+    }
+  };
   var NAME_CONFIG = "mobileConfig";
   var NAME_HISTORY = "mobileHistory";
   var HISTORY_DEFAULT = {
@@ -1385,7 +1402,7 @@
     return fetch(nUrl, {
       method: "GET",
       headers: createCommentHeaders(nUrl)
-    }).then((res) => res.json());
+    }).then((res) => res.json()).then((res) => formatDataToHump(res));
   };
   var requestCommentChild = async ({
     url,
@@ -1399,12 +1416,25 @@
     return fetch(nUrl, {
       method: "GET",
       headers: createCommentHeaders(nUrl)
-    }).then((res) => res.json());
+    }).then((res) => res.json()).then((res) => formatDataToHump(res));
   };
   var commonRequest = async (url, method = "GET", headers = new Headers()) => {
     if (!url)
       return void 0;
-    return fetch(url, { method, headers }).then((res) => res.json());
+    return fetch(url, { method, headers }).then((res) => res.json()).then((res) => formatDataToHump(res));
+  };
+  var requestVote = async (contentType, voteType, contentId) => {
+    const body = VoteTypeOb[voteType][contentType];
+    if (!body)
+      return void 0;
+    return fetch(`https://www.zhihu.com/api/v4/${contentType}/${contentId}/voters`, {
+      method: "POST",
+      headers: {
+        ...new Headers(),
+        "Content-Type": "application/json"
+      },
+      body
+    }).then((res) => res.json()).then((res) => formatDataToHump(res));
   };
   var myLoadingToast = {
     open: () => domById("CTZ_LOADING_TOAST").style.display = "flex",
@@ -1444,6 +1474,9 @@
   var CLASS_BTN_EXPEND = "ctz-n-button-expend";
   var CLASS_BTN_CLOSE = "ctz-n-button-close";
   var CLASS_BTN_COMMENT = "ctz-n-button-comment";
+  var CLASS_ACTIVE = "is-active";
+  var CLASS_VOTE_UP = "VoteButton--up";
+  var CLASS_VOTE_DOWN = "VoteButton--down";
   var addListenImage = (event) => {
     const target = event.target;
     if (target.nodeName === "IMG") {
@@ -1491,10 +1524,30 @@
     },
     /** 评论 */
     [CLASS_BTN_COMMENT]: async (currentNode) => {
-      const nodeAnswerItem = domP(currentNode, "class", "ContentItem");
-      const dataZopJson = nodeAnswerItem.getAttribute("data-zop") || "{}";
+      const nodeContentItem = domP(currentNode, "class", "ContentItem");
+      const dataZopJson = nodeContentItem.getAttribute("data-zop") || "{}";
       const dataZop = JSON.parse(dataZopJson);
       myListenComment.create(dataZop.itemId);
+    },
+    VoteButton: async (currentNode) => {
+      const nodeContentItem = domP(currentNode, "class", "ContentItem");
+      const contentType = nodeContentItem.querySelector('[itemprop="contentType"]').content;
+      const contentId = nodeContentItem.querySelector('[itemprop="contentId"]').content;
+      let voteType = 1 /* 中立 */;
+      const currentClassList = currentNode.classList;
+      if (!currentClassList.contains(CLASS_ACTIVE)) {
+        voteType = currentClassList.contains(CLASS_VOTE_UP) ? 0 /* 赞同 */ : 2 /* 反对 */;
+      }
+      const res = await requestVote(contentType, voteType, contentId);
+      if (!res)
+        return;
+      const { voting } = res;
+      nodeContentItem.querySelectorAll(".VoteButton").forEach((item) => {
+        item.classList.remove(CLASS_ACTIVE);
+      });
+      if (typeof voting !== "undefined") {
+        voting !== 0 && currentNode.classList.add(CLASS_ACTIVE);
+      }
     }
   };
   var openLoading = (box, className) => {
@@ -1551,8 +1604,9 @@
   var innerHTMLRichInnerAndAction = (data, options) => {
     const { moreLength = 400, moreMaxHeight = "180px" } = options || {};
     const { target } = data;
-    const isVideo = target.type === "zvideo";
-    const isPin = target.type === "pin";
+    const type = target.type;
+    const isVideo = type === "zvideo";
+    const isPin = type === "pin";
     const innerHTML = isVideo ? `
 <a
   class="video-box"
@@ -1593,18 +1647,20 @@
     });
     const contentHTML = vDomContent.innerHTML;
     vDomContent.remove();
-    const voteCount = target.voteupCount || target.voteCount;
+    const voteCount = target.voteupCount || target.voteCount || 0;
+    const voting = target.relationship ? target.relationship.voting : 0;
     return `
-<meta itemprop="image" />
 <meta itemprop="upvoteCount" content="${voteCount}" />
 <meta itemprop="commentCount" content="${target.commentCount}" />
+<meta itemprop="contentType" content="${CONTENT_TYPE_OBJ[type].voteFetchType}" />
+<meta itemprop="contentId" content="${target.id}" />
 <div class="RichContent ${isMore ? "is-collapsed" : ""} RichContent--unescapable">
   <div class="RichContent-inner RichContent-inner--collapsed" style="${isMore ? `max-height: ${moreMaxHeight}` : ""}">${contentHTML}</div>
   <div class="ContentItem-actions">
-    <button aria-label="赞同 ${voteCount}" aria-live="polite" type="button" class="Button VoteButton VoteButton--up">
+    <button aria-label="赞同 ${voteCount}" aria-live="polite" type="button" class="Button VoteButton ${CLASS_VOTE_UP} ${voting === 1 ? CLASS_ACTIVE : ""}">
       ▲ 赞同 ${voteCount}
     </button>
-    <button   aria-label="反对" aria-live="polite" type="button" class="Button VoteButton VoteButton--down VoteButton--mobileDown">
+    <button   aria-label="反对" aria-live="polite" type="button" class="Button VoteButton ${CLASS_VOTE_DOWN} VoteButton--mobileDown ${voting === -1 ? CLASS_ACTIVE : ""}">
       ▼
     </button>
     <button class="ctz-n-button-comment Button Button--plain Button--withIcon Button--withLabel">评论 ${target.commentCount}</button>
@@ -1615,6 +1671,64 @@
 `;
   };
   var createHTMLCopyLink = (link) => `<button class="ctz-button ctz-button-transparent ${CLASS_COPY_LINK}" data-link="${link}" style="margin: 0px 8px">获取链接</button>`;
+  var CONTENT_TYPE_OBJ = {
+    answer: {
+      name: "问题",
+      bTypeClass: "c-ec7259",
+      contentItem: "AnswerItem",
+      nType: "Answer",
+      voteFetchType: "answers" /* 回答 */,
+      formatData: (target) => {
+        return {
+          itemTitle: target.question.title,
+          itemHref: `https://www.zhihu.com/question/${target.question.id}`,
+          itemHref2: `https://www.zhihu.com/question/${target.question.id}/answer/${target.id}`
+        };
+      }
+    },
+    article: {
+      name: "文章",
+      bTypeClass: "c-00965e",
+      contentItem: "ArticleItem",
+      nType: "Post",
+      voteFetchType: "articles" /* 文章 */,
+      formatData: (target) => {
+        return {
+          itemTitle: target.title,
+          itemHref: `https://zhuanlan.zhihu.com/p/${target.id}`,
+          itemHref2: `https://zhuanlan.zhihu.com/p/${target.id}`
+        };
+      }
+    },
+    zvideo: {
+      name: "视频",
+      bTypeClass: "c-12c2e9",
+      contentItem: "ZVideoItem",
+      nType: "ZVideo",
+      voteFetchType: "zvideos" /* 视频 */,
+      formatData: (target) => {
+        return {
+          itemTitle: target.title,
+          itemHref: `https://www.zhihu.com/zvideo/${target.id}`,
+          itemHref2: `https://www.zhihu.com/zvideo/${target.id}`
+        };
+      }
+    },
+    pin: {
+      name: "想法",
+      bTypeClass: "c-9c27b0",
+      contentItem: "PinItem",
+      nType: "Pin",
+      voteFetchType: "",
+      formatData: (target) => {
+        return {
+          itemTitle: target.title || "",
+          itemHref: `https://www.zhihu.com/pin/${target.id}`,
+          itemHref2: `https://www.zhihu.com/pin/${target.id}`
+        };
+      }
+    }
+  };
   var QUERY_LIST = ".ctz-comment-list";
   var CLASS_LOADING = "ctz-comment-loading";
   var ClASS_END = "ctz-comment-end";
@@ -1683,18 +1797,17 @@
       myLoadingToast.hide();
       if (!res)
         return;
-      const nRes = formatDataToHump(res);
       const nodeComment = domById(ID_CTZ_COMMENT);
-      nodeComment.querySelector(".ctz-comment-count>span").innerHTML = `${nRes.paging.totals}`;
-      const innerHTML = nRes.commentStatus.type ? `<div style="text-align:center;">${nRes.commentStatus.text}</div>` : createCommentHTML(nRes.data);
+      nodeComment.querySelector(".ctz-comment-count>span").innerHTML = `${res.paging.totals}`;
+      const innerHTML = res.commentStatus.type ? `<div style="text-align:center;">${res.commentStatus.text}</div>` : createCommentHTML(res.data);
       nodeComment.querySelector(QUERY_LIST).innerHTML = innerHTML;
       myChangeCommentSort[orderBy]();
       removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`), ClASS_END);
       removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`), CLASS_LOADING);
       nodeComment.style.display = "flex";
-      this.page = nRes.paging;
-      this.commentData = nRes.data;
-      if (nRes.paging.isEnd) {
+      this.page = res.paging;
+      this.commentData = res.data;
+      if (res.paging.isEnd) {
         openEnd(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`), ClASS_END);
       }
       myScroll.stop();
@@ -1704,13 +1817,12 @@
       const res = await requestComment({ url: this.page.next });
       if (!res || !res.data)
         return;
-      const nRes = formatDataToHump(res);
       const nodeCommentContentDiv = dom(`#${ID_CTZ_COMMENT} ${QUERY_LIST}`);
-      this.page = nRes.paging;
-      this.commentData = this.commentData.concat(nRes.data);
-      nodeCommentContentDiv.innerHTML += createCommentHTML(nRes.data);
+      this.page = res.paging;
+      this.commentData = this.commentData.concat(res.data);
+      nodeCommentContentDiv.innerHTML += createCommentHTML(res.data);
       removeByBox(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`), CLASS_LOADING);
-      if (nRes.paging.isEnd) {
+      if (res.paging.isEnd) {
         openEnd(dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`), ClASS_END);
       }
     }
@@ -1753,16 +1865,15 @@
       myLoadingToast.hide();
       if (!res)
         return;
-      const nRes = formatDataToHump(res);
       const nodeComment = domById(ID_CTZ_COMMENT_CHILD);
       const parentCommentHTML = parentData ? createCommentHTMLItem(parentData, false, false) : "";
-      nodeComment.querySelector(QUERY_LIST).innerHTML = parentCommentHTML + `<div class="ctz-comment-child-count">${nRes.paging.totals} 条回复</div>` + createCommentHTML(nRes.data);
+      nodeComment.querySelector(QUERY_LIST).innerHTML = parentCommentHTML + `<div class="ctz-comment-child-count">${res.paging.totals} 条回复</div>` + createCommentHTML(res.data);
       removeByBox(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`), ClASS_END);
       removeByBox(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`), CLASS_LOADING);
       nodeComment.style.display = "flex";
-      this.page = nRes.paging;
-      this.commentData = nRes.data;
-      if (nRes.paging.isEnd) {
+      this.page = res.paging;
+      this.commentData = res.data;
+      if (res.paging.isEnd) {
         openEnd(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`), ClASS_END);
       }
       myScroll.stop();
@@ -1771,13 +1882,12 @@
       const res = await requestComment({ url: this.page.next });
       if (!res || !res.data)
         return;
-      const nRes = formatDataToHump(res);
       const nodeCommentContentDiv = dom(`#${ID_CTZ_COMMENT_CHILD} ${QUERY_LIST}`);
-      this.page = nRes.paging;
-      this.commentData = this.commentData.concat(nRes.data);
-      nodeCommentContentDiv.innerHTML += createCommentHTML(nRes.data);
+      this.page = res.paging;
+      this.commentData = this.commentData.concat(res.data);
+      nodeCommentContentDiv.innerHTML += createCommentHTML(res.data);
       removeByBox(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`), CLASS_LOADING);
-      if (nRes.paging.isEnd) {
+      if (res.paging.isEnd) {
         openEnd(dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`), ClASS_END);
       }
     }
@@ -1983,9 +2093,8 @@
       this.loading = false;
       if (!res)
         return;
-      const nRes = formatDataToHump(res);
-      fnLog(nRes);
-      const { paging, data } = nRes;
+      fnLog(res);
+      const { paging, data } = res;
       if (paging.next === this.next)
         return;
       this.end = paging.isEnd;
@@ -2105,9 +2214,8 @@
       this.loading = false;
       if (!res)
         return;
-      const nRes = formatDataToHump(res);
-      fnLog(nRes);
-      const { paging, data } = nRes;
+      fnLog(res);
+      const { paging, data } = res;
       if (paging.next === this.next)
         return;
       this.next = paging.next;
@@ -2128,7 +2236,7 @@
   var addHistoryItem = async (data) => {
     const { target } = data;
     const type = target.type;
-    const { name, bTypeClass, formatData } = itemType[type];
+    const { name, bTypeClass, formatData } = CONTENT_TYPE_OBJ[type];
     const pfHistory = await myStorage.getHistory();
     const historyList = pfHistory.list;
     const { itemHref2, itemTitle } = formatData(target);
@@ -2137,66 +2245,12 @@
     !historyList.includes(itemA) && historyList.unshift(itemA);
     myStorage.setHistoryItem("list", historyList);
   };
-  var itemType = {
-    answer: {
-      name: "问题",
-      bTypeClass: "c-ec7259",
-      contentItem: "AnswerItem",
-      nType: "Answer",
-      formatData: (target) => {
-        return {
-          itemTitle: target.question.title,
-          itemHref: `https://www.zhihu.com/question/${target.question.id}`,
-          itemHref2: `https://www.zhihu.com/question/${target.question.id}/answer/${target.id}`
-        };
-      }
-    },
-    article: {
-      name: "文章",
-      bTypeClass: "c-00965e",
-      contentItem: "ArticleItem",
-      nType: "Post",
-      formatData: (target) => {
-        return {
-          itemTitle: target.title,
-          itemHref: `https://zhuanlan.zhihu.com/p/${target.id}`,
-          itemHref2: `https://zhuanlan.zhihu.com/p/${target.id}`
-        };
-      }
-    },
-    zvideo: {
-      name: "视频",
-      bTypeClass: "c-12c2e9",
-      contentItem: "ZVideoItem",
-      nType: "ZVideo",
-      formatData: (target) => {
-        return {
-          itemTitle: target.title,
-          itemHref: `https://www.zhihu.com/zvideo/${target.id}`,
-          itemHref2: `https://www.zhihu.com/zvideo/${target.id}`
-        };
-      }
-    },
-    pin: {
-      name: "想法",
-      bTypeClass: "c-9c27b0",
-      contentItem: "PinItem",
-      nType: "Pin",
-      formatData: (target) => {
-        return {
-          itemTitle: target.title || "",
-          itemHref: `https://www.zhihu.com/pin/${target.id}`,
-          itemHref2: `https://www.zhihu.com/pin/${target.id}`
-        };
-      }
-    }
-  };
   var createListHTML2 = (data, config) => data.map((i2) => createListItemHTML2(i2, config)).join("");
   var createListItemHTML2 = (data, config) => {
     const { releaseTimeForList, copyAnswerLink, showToAnswer } = config;
     const { id, target, attachedInfo, brief } = data;
     const type = target.type;
-    const { contentItem, nType, formatData } = itemType[type];
+    const { contentItem, nType, formatData } = CONTENT_TYPE_OBJ[type];
     const { itemHref, itemHref2, itemTitle } = formatData(target);
     addHistoryItem(data);
     let extraHTML = "";

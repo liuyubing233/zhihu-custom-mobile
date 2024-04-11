@@ -1,9 +1,9 @@
 import { commonRequest, formatDataToHump } from '../commons/request';
 import { myStorage } from '../commons/storage';
 import { dom, domById, fnLog } from '../commons/tools';
-import { IConfig } from '../types';
-import { IZhihuListRecommendResponse, IZhihuRecommendData, IZhihuRecommendDataTarget } from '../types/zhihu-list-response.type';
-import { createHTMLCopyLink, eventListenButton, innerHTMLContentItemMeta, innerHTMLRichInnerAndAction, openLoading, removeByBox } from './listen-common';
+import { IConfig, IContentResType } from '../types';
+import { IZhihuRecommendData } from '../types/zhihu-list-response.type';
+import { CONTENT_TYPE_OBJ, createHTMLCopyLink, eventListenButton, innerHTMLContentItemMeta, innerHTMLRichInnerAndAction, openLoading, removeByBox } from './listen-common';
 
 /** 加载推荐列表 */
 export const myListenListRecommend = {
@@ -48,9 +48,8 @@ export const myListenListRecommend = {
     removeByBox(nodeListContent, 'ctz-list-loading');
     this.loading = false;
     if (!res) return;
-    const nRes = formatDataToHump(res);
-    fnLog(nRes)
-    const { paging, data } = nRes as IZhihuListRecommendResponse;
+    fnLog(res);
+    const { paging, data } = res;
     if (paging.next === this.next) return;
     this.next = paging.next;
     const config = await myStorage.getConfig();
@@ -69,8 +68,8 @@ export const myListenListRecommend = {
 
 const addHistoryItem = async (data: IZhihuRecommendData) => {
   const { target } = data;
-  const type = target.type as IItemType;
-  const { name, bTypeClass, formatData } = itemType[type];
+  const type = target.type as IContentResType;
+  const { name, bTypeClass, formatData } = CONTENT_TYPE_OBJ[type];
   const pfHistory = await myStorage.getHistory();
   const historyList = pfHistory.list;
   const { itemHref2, itemTitle } = formatData(target);
@@ -80,68 +79,14 @@ const addHistoryItem = async (data: IZhihuRecommendData) => {
   myStorage.setHistoryItem('list', historyList);
 };
 
-const itemType = {
-  answer: {
-    name: '问题',
-    bTypeClass: 'c-ec7259',
-    contentItem: 'AnswerItem',
-    nType: 'Answer',
-    formatData: (target: IZhihuRecommendDataTarget) => {
-      return {
-        itemTitle: target.question.title,
-        itemHref: `https://www.zhihu.com/question/${target.question.id}`,
-        itemHref2: `https://www.zhihu.com/question/${target.question.id}/answer/${target.id}`,
-      };
-    },
-  },
-  article: {
-    name: '文章',
-    bTypeClass: 'c-00965e',
-    contentItem: 'ArticleItem',
-    nType: 'Post',
-    formatData: (target: IZhihuRecommendDataTarget) => {
-      return {
-        itemTitle: target.title,
-        itemHref: `https://zhuanlan.zhihu.com/p/${target.id}`,
-        itemHref2: `https://zhuanlan.zhihu.com/p/${target.id}`,
-      };
-    },
-  },
-  zvideo: {
-    name: '视频',
-    bTypeClass: 'c-12c2e9',
-    contentItem: 'ZVideoItem',
-    nType: 'ZVideo',
-    formatData: (target: IZhihuRecommendDataTarget) => {
-      return {
-        itemTitle: target.title,
-        itemHref: `https://www.zhihu.com/zvideo/${target.id}`,
-        itemHref2: `https://www.zhihu.com/zvideo/${target.id}`,
-      };
-    },
-  },
-  pin: {
-    name: '想法',
-    bTypeClass: 'c-9c27b0',
-    contentItem: 'PinItem',
-    nType: 'Pin',
-    formatData: (target: IZhihuRecommendDataTarget) => {
-      return {
-        itemTitle: target.title || '',
-        itemHref: `https://www.zhihu.com/pin/${target.id}`,
-        itemHref2: `https://www.zhihu.com/pin/${target.id}`,
-      };
-    },
-  },
-};
 
 const createListHTML = (data: IZhihuRecommendData[], config: IConfig) => data.map((i) => createListItemHTML(i, config)).join('');
 
 const createListItemHTML = (data: IZhihuRecommendData, config: IConfig) => {
   const { releaseTimeForList, copyAnswerLink, showToAnswer } = config;
   const { id, target, attachedInfo, brief } = data;
-  const type = target.type as IItemType;
-  const { contentItem, nType, formatData } = itemType[type];
+  const type = target.type as IContentResType;
+  const { contentItem, nType, formatData } = CONTENT_TYPE_OBJ[type];
   const { itemHref, itemHref2, itemTitle } = formatData(target);
   addHistoryItem(data);
 
@@ -188,4 +133,4 @@ const createListItemHTML = (data: IZhihuRecommendData, config: IConfig) => {
 </div>`;
 };
 
-type IItemType = 'answer' | 'article' | 'zvideo' | 'pin';
+

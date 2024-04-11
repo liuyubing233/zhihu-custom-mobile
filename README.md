@@ -23,7 +23,7 @@
 ![image](https://pic.imgdb.cn/item/660b787d9f345e8d03092bfc.png)
 ![image](https://pic.imgdb.cn/item/660b78849f345e8d03094e9a.png)
 
-### 回答内容、文章可直接点赞、反对，不需要跳转 APP
+### 回答内容、文章、评论可直接点赞、反对，不需要跳转 APP
 
 ### 去除禁止复制的限制
 

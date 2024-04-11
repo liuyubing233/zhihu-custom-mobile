@@ -119,3 +119,19 @@ export const requestVote = async (contentType: EZhihuType, voteType: EVoteType, 
     .then((res) => res.json())
     .then((res) => formatDataToHump(res));
 };
+
+/**
+ * 点赞评论
+ * @param commendId 评论ID
+ * @param like 点赞 or 取消点赞
+ * @returns {any}
+ */
+export const requestCommentVote = async (commendId: string | number | null, like = true): Promise<any> => {
+  if (!commendId) return undefined;
+  return fetch(`https://www.zhihu.com/api/v4/comments/${commendId}/like`, {
+    method: like ? 'POST' : 'DELETE',
+    headers: new Headers(),
+  })
+    .then((res) => res.json())
+    .then((res) => formatDataToHump(res));
+};

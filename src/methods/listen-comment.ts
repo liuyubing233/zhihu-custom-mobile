@@ -5,6 +5,7 @@ import { ID_CTZ_COMMENT, ID_CTZ_COMMENT_BACK, ID_CTZ_COMMENT_CHILD, ID_CTZ_COMME
 import { IMyElement } from '../types';
 import { myLoadingToast } from '../types/loading-toast';
 import { IAuthorTag, ICommentData, ICommentPaging } from '../types/zhihu-comment.type';
+import { requestCommentVote } from './../commons/request';
 import { openEnd, openLoading, removeByBox } from './listen-common';
 import { timeFormatter } from './time';
 
@@ -12,6 +13,8 @@ import { timeFormatter } from './time';
 const QUERY_LIST = '.ctz-comment-list';
 const CLASS_LOADING = 'ctz-comment-loading';
 const ClASS_END = 'ctz-comment-end';
+const CLASS_VOTE = 'ctz-comment-vote';
+const CLASS_VOTE_UP = 'ctz-comment-vote-up';
 
 const ACTIVE_STYLE = 'color: rgb(25, 27, 31);background: #fff;';
 
@@ -26,6 +29,24 @@ const myChangeCommentSort: Record<string, () => void> = {
     dom('.ctz-comment-sort>button[name="ts"]')!.style.cssText = ACTIVE_STYLE;
     dom('.ctz-comment-sort>button[name="score"]')!.style.cssText = '';
   },
+};
+
+/** 评论点赞 or 取消点赞 */
+const eventVoteUp = async (currentNode: HTMLElement) => {
+  if (!currentNode.classList.contains(CLASS_VOTE)) return;
+  const prevIsVoteUp = currentNode.classList.contains(CLASS_VOTE_UP);
+  const commendId = currentNode.getAttribute('data-id');
+  const res = await requestCommentVote(commendId, !prevIsVoteUp);
+  if (!res) return;
+  const nodeCount = currentNode.querySelector('span')!;
+  const prevCount = +nodeCount.innerText || 0;
+  if (prevIsVoteUp) {
+    currentNode.classList.remove(CLASS_VOTE_UP);
+    nodeCount.innerText = String(prevCount - 1 >= 0 ? prevCount - 1 : 0);
+  } else {
+    currentNode.classList.add(CLASS_VOTE_UP);
+    nodeCount.innerText = String(prevCount + 1);
+  }
 };
 
 /** 评论处理方式 */
@@ -63,6 +84,8 @@ export const myListenComment: myListenComment = {
         myChangeCommentSort[name] && myChangeCommentSort[name]();
         me.create(me.answerId, undefined, name);
       }
+
+      eventVoteUp(nodeCurrent);
     });
 
     dom(`#${ID_CTZ_COMMENT} .ctz-comment-content`)!.onscroll = throttle(() => {
@@ -127,11 +150,13 @@ export const myListenCommentChild: myListenComment = {
   initOperate: function () {
     const me = this;
     domById(ID_CTZ_COMMENT_CHILD)!.addEventListener('click', (event) => {
-      const currentTarget = event.target as IMyElement;
-      if (currentTarget.id === ID_CTZ_COMMENT_BACK) {
+      const nodeCurrent = event.target as IMyElement;
+      if (nodeCurrent.id === ID_CTZ_COMMENT_BACK) {
         dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!.scrollTop = 0;
         domById(ID_CTZ_COMMENT_CHILD)!.style.display = 'none';
       }
+
+      eventVoteUp(nodeCurrent);
     });
 
     dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!.onscroll = throttle(() => {
@@ -195,7 +220,6 @@ const createCommentHTMLItem = (item: ICommentData, isChild = false, haveChild = 
   });
   const contentHTML = vDomContent.innerHTML;
   vDomContent.remove();
-
   return `
 <div data-id="${id}">
   <div class="ctz-ci ${isChild ? 'ctz-ci-child' : ''}">
@@ -221,7 +245,7 @@ const createCommentHTMLItem = (item: ICommentData, isChild = false, haveChild = 
           ${hot ? '<span style="color: rgb(255, 150, 7);font-weight:bold;">热评</span>' : ''}
         </div>
         <div class="ctz-ci-info-right">
-          <span>❤︎ ${likeCount}</span>
+          <span class="${CLASS_VOTE} ${item.liked ? CLASS_VOTE_UP : ''}" data-id="${id}">❤︎ <span>${likeCount}</span></span>
         </div>
       </div>
     </div>

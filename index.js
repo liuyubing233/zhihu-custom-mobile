@@ -44,6 +44,14 @@
     const attrValueList = (nodeP.getAttribute(attrName) || "").split(" ");
     return attrValueList.includes(attrValue) ? nodeP : domP(nodeP, attrName, attrValue);
   };
+  var insertAfter = (newElement, targetElement) => {
+    const parent = targetElement.parentNode;
+    if (parent.lastChild === targetElement) {
+      parent.appendChild(newElement);
+    } else {
+      parent.insertBefore(newElement, targetElement.nextSibling);
+    }
+  };
   var fnReturnStr = (str, isHave = false, strFalse = "") => isHave ? str : strFalse;
   var fnInitDomStyle = (id, innerHTML) => {
     const element = domById(id);
@@ -713,7 +721,7 @@
     hiddenItem: {
       hiddenOpenApp: `.OpenInAppButton{${DN}}.css-183aq3r{${VH}}`,
       hiddenLogo: `.MobileAppHeader-logo,a[aria-label="知乎"]{${VH}}`,
-      hiddenHeader: `.MobileAppHeader,.ColumnPageHeader.Sticky,.css-rg1dmv{${DN}}`,
+      hiddenHeader: `.MobileAppHeader,.ColumnPageHeader.Sticky,.css-rg1dmv,.css-1gapyfo{${DN}}`,
       hiddenItemActions: `.TopstoryItem .ContentItem-actions:not(.Sticky),.SearchMain .ContentItem-actions{${DN}}`,
       hiddenBottomSticky: `.ContentItem-actions.Sticky,.css-1tu4yh8{${DN}}`,
       hiddenReward: `.Reward{${DN}}`,
@@ -2079,6 +2087,17 @@
       const nodeQuestionAnswerContent = dom(".QuestionAnswer-content");
       if (nodeQuestionAnswerContent) {
         nodeQuestionAnswerContent.innerHTML = createListItemHTML(topCurrentData, config);
+        if (!dom(".Card.ViewAll")) {
+          const questions = pageJsData.initialState.entities.questions;
+          const question = questions[Object.keys(questions)[0]];
+          const nNode = domC("div", {
+            className: "Card ViewAll ViewAll--bottom",
+            innerHTML: `<a href="/question/${question.id}" class="QuestionMainAction ViewAll-QuestionMainAction" data-za-detail-view-element_name="ViewAll" style="color: rgb(23, 81, 153);">查看全部 ${question.answerCount || 0} 个回答</a>`
+          });
+          nNode.setAttribute("data-za-detail-view-path-module", "MessageItem");
+          nNode.setAttribute("data-za-extra-module", `{&quot;card&quot;:{&quot;content&quot;:{&quot;item_num&quot;:${question.answerCount || 0}}}}`);
+          insertAfter(nNode, nodeQuestionAnswerContent.parentElement);
+        }
       } else {
         const nodeTopList = dom(".List .List");
         nodeTopList.innerHTML = createListItemHTML(topCurrentData, config);

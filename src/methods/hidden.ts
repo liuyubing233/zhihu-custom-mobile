@@ -26,7 +26,7 @@ export const myHidden: IMyHidden = {
   hiddenItem: {
     hiddenOpenApp: `.OpenInAppButton{${DN}}.css-183aq3r{${VH}}`,
     hiddenLogo: `.MobileAppHeader-logo,a[aria-label="知乎"]{${VH}}`,
-    hiddenHeader: `.MobileAppHeader,.ColumnPageHeader.Sticky,.css-rg1dmv{${DN}}`,
+    hiddenHeader: `.MobileAppHeader,.ColumnPageHeader.Sticky,.css-rg1dmv,.css-1gapyfo{${DN}}`,
     hiddenItemActions: `.TopstoryItem .ContentItem-actions:not(.Sticky),.SearchMain .ContentItem-actions{${DN}}`,
     hiddenBottomSticky: `.ContentItem-actions.Sticky,.css-1tu4yh8{${DN}}`,
     hiddenReward: `.Reward{${DN}}`,

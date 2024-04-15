@@ -1,6 +1,6 @@
 import { commonRequest, formatDataToHump } from '../commons/request';
 import { myStorage } from '../commons/storage';
-import { dom, domA, domById, fnLog, nodesStopPropagation } from '../commons/tools';
+import { dom, domA, domById, domC, fnLog, insertAfter, nodesStopPropagation } from '../commons/tools';
 import { store } from '../store';
 import { IConfig } from '../types';
 import { IZhihuAnswerDataItem } from '../types/zhihu-answer.type';
@@ -54,6 +54,21 @@ export const myListenAnswer = {
     if (nodeQuestionAnswerContent) {
       // 为列表跳转进来的当前回答
       nodeQuestionAnswerContent.innerHTML = createListItemHTML(topCurrentData, config);
+      if (!dom('.Card.ViewAll')) {
+        const questions = pageJsData.initialState.entities.questions;
+        const question = questions[Object.keys(questions)[0]];
+        const nNode = domC('div', {
+          className: 'Card ViewAll ViewAll--bottom',
+          innerHTML: `<a href="/question/${
+            question.id
+          }" class="QuestionMainAction ViewAll-QuestionMainAction" data-za-detail-view-element_name="ViewAll" style="color: rgb(23, 81, 153);">查看全部 ${
+            question.answerCount || 0
+          } 个回答</a>`,
+        });
+        nNode.setAttribute('data-za-detail-view-path-module', 'MessageItem');
+        nNode.setAttribute('data-za-extra-module', `{&quot;card&quot;:{&quot;content&quot;:{&quot;item_num&quot;:${question.answerCount || 0}}}}`);
+        insertAfter(nNode, nodeQuestionAnswerContent.parentElement);
+      }
     } else {
       const nodeTopList = dom('.List .List')!;
       nodeTopList.innerHTML = createListItemHTML(topCurrentData, config);
@@ -66,7 +81,7 @@ export const myListenAnswer = {
     setTimeout(() => {
       const nodeAnswers = domA('.List-item');
       if (nodeAnswers.length && !nodeAnswers[0].classList.contains(CLASS_ANSWER_ITEM)) {
-        fnLog('answers is covered, need do reload init')
+        fnLog('answers is covered, need do reload init');
         myListenAnswer.init();
       }
     }, 500);

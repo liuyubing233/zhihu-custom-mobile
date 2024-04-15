@@ -2044,6 +2044,7 @@
     }
   };
   var store = new Store();
+  var CLASS_ANSWER_ITEM = "ctz-answer-item";
   var myListenAnswer = {
     next: "",
     end: false,
@@ -2086,6 +2087,13 @@
         nodeListContent.innerHTML = createListHTML(prevDataList, config);
         this.checkListHeight();
       }
+      setTimeout(() => {
+        const nodeAnswers = domA(".List-item");
+        if (nodeAnswers.length && !nodeAnswers[0].classList.contains(CLASS_ANSWER_ITEM)) {
+          fnLog("answers is covered, need do reload init");
+          myListenAnswer.init();
+        }
+      }, 500);
     },
     /** 滚动时回答内容处理 */
     scroll: async function() {
@@ -2163,7 +2171,7 @@
     let extraHTML = "";
     copyAnswerLink && (extraHTML += createHTMLCopyLink(`https://www.zhihu.com/question/${target.question.id}/answer/${target.id}`));
     return `
-<div class="List-item ctz-answer-item" tabindex="0">
+<div class="List-item ${CLASS_ANSWER_ITEM}" tabindex="0">
   <div
     class="ContentItem AnswerItem ctz-self-item"
     data-za-index="0"

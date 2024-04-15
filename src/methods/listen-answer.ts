@@ -16,6 +16,8 @@ import {
   removeByBox,
 } from './listen-common';
 
+const CLASS_ANSWER_ITEM = 'ctz-answer-item';
+
 /** 新的回答内容监听，用于处理移动端网页 */
 export const myListenAnswer = {
   next: '',
@@ -60,6 +62,14 @@ export const myListenAnswer = {
       nodeListContent.innerHTML = createListHTML(prevDataList, config);
       this.checkListHeight();
     }
+
+    setTimeout(() => {
+      const nodeAnswers = domA('.List-item');
+      if (nodeAnswers.length && !nodeAnswers[0].classList.contains(CLASS_ANSWER_ITEM)) {
+        fnLog('answers is covered, need do reload init')
+        myListenAnswer.init();
+      }
+    }, 500);
   },
   /** 滚动时回答内容处理 */
   scroll: async function () {
@@ -137,7 +147,7 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
   copyAnswerLink && (extraHTML += createHTMLCopyLink(`https://www.zhihu.com/question/${target.question.id}/answer/${target.id}`));
 
   return `
-<div class="List-item ctz-answer-item" tabindex="0">
+<div class="List-item ${CLASS_ANSWER_ITEM}" tabindex="0">
   <div
     class="ContentItem AnswerItem ctz-self-item"
     data-za-index="0"

@@ -28,9 +28,9 @@ import { INNER_CSS } from './web-resources';
     if (!document.head || !document.body) {
       fnLog('not find head and body, waiting for reload...');
       setTimeout(() => {
-        fnLog('to reload...')
-        onDocumentStart()
-      }, 500)
+        fnLog('to reload...');
+        onDocumentStart();
+      }, 500);
       return;
     }
     fnInitDomStyle('CTZ_STYLE', INNER_CSS);
@@ -62,7 +62,7 @@ import { INNER_CSS } from './web-resources';
         myListenAnswer.init();
       }, 0);
     }
-    fnLog('function onDocumentStart init')
+    fnLog('function onDocumentStart init');
   }
   onDocumentStart();
 

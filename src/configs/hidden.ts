@@ -25,7 +25,7 @@ export const HIDDEN_ARRAY: IOptionItem[][] = [
   [
     { value: 'hiddenLogo', label: '隐藏LOGO' },
     { value: 'hiddenHeader', label: '隐藏顶部悬浮模块' },
-    { value: 'hiddenBottomSticky', label: '隐藏底部悬浮操作栏' },
+    { value: 'hiddenBottomSticky', label: '隐藏进入回答页面时的底部操作栏' },
     { value: 'hiddenCommitImg', label: '隐藏评论区图片' },
   ],
   [

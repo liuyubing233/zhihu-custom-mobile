@@ -7,14 +7,14 @@ export interface IZhihuAnswerResponse {
 export interface IZhihuAnswerDataItem {
   type?: string;
   targetType: string;
-  target: Target;
+  target: IZhihuAnswerTarget;
   skipCount?: boolean;
   position?: number;
   cursor?: string;
   isJumpNative?: boolean;
 }
 
-export interface Target {
+export interface IZhihuAnswerTarget {
   adminClosed_comment: boolean;
   annotationAction: null;
   answerType: string;

@@ -1,4 +1,4 @@
-import { commonRequest, formatDataToHump } from '../commons/request';
+import { commonRequest, formatDataToHump, requestAnswer } from '../commons/request';
 import { myStorage } from '../commons/storage';
 import { dom, domA, domById, domC, fnLog, insertAfter, nodesStopPropagation } from '../commons/tools';
 import { store } from '../store';
@@ -24,36 +24,35 @@ export const myListenAnswer = {
   end: false,
   loading: false,
   init: async function () {
+    const nodeQuestionMain = dom('.Question-main');
+    if (!nodeQuestionMain) {
+      setTimeout(() => {
+        fnLog('cannot find .Question-main, waiting to reload...');
+        myListenAnswer.init();
+      }, 500);
+
+      return;
+    }
     const config = await myStorage.getConfig();
-    dom('.Question-main')!.addEventListener('click', (event) => {
-      eventListenButton(event);
-    });
-    nodesStopPropagation(['.RichContent-inner', '.Question-main figure img', '.Question-main a'], [addListenImage]);
-    nodesStopPropagation(['.RichContent-inner p'], [], 'copy'); // 去除禁止复制
     const nodeJsonData = domById('js-initialData')!;
     if (!nodeJsonData) {
       return;
     }
     const pageJsData = JSON.parse(nodeJsonData.innerText || '{}');
-    const questionId = location.pathname.replace('/question/', '');
-    const currentQuestion = pageJsData.initialState.question.answers[questionId];
-    if (currentQuestion) {
-      const next = currentQuestion.next;
-      this.next = next;
-      this.end = !next;
-    }
-    // 页面原有的回答数据
-    const prevAnswers = pageJsData.initialState.entities.answers;
-    const prevDataList = Object.keys(prevAnswers).map((i) => ({
-      target: formatDataToHump(prevAnswers[i]),
-      targetType: 'answer',
-    }));
-    const topCurrentData = prevDataList.pop();
-    if (!topCurrentData) return;
+    nodeQuestionMain!.addEventListener('click', (event) => {
+      eventListenButton(event);
+    });
+    nodesStopPropagation(['.RichContent-inner', '.Question-main figure img', '.Question-main a'], [addListenImage]);
+    nodesStopPropagation(['.RichContent-inner p'], [], 'copy'); // 去除禁止复制
     const nodeQuestionAnswerContent = dom('.QuestionAnswer-content');
     if (nodeQuestionAnswerContent) {
-      // 为列表跳转进来的当前回答
-      nodeQuestionAnswerContent.innerHTML = createListItemHTML(topCurrentData, config);
+      // 为默认回答内容
+      const locArr = location.pathname.split('/');
+      const answerId = locArr[4];
+      const res = await requestAnswer(answerId);
+      if (!res) return;
+      const nodeQuestionAnswerContent = dom('.QuestionAnswer-content')!;
+      nodeQuestionAnswerContent.innerHTML = createListItemHTML({ target: res, targetType: 'answer' }, config);
       if (!dom('.Card.ViewAll')) {
         const questions = pageJsData.initialState.entities.questions;
         const question = questions[Object.keys(questions)[0]];
@@ -70,11 +69,27 @@ export const myListenAnswer = {
         insertAfter(nNode, nodeQuestionAnswerContent.parentElement);
       }
     } else {
+      const questionId = location.pathname.replace('/question/', '');
+      const currentQuestion = pageJsData.initialState.question.answers[questionId];
+      if (currentQuestion) {
+        const next = currentQuestion.next;
+        this.next = next;
+        this.end = !next;
+      }
+      // 页面原有的回答数据
+      const prevAnswers = pageJsData.initialState.entities.answers;
+      const prevDataList = Object.keys(prevAnswers).map((i) => ({
+        target: formatDataToHump(prevAnswers[i]),
+        targetType: 'answer',
+      }));
+      const topCurrentData = prevDataList.pop();
       const nodeTopList = dom('.List .List')!;
-      nodeTopList.innerHTML = createListItemHTML(topCurrentData, config);
-      const nodeLists = domA('.Question-main .List')!;
-      const nodeListContent = nodeLists[nodeLists.length - 1];
-      nodeListContent.innerHTML = createListHTML(prevDataList, config);
+      if (topCurrentData) {
+        nodeTopList.innerHTML = createListItemHTML(topCurrentData, config);
+        const nodeLists = domA('.Question-main .List')!;
+        const nodeListContent = nodeLists[nodeLists.length - 1];
+        nodeListContent.innerHTML = createListHTML(prevDataList, config);
+      }
       this.checkListHeight();
     }
 

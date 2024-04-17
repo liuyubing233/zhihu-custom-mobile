@@ -209,8 +209,8 @@ const createCommentHTML = (data: ICommentData[], isChild = false) => data.map((i
 const createCommentHTMLItem = (item: ICommentData, isChild = false, haveChild = true): string => {
   const { author, id, authorTag, content, createdTime, hot, likeCount, childComments = [], childCommentCount, childCommentNextOffset, replyToAuthor } = item;
   const vDomContent = domC('div', { innerHTML: content });
-  vDomContent.querySelectorAll('.comment_img').forEach((item) => {
-    const nItem = item as HTMLAnchorElement;
+  vDomContent.querySelectorAll('.comment_img').forEach((i) => {
+    const nItem = i as HTMLAnchorElement;
     const nImage = domC('img', {
       src: nItem.href,
       style: ' margin: 12px 0px 0px; display:block:width: 100px; height: 200px;',

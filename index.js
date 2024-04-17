@@ -1452,6 +1452,15 @@
       headers: new Headers()
     }).then((res) => res.json()).then((res) => formatDataToHump(res));
   };
+  var requestAnswer = async (answerId) => {
+    if (!answerId)
+      return void 0;
+    const url = `https://www.zhihu.com/api/v4/answers/${answerId}?include=is_visible%2Cpaid_info%2Cpaid_info_content%2Cadmin_closed_comment%2Creward_info%2Cannotation_action%2Cannotation_detail%2Ccollapse_reason%2Cis_normal%2Cis_sticky%2Ccollapsed_by%2Csuggest_edit%2Ccomment_count%2Cthanks_count%2Cfavlists_count%2Ccan_comment%2Ccontent%2Ceditable_content%2Cvoteup_count%2Creshipment_settings%2Ccomment_permission%2Ccreated_time%2Cupdated_time%2Creview_info%2Crelevant_info%2Cquestion%2Cexcerpt%2Cattachment%2Cis_labeled%2Creaction_instruction%2Cip_info%2Crelationship.is_authorized%2Cvoting%2Cis_thanked%2Cis_author%2Cis_nothelp%3Bauthor.vip_info%2Cbadge%5B*%5D.topics%3Bsettings.table_of_content.enabled`;
+    return fetch(url, {
+      method: "GET",
+      headers: createCommentHeaders(url)
+    }).then((res) => res.json()).then((res) => formatDataToHump(res));
+  };
   var myLoadingToast = {
     open: () => domById("CTZ_LOADING_TOAST").style.display = "flex",
     hide: () => domById("CTZ_LOADING_TOAST").style.display = "none"
@@ -1934,8 +1943,8 @@
   var createCommentHTMLItem = (item, isChild = false, haveChild = true) => {
     const { author, id, authorTag, content, createdTime, hot, likeCount, childComments = [], childCommentCount, childCommentNextOffset, replyToAuthor } = item;
     const vDomContent = domC("div", { innerHTML: content });
-    vDomContent.querySelectorAll(".comment_img").forEach((item2) => {
-      const nItem = item2;
+    vDomContent.querySelectorAll(".comment_img").forEach((i2) => {
+      const nItem = i2;
       const nImage = domC("img", {
         src: nItem.href,
         style: " margin: 12px 0px 0px; display:block:width: 100px; height: 200px;"
@@ -2058,35 +2067,34 @@
     end: false,
     loading: false,
     init: async function() {
+      const nodeQuestionMain = dom(".Question-main");
+      if (!nodeQuestionMain) {
+        setTimeout(() => {
+          fnLog("cannot find .Question-main, waiting to reload...");
+          myListenAnswer.init();
+        }, 500);
+        return;
+      }
       const config = await myStorage.getConfig();
-      dom(".Question-main").addEventListener("click", (event) => {
-        eventListenButton(event);
-      });
-      nodesStopPropagation([".RichContent-inner", ".Question-main figure img", ".Question-main a"], [addListenImage]);
-      nodesStopPropagation([".RichContent-inner p"], [], "copy");
       const nodeJsonData = domById("js-initialData");
       if (!nodeJsonData) {
         return;
       }
       const pageJsData = JSON.parse(nodeJsonData.innerText || "{}");
-      const questionId = location.pathname.replace("/question/", "");
-      const currentQuestion = pageJsData.initialState.question.answers[questionId];
-      if (currentQuestion) {
-        const next = currentQuestion.next;
-        this.next = next;
-        this.end = !next;
-      }
-      const prevAnswers = pageJsData.initialState.entities.answers;
-      const prevDataList = Object.keys(prevAnswers).map((i2) => ({
-        target: formatDataToHump(prevAnswers[i2]),
-        targetType: "answer"
-      }));
-      const topCurrentData = prevDataList.pop();
-      if (!topCurrentData)
-        return;
+      nodeQuestionMain.addEventListener("click", (event) => {
+        eventListenButton(event);
+      });
+      nodesStopPropagation([".RichContent-inner", ".Question-main figure img", ".Question-main a"], [addListenImage]);
+      nodesStopPropagation([".RichContent-inner p"], [], "copy");
       const nodeQuestionAnswerContent = dom(".QuestionAnswer-content");
       if (nodeQuestionAnswerContent) {
-        nodeQuestionAnswerContent.innerHTML = createListItemHTML(topCurrentData, config);
+        const locArr = location.pathname.split("/");
+        const answerId = locArr[4];
+        const res = await requestAnswer(answerId);
+        if (!res)
+          return;
+        const nodeQuestionAnswerContent2 = dom(".QuestionAnswer-content");
+        nodeQuestionAnswerContent2.innerHTML = createListItemHTML({ target: res, targetType: "answer" }, config);
         if (!dom(".Card.ViewAll")) {
           const questions = pageJsData.initialState.entities.questions;
           const question = questions[Object.keys(questions)[0]];
@@ -2096,14 +2104,29 @@
           });
           nNode.setAttribute("data-za-detail-view-path-module", "MessageItem");
           nNode.setAttribute("data-za-extra-module", `{&quot;card&quot;:{&quot;content&quot;:{&quot;item_num&quot;:${question.answerCount || 0}}}}`);
-          insertAfter(nNode, nodeQuestionAnswerContent.parentElement);
+          insertAfter(nNode, nodeQuestionAnswerContent2.parentElement);
         }
       } else {
+        const questionId = location.pathname.replace("/question/", "");
+        const currentQuestion = pageJsData.initialState.question.answers[questionId];
+        if (currentQuestion) {
+          const next = currentQuestion.next;
+          this.next = next;
+          this.end = !next;
+        }
+        const prevAnswers = pageJsData.initialState.entities.answers;
+        const prevDataList = Object.keys(prevAnswers).map((i2) => ({
+          target: formatDataToHump(prevAnswers[i2]),
+          targetType: "answer"
+        }));
+        const topCurrentData = prevDataList.pop();
         const nodeTopList = dom(".List .List");
-        nodeTopList.innerHTML = createListItemHTML(topCurrentData, config);
-        const nodeLists = domA(".Question-main .List");
-        const nodeListContent = nodeLists[nodeLists.length - 1];
-        nodeListContent.innerHTML = createListHTML(prevDataList, config);
+        if (topCurrentData) {
+          nodeTopList.innerHTML = createListItemHTML(topCurrentData, config);
+          const nodeLists = domA(".Question-main .List");
+          const nodeListContent = nodeLists[nodeLists.length - 1];
+          nodeListContent.innerHTML = createListHTML(prevDataList, config);
+        }
         this.checkListHeight();
       }
       setTimeout(() => {

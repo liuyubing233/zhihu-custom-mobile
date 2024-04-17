@@ -15,6 +15,7 @@ export const CONFIG_HIDDEN_DEFAULT: IConfigHidden = {
   hiddenReadMoreText: true,
   hiddenReward: true,
   hiddenAD: true,
+  hiddenBottomSticky: true,
 };
 
 /** 屏蔽内容模块默认配置 */

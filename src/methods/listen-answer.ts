@@ -30,7 +30,6 @@ export const myListenAnswer = {
         fnLog('cannot find .Question-main, waiting to reload...');
         myListenAnswer.init();
       }, 500);
-
       return;
     }
     const config = await myStorage.getConfig();

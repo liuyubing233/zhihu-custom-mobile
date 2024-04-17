@@ -24,7 +24,7 @@ const info =
   `// @grant        GM.getValue\n` +
   `// @grant        GM.setValue\n` +
   `// @grant        GM_registerMenuCommand\n` +
-  `// @run-at       document-end\n` +
+  `// @run-at       document-start\n` +
   `// ==/UserScript==\n`;
 
 const options = {

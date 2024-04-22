@@ -2,6 +2,7 @@ import { requestVote } from '../commons/request';
 import { domC, domP } from '../commons/tools';
 import { CLASS_COPY_LINK } from '../configs';
 import { EVoteType, EZhihuType, IConfig, IContentResType, IMyElement } from '../types';
+import { IZhihuAttachment } from '../types/zhihu-answer.type';
 import { IZhihuRecommendDataTarget } from '../types/zhihu-list-response.type';
 import { myListenComment } from './listen-comment';
 import { myPreview } from './preview';
@@ -172,6 +173,8 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
   const { moreLength = 400, moreMaxHeight = '180px' } = options || {};
   const { target } = data;
   const type = target.type as IContentResType;
+  const attachment = target.attachment as IZhihuAttachment;
+
   const isVideo = type === 'zvideo';
   const isPin = type === 'pin';
   const innerHTML = isVideo
@@ -205,20 +208,35 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
 
   const isMore = isVideo ? true : innerHTML.length > moreLength;
   const vDomContent = domC('div', { innerHTML });
+  const styleFrame = 'border:none;width: calc(100vw - 32px);height: calc((100vw - 32px)/1.8);';
   vDomContent.querySelectorAll('img').forEach((item) => {
     item.src = item.getAttribute('data-original') || item.getAttribute('data-actualsrc') || '';
   });
   vDomContent.querySelectorAll('a.video-box').forEach((item) => {
     const nItem = item as HTMLAnchorElement;
     const nFrame = domC('iframe', {
-      style: `border:none;width: calc(100vw - 32px);height: calc((100vw - 32px)/1.8);`,
+      style: styleFrame,
       src: nItem.href,
     });
     nItem.insertAdjacentElement('afterend', nFrame);
     nItem.style.display = 'none';
   });
-  const contentHTML = vDomContent.innerHTML;
+  let contentHTML = vDomContent.innerHTML;
   vDomContent.remove();
+  // 处理纯视频回答内容
+  if (attachment && attachment.type === 'video') {
+    const { hd, ld, sd } = attachment.video.videoInfo.playlist;
+    contentHTML += `
+<iframe style="${styleFrame}" src="${hd.url || ld.url || sd.url}"></iframe>
+<a style="background: #f8f8fa;padding: 16px;display: block;" target="_blank" href="https://www.zhihu.com/zvideo/${
+      attachment.video.zvideoId
+    }?playTime=0.0&utm_id=0">
+  <div style="font-weight: bold;font-size: 16px;">${attachment.video.title}</div>
+  <div style="margin-top:4px;font-size:12px;">${attachment.video.playCount} 播放 · ${attachment.video.voteupCount} 赞同</div>
+</a>
+    `;
+  }
+
   const voteCount = target.voteupCount || target.voteCount || 0;
   const voting = target.relationship ? target.relationship.voting : 0;
   return `

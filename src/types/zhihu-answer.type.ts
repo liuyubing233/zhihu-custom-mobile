@@ -19,6 +19,7 @@ export interface IZhihuAnswerTarget {
   annotationAction: null;
   answerType: string;
   attachedInfo: string;
+  attachment?: IZhihuAttachment;
   author: Author;
   canComment: CanComment;
   collapseReason: string;
@@ -183,4 +184,56 @@ export interface IZhihuPaging {
 
 export interface IZhihuAnswerSession {
   id: string;
+}
+
+export interface IZhihuAttachment {
+  attachmentId: string;
+  type: string;
+  video: IZhihuAttachmentVideo;
+}
+
+export interface IZhihuAttachmentVideo {
+  campaign: ICampaign;
+  endTime: number;
+  parentVideoId: string;
+  playCount: number;
+  startTime: number;
+  subVideoId: string;
+  title: string;
+  videoInfo: IVideoInfo;
+  voteupCount: number;
+  zvideoId: string;
+}
+
+export interface ICampaign {
+  description: string;
+  id: string;
+  title: string;
+  type: string;
+}
+
+export interface IVideoInfo {
+  duration: number;
+  height: number;
+  isPaid: boolean;
+  isTrial: boolean;
+  playCount: number;
+  playlist: IPlaylist;
+  thumbnail: string;
+  type: string;
+  videoId: number;
+  width: number;
+}
+
+export interface IPlaylist {
+  hd: IHD;
+  ld: IHD;
+  sd: IHD;
+}
+
+export interface IHD {
+  bitrate: number;
+  height: number;
+  url: string;
+  width: number;
 }

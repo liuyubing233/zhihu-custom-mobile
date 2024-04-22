@@ -3,7 +3,15 @@ import { myStorage } from '../commons/storage';
 import { dom, domById, fnLog } from '../commons/tools';
 import { IConfig, IContentResType } from '../types';
 import { IZhihuRecommendData } from '../types/zhihu-list-response.type';
-import { CONTENT_TYPE_OBJ, createHTMLCopyLink, eventListenButton, innerHTMLContentItemMeta, innerHTMLRichInnerAndAction, openLoading, removeByBox } from './listen-common';
+import {
+  CONTENT_TYPE_OBJ,
+  createHTMLCopyLink,
+  eventListenButton,
+  innerHTMLContentItemMeta,
+  innerHTMLRichInnerAndAction,
+  openLoading,
+  removeByBox,
+} from './listen-common';
 
 /** 加载推荐列表 */
 export const myListenListRecommend = {
@@ -79,16 +87,25 @@ const addHistoryItem = async (data: IZhihuRecommendData) => {
   myStorage.setHistoryItem('list', historyList);
 };
 
-
 const createListHTML = (data: IZhihuRecommendData[], config: IConfig) => data.map((i) => createListItemHTML(i, config)).join('');
 
 const createListItemHTML = (data: IZhihuRecommendData, config: IConfig) => {
-  const { releaseTimeForList, copyAnswerLink, showToAnswer } = config;
+  const { releaseTimeForList, copyAnswerLink, showToAnswer, removeItemAboutVideo, removeItemAboutArticle } = config;
   const { id, target, attachedInfo, brief } = data;
   const type = target.type as IContentResType;
   const { contentItem, nType, formatData } = CONTENT_TYPE_OBJ[type];
   const { itemHref, itemHref2, itemTitle } = formatData(target);
   addHistoryItem(data);
+
+  if (removeItemAboutVideo && type === 'zvideo') {
+    fnLog('屏蔽视频');
+    return '';
+  }
+
+  if (removeItemAboutArticle && type === 'article') {
+    fnLog('屏蔽文章');
+    return '';
+  }
 
   let extraHTML = '';
   copyAnswerLink && (extraHTML += createHTMLCopyLink(itemHref2));
@@ -132,5 +149,3 @@ const createListItemHTML = (data: IZhihuRecommendData, config: IConfig) => {
   </div>
 </div>`;
 };
-
-

@@ -702,7 +702,6 @@
     }
   };
   var DN = "display:none!important;";
-  var VH = "visibility: hidden!important;";
   var myHidden = {
     init: async function() {
       const content = await this.change();
@@ -720,9 +719,9 @@
       return cssHidden + cssHiddenMore;
     },
     hiddenItem: {
-      hiddenOpenApp: `.OpenInAppButton{${DN}}.css-183aq3r{${VH}}`,
-      hiddenLogo: `.MobileAppHeader-logo,a[aria-label="知乎"]{${VH}}`,
-      hiddenHeader: `.MobileAppHeader,.ColumnPageHeader.Sticky,.css-rg1dmv,.css-1gapyfo{${DN}}`,
+      hiddenOpenApp: `.OpenInAppButton,.css-rg1dmv,.css-1gapyfo,.css-183aq3r{${DN}}`,
+      hiddenLogo: `.MobileAppHeader-logo,a[aria-label="知乎"]{${DN}}`,
+      hiddenHeader: `.MobileAppHeader,.ColumnPageHeader.Sticky{${DN}}`,
       hiddenItemActions: `.TopstoryItem .ContentItem-actions:not(.Sticky),.SearchMain .ContentItem-actions{${DN}}`,
       hiddenBottomSticky: `.ContentItem-actions.Sticky,.css-1tu4yh8{${DN}}`,
       hiddenReward: `.Reward{${DN}}`,

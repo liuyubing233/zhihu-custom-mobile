@@ -58,10 +58,10 @@
       <div class="ctz-content-center">
         <div class="ctz-filter-defail-who">
           <div class="ctz-label">屏蔽以下官方账号的回答</div>
-          <div style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px">
+          <div class="ctz-one">
             <label><input class="ctz-i" name="removeZhihuOfficial" type="checkbox" value="on" />所有知乎官方账号</label>
           </div>
-          <div class="ctz-flex-wrap" style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px">
+          <div class="ctz-flex-wrap ctz-one">
             <label><input class="ctz-i" name="removeStoryAnswer" type="checkbox" value="on" />故事档案局</label>
             <label><input class="ctz-i" name="removeYanxuanAnswer" type="checkbox" value="on" />盐选科普</label>
             <label><input class="ctz-i" name="removeYanxuanRecommend" type="checkbox" value="on" />盐选推荐</label>
@@ -69,14 +69,14 @@
           </div>
         </div>
 
-        <div class="ctz-flex-wrap" style="margin: 4px 0; border-bottom: 1px solid #ebebeb; padding-bottom: 4px">
+        <div class="ctz-flex-wrap ctz-one">
           <label>
             <span class="ctz-label">屏蔽「匿名用户」回答</span>
             <input class="ctz-i" name="removeAnonymousAnswer" type="checkbox" value="on" />
           </label>
         </div>
 
-        <div class="ctz-filter-defail-tag">
+        <div class="ctz-filter-defail-tag ctz-one">
           <div class="ctz-label">屏蔽带有以下标签的回答</div>
           <div class="ctz-flex-wrap">
             <label><input class="ctz-i" name="removeFromYanxuan" type="checkbox" value="on" />选自盐选专栏</label>
@@ -84,6 +84,16 @@
             <label><input class="ctz-i" name="removeFromEBook" type="checkbox" value="on" />选自电子书</label>
           </div>
         </div>
+
+        <label class="ctz-one" style="display: flex; align-items: center">
+          <span class="ctz-label">列表屏蔽视频<span class="ctz-label-tag ctz-label-tag-ZVideo">视频</span></span>
+          <input class="ctz-i" name="removeItemAboutVideo" type="checkbox" value="on" />
+        </label>
+
+        <label class="ctz-one" style="display: flex; align-items: center">
+          <span class="ctz-label">列表屏蔽文章<span class="ctz-label-tag ctz-label-tag-Article">文章</span></span>
+          <input class="ctz-i" name="removeItemAboutArticle" type="checkbox" value="on" />
+        </label>
       </div>
     </div>
 
@@ -113,7 +123,11 @@
   </div>
   <div class="ctz-footer">
     <a href="https://github.com/liuyubing233/zhihu-custom-mobile" target="_blank">Github⭐</a>
-    <a href="https://greasyfork.org/zh-CN/scripts/488508-%E7%9F%A5%E4%B9%8E%E4%BF%AE%E6%94%B9%E5%99%A8%E7%A7%BB%E5%8A%A8%E7%89%88-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0" target="_blank">GreasyFork</a>
+    <a
+      href="https://greasyfork.org/zh-CN/scripts/488508-%E7%9F%A5%E4%B9%8E%E4%BF%AE%E6%94%B9%E5%99%A8%E7%A7%BB%E5%8A%A8%E7%89%88-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0"
+      target="_blank"
+      >GreasyFork</a
+    >
   </div>
 </div>
 

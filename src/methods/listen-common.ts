@@ -51,23 +51,25 @@ const eventMainObject: Record<string, Function> = {
   [CLASS_BTN_EXPEND]: (currentNode: HTMLElement) => {
     const nodeRich = domP(currentNode, 'class', 'RichContent')!;
     const nodeRichInner = nodeRich.querySelector('.RichContent-inner') as HTMLElement;
-    const nodeBTNOther = nodeRich.querySelector(`.${CLASS_BTN_CLOSE}`) as HTMLElement;
+    const nodeBtnOther = nodeRich.querySelector(`.${CLASS_BTN_CLOSE}`) as HTMLElement;
+    const nodeBtnTHis = nodeRich.querySelector(`.${CLASS_BTN_EXPEND}`) as HTMLElement;
     nodeRich.classList.remove('is-collapsed');
     nodeRichInner.style.maxHeight = 'max-content';
-    nodeBTNOther.style.display = 'block';
-    currentNode.style.display = 'none';
+    nodeBtnOther.style.display = 'block';
+    nodeBtnTHis.style.display = 'none';
   },
   /** 收起 */
   [CLASS_BTN_CLOSE]: (currentNode: HTMLElement) => {
     const nodeRich = domP(currentNode, 'class', 'RichContent')!;
     const nodeRichInner = nodeRich.querySelector('.RichContent-inner') as HTMLElement;
-    const nodeBTNOther = nodeRich.querySelector(`.${CLASS_BTN_EXPEND}`) as HTMLElement;
+    const nodeBtnOther = nodeRich.querySelector(`.${CLASS_BTN_EXPEND}`) as HTMLElement;
     const nodeActions = nodeRich.querySelector('.ContentItem-actions') as HTMLElement;
+    const nodeBtnTHis = nodeRich.querySelector(`.${CLASS_BTN_CLOSE}`) as HTMLElement;
     nodeActions.style.cssText = '';
     nodeRich.classList.add('is-collapsed');
     nodeRichInner.style.maxHeight = '180px';
-    nodeBTNOther.style.display = 'block';
-    currentNode.style.display = 'none';
+    nodeBtnOther.style.display = 'block';
+    nodeBtnTHis.style.display = 'none';
   },
   /** 评论 */
   [CLASS_BTN_COMMENT]: async (currentNode: HTMLElement) => {

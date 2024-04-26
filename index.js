@@ -1529,23 +1529,25 @@
     [CLASS_BTN_EXPEND]: (currentNode) => {
       const nodeRich = domP(currentNode, "class", "RichContent");
       const nodeRichInner = nodeRich.querySelector(".RichContent-inner");
-      const nodeBTNOther = nodeRich.querySelector(`.${CLASS_BTN_CLOSE}`);
+      const nodeBtnOther = nodeRich.querySelector(`.${CLASS_BTN_CLOSE}`);
+      const nodeBtnTHis = nodeRich.querySelector(`.${CLASS_BTN_EXPEND}`);
       nodeRich.classList.remove("is-collapsed");
       nodeRichInner.style.maxHeight = "max-content";
-      nodeBTNOther.style.display = "block";
-      currentNode.style.display = "none";
+      nodeBtnOther.style.display = "block";
+      nodeBtnTHis.style.display = "none";
     },
     /** 收起 */
     [CLASS_BTN_CLOSE]: (currentNode) => {
       const nodeRich = domP(currentNode, "class", "RichContent");
       const nodeRichInner = nodeRich.querySelector(".RichContent-inner");
-      const nodeBTNOther = nodeRich.querySelector(`.${CLASS_BTN_EXPEND}`);
+      const nodeBtnOther = nodeRich.querySelector(`.${CLASS_BTN_EXPEND}`);
       const nodeActions = nodeRich.querySelector(".ContentItem-actions");
+      const nodeBtnTHis = nodeRich.querySelector(`.${CLASS_BTN_CLOSE}`);
       nodeActions.style.cssText = "";
       nodeRich.classList.add("is-collapsed");
       nodeRichInner.style.maxHeight = "180px";
-      nodeBTNOther.style.display = "block";
-      currentNode.style.display = "none";
+      nodeBtnOther.style.display = "block";
+      nodeBtnTHis.style.display = "none";
     },
     /** 评论 */
     [CLASS_BTN_COMMENT]: async (currentNode) => {

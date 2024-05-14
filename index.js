@@ -440,7 +440,7 @@
     /** 使用背景色1的元素名称 */
     cssNamesBackground1: `#CTZ_DIALOG,#CTZ_BASIS_SHOW label b,.ctz-suspension-pickup,.ctz-content-top a.target,.ctz-message,#CTZ_DIALOG textarea,#CTZ_DIALOG .ctz-button,body,.App,.MobileAppHeader-searchBox,.Input-wrapper,.VideoAnswerPlayer-stateBar,.ColumnHomeColumnCard,.Toast-root-tU3yo,.AuthorsSection-author-tFZJF,.editable,textarea.zg-form-text-input,.zg-form-text-input>textarea,.ac-active,.PagingButton,[data-tooltip="回到顶部"],.css-d1dtt9,.css-k8i00s,.css-41c1px,.zm-editable-editor-field-wrap,.zu-question-suggest-topic-input,.zg-form-text-input,.zg-form-select,.css-4lspwd,.zu-top`,
     /** 使用背景色2的元素名称 */
-    cssNamesBackground2: `.ctz-content,.ctz-menu>a.target,.Card,.Sticky,.ContentItem-more,.ContentItem-actions,.Popover-content,.Popover-arrow:after,.MobileAppHeader-expand,.CommentsForOia>div,.KfeCollection-VipRecommendCard,.OpenInAppButton>div,.Modal-inner,.MobileSearch-container,.ProfileBar,.MobileAppHeader,.ZVideo-mobile,.Post-content,.sgui-header,.MobileCollectionsHeader-tabs,.MobileModal-title--default,.MobileModal,.List-item,.Login,.Input-wrapper.SignFlow-accountInput,.SignFlowInput .Input-wrapper,.SearchTabs,.MobileEmptyPageWithType,.TopicHot-Header,.Favlists-mobileActions,[data-za-detail-view-path-module="SearchResultList"]>div,[data-za-detail-view-path-module="SearchResultList"]>div>a,.SearchSubTabs,.KfeCollection-PcCollegeCard-root,.modal-dialog,.ac-renderer,.css-hplpcn,.zh-add-question-form .add-question-splash-page .ac-renderer .ac-row.ac-last,.HeaderInfo-infoCard-orDxs,.Common-content-893LU,.ContentModule-module-9gTaH,.NewBottomBar-root-dVXzD,.AuthorModule-root-rxFMb,.css-w0m1iq,.zu-autocomplete-row-label,.ac-row.zu-autocomplete-row-search-link,.PostItem,.Recommendations-Main,.ErrorPage,.css-1e7fksk,.css-1gfesro,.css-ud510h,.css-vb0amv,.css-t89z5u,.css-u3vsx3>div,.css-5k4zcx,.css-13heq6w,.css-13heq6w>a,.css-1eltcns,.css-yoby3j,.css-l63y2t,.css-173civf,.css-1nalx0p,.css-mn9570,.css-4r7szo,.css-vkey2q,.css-ugzr12,.css-6v1k3,.css-1xj1964,.css-ggid2,.css-rhbxt0,.css-1j23ebo,.css-7wvdjh,.css-kt4t4n,#CTZ_COMMENT,#CTZ_COMMENT_CHILD,.mobile-top-nav-popup .top-nav-dropdown,.zm-item-tag,.mobile-top-nav-popup .top-nav-dropdown a`,
+    cssNamesBackground2: `.ctz-content,.ctz-menu>a.target,.Card,.Sticky,.ContentItem-more,.ContentItem-actions,.Popover-content,.Popover-arrow:after,.MobileAppHeader-expand,.CommentsForOia>div,.KfeCollection-VipRecommendCard,.OpenInAppButton>div,.Modal-inner,.MobileSearch-container,.ProfileBar,.MobileAppHeader,.ZVideo-mobile,.Post-content,.sgui-header,.MobileCollectionsHeader-tabs,.MobileModal-title--default,.MobileModal,.List-item,.Login,.Input-wrapper.SignFlow-accountInput,.SignFlowInput .Input-wrapper,.SearchTabs,.MobileEmptyPageWithType,.TopicHot-Header,.Favlists-mobileActions,[data-za-detail-view-path-module="SearchResultList"]>div,[data-za-detail-view-path-module="SearchResultList"]>div>a,.SearchSubTabs,.KfeCollection-PcCollegeCard-root,.modal-dialog,.ac-renderer,.css-hplpcn,.zh-add-question-form .add-question-splash-page .ac-renderer .ac-row.ac-last,.HeaderInfo-infoCard-orDxs,.Common-content-893LU,.ContentModule-module-9gTaH,.NewBottomBar-root-dVXzD,.AuthorModule-root-rxFMb,.css-w0m1iq,.zu-autocomplete-row-label,.ac-row.zu-autocomplete-row-search-link,.PostItem,.Recommendations-Main,.ErrorPage,.css-1e7fksk,.css-1gfesro,.css-ud510h,.css-vb0amv,.css-t89z5u,.css-u3vsx3>div,.css-5k4zcx,.css-13heq6w,.css-13heq6w>a,.css-1eltcns,.css-yoby3j,.css-l63y2t,.css-173civf,.css-1nalx0p,.css-mn9570,.css-4r7szo,.css-vkey2q,.css-ugzr12,.css-6v1k3,.css-1xj1964,.css-ggid2,.css-rhbxt0,.css-1j23ebo,.css-7wvdjh,.css-kt4t4n,#CTZ_COMMENT,#CTZ_COMMENT_CHILD,.mobile-top-nav-popup .top-nav-dropdown,.zm-item-tag,.mobile-top-nav-popup .top-nav-dropdown a,.Topbar,.AutoInviteItem-wrapper--mobile`,
     useCSSJustBGC2: `.slide-up`,
     /** 背景色透明的元素名称 */
     cssNamesBackgroundTransparent: `.ContentItem-more:before`,
@@ -2140,7 +2140,9 @@
           nodeTopList.innerHTML = createListItemHTML(topCurrentData, config);
           const nodeLists = domA(".Question-main .List");
           const nodeListContent = nodeLists[nodeLists.length - 1];
-          nodeListContent.innerHTML = createListHTML(prevDataList, config);
+          if (prevDataList.length) {
+            nodeListContent.innerHTML = createListHTML(prevDataList, config);
+          }
         }
         this.checkListHeight();
       }
@@ -2181,6 +2183,8 @@
       }
     },
     requestData: async function(nodeListContent) {
+      if (this.end)
+        return;
       this.loading = true;
       openLoading(nodeListContent, "ctz-answer-loading");
       const res = await commonRequest(this.next);

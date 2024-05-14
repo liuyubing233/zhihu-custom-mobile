@@ -87,7 +87,9 @@ export const myListenAnswer = {
         nodeTopList.innerHTML = createListItemHTML(topCurrentData, config);
         const nodeLists = domA('.Question-main .List')!;
         const nodeListContent = nodeLists[nodeLists.length - 1];
-        nodeListContent.innerHTML = createListHTML(prevDataList, config);
+        if (prevDataList.length) {
+          nodeListContent.innerHTML = createListHTML(prevDataList, config);
+        }
       }
       this.checkListHeight();
     }
@@ -128,6 +130,7 @@ export const myListenAnswer = {
     }
   },
   requestData: async function (nodeListContent: HTMLElement) {
+    if (this.end) return;
     this.loading = true;
     openLoading(nodeListContent, 'ctz-answer-loading');
     const res = await commonRequest(this.next);
@@ -171,7 +174,6 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
   for (let i = 0, len = hiddenUsers.length; i < len; i++) {
     if (target.author.name === hiddenUsers[i]) return '';
   }
-
   let extraHTML = '';
   copyAnswerLink && (extraHTML += createHTMLCopyLink(`https://www.zhihu.com/question/${target.question.id}/answer/${target.id}`));
 

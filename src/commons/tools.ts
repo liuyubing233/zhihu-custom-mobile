@@ -103,7 +103,7 @@ export const promisePercent = (requests: any[] = [], callback: (pro: IPromisePer
 export const mouseEventClick = (element?: HTMLElement) => {
   if (!element) return;
   const event = new TouchEvent('click', {
-    view: unsafeWindow,
+    view: window,
     bubbles: true,
     cancelable: true,
   });

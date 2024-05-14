@@ -9,10 +9,11 @@
 // @compatible   chrome Tampermonkey
 // @compatible   firefox Violentmonkey
 // @compatible   firefox Tampermonkey
+// @compatible   safari Violentmonkey
+// @compatible   safari Tampermonkey
 // @author       liuyubing
 // @license      MIT
 // @match        *://*.zhihu.com/*
-// @grant        unsafeWindow
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM.getValue

@@ -20,14 +20,16 @@ const CLASS_ANSWER_ITEM = 'ctz-answer-item';
 
 /** 新的回答内容监听，用于处理移动端网页 */
 export const myListenAnswer = {
+  isUpdated: false,
   next: '',
   end: false,
   loading: false,
   init: async function () {
+    this.isUpdated = /question\/\d+\/answers\/updated/.test(location.pathname);
     const nodeQuestionMain = dom('.Question-main');
     if (!nodeQuestionMain) {
       setTimeout(() => {
-        fnLog('cannot find .Question-main, waiting to reload...');
+        fnLog('未找到 .Question-main, 等待重载...');
         myListenAnswer.init();
       }, 500);
       return;
@@ -68,8 +70,11 @@ export const myListenAnswer = {
         insertAfter(nNode, nodeQuestionAnswerContent.parentElement);
       }
     } else {
-      const questionId = location.pathname.replace('/question/', '');
-      const currentQuestion = pageJsData.initialState.question.answers[questionId];
+      const matchArr = location.pathname.match(/question\/(\d+)\/?/);
+      const questionId = matchArr && matchArr.length ? matchArr[1] : ''
+      const currentQuestion = this.isUpdated
+        ? pageJsData.initialState.question.updatedAnswers[questionId]
+        : pageJsData.initialState.question.answers[questionId];
       if (currentQuestion) {
         const next = currentQuestion.next;
         this.next = next;
@@ -82,22 +87,38 @@ export const myListenAnswer = {
         targetType: 'answer',
       }));
       const topCurrentData = prevDataList.pop();
-      const nodeTopList = dom('.List .List')!;
+      if (this.isUpdated) {
+        const prevListDom = dom('.List div:nth-of-type(2)');
+        if (prevListDom) {
+          prevListDom.style.display = 'none';
+          dom('.List')!.appendChild(domC('div', { className: 'List' }));
+        }
+      }
+      const nodeTopList = dom('.List .List');
       if (topCurrentData) {
-        nodeTopList.innerHTML = createListItemHTML(topCurrentData, config);
-        const nodeLists = domA('.Question-main .List')!;
-        const nodeListContent = nodeLists[nodeLists.length - 1];
-        if (prevDataList.length) {
-          nodeListContent.innerHTML = createListHTML(prevDataList, config);
+        if (nodeTopList) {
+          nodeTopList.innerHTML = createListItemHTML(topCurrentData, config);
+          const nodeLists = domA('.Question-main .List')!;
+          const nodeListContent = nodeLists[nodeLists.length - 1];
+          if (prevDataList.length) {
+            if (this.isUpdated) {
+              nodeListContent.innerHTML += createListHTML(prevDataList, config);
+            } else {
+              nodeListContent.innerHTML = createListHTML(prevDataList, config);
+            }
+          }
+        } else {
+          fnLog('nodeTopList is undefined');
         }
       }
       this.checkListHeight();
     }
 
     setTimeout(() => {
-      const nodeAnswers = domA('.List-item');
-      if (nodeAnswers.length && !nodeAnswers[0].classList.contains(CLASS_ANSWER_ITEM)) {
-        fnLog('answers is covered, need do reload init');
+      const nodeAnswers = domA('.List .List .List-item');
+      const nodeList = dom('.List .List');
+      if ((nodeAnswers.length && !nodeAnswers[0].classList.contains(CLASS_ANSWER_ITEM)) && !nodeList) {
+        fnLog('回答内容被覆盖，等待重载...');
         myListenAnswer.init();
       }
     }, 500);

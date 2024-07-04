@@ -117,7 +117,7 @@ export const myListenAnswer = {
     setTimeout(() => {
       const nodeAnswers = domA('.List .List .List-item');
       const nodeList = dom('.List .List');
-      if ((nodeAnswers.length && !nodeAnswers[0].classList.contains(CLASS_ANSWER_ITEM)) && !nodeList) {
+      if ((nodeAnswers.length && !nodeAnswers[0].classList.contains(CLASS_ANSWER_ITEM)) || !nodeList) {
         fnLog('回答内容被覆盖，等待重载...');
         myListenAnswer.init();
       }

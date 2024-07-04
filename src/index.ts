@@ -62,6 +62,34 @@ import { INNER_CSS } from './web-resources';
         myListenAnswer.init();
       }, 0);
     }
+
+    const observer = new MutationObserver((MutationRecord) => {
+      const addedNode = MutationRecord[0].addedNodes[0];
+
+      const touchClose = (addedNode: Node) => {
+        if (!addedNode) return;
+        const domWrapper = (addedNode as HTMLElement).querySelector('.MobileModal-wrapper') as HTMLElement;
+        if (!domWrapper) return;
+        if (domWrapper.innerText.toLowerCase().includes('app')) {
+          const buttonClose = domWrapper.querySelector('.Button--secondary.Button--grey') as HTMLButtonElement;
+          if (buttonClose) {
+            buttonClose.click();
+            setTimeout(() => touchClose(addedNode), 100);
+          }
+        }
+      };
+
+      touchClose(addedNode);
+    });
+
+    observer.observe(document.body, {
+      characterData: false,
+      attributes: false,
+      attributeOldValue: false,
+      subtree: false,
+      childList: true,
+    });
+
     fnLog('function onDocumentStart init');
   }
   onDocumentStart();

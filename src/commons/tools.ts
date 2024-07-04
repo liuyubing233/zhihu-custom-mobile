@@ -1,26 +1,27 @@
-import { IMyElement, IPromisePercentCallbackParams } from '../types';
+import { IPromisePercentCallbackParams } from '../types';
 
 /** 获取元素 */
-export const dom = (n: string): IMyElement | undefined => document.querySelector(n) as IMyElement;
+export const dom = (n: string): HTMLElement | undefined => document.querySelector(n) as HTMLElement;
 
 /** 使用 Id 获取元素 */
-export const domById = (id: string): IMyElement | undefined => document.getElementById(id) as IMyElement;
+export const domById = (id: string): HTMLElement | undefined => document.getElementById(id) as HTMLElement;
 
 /** 获取所有元素 */
-export const domA = (n: string): NodeListOf<IMyElement> => document.querySelectorAll(n);
+export const domA = (n: string): NodeListOf<HTMLElement> => document.querySelectorAll(n);
 
 /** 创建元素 */
 export const domC = (name: string, attrObjs: Record<string, any>) => {
-  const node = document.createElement(name) as IMyElement;
+  const node = document.createElement(name) as HTMLElement;
   for (let key in attrObjs) {
+    // @ts-ignore
     node[key] = attrObjs[key];
   }
   return node;
 };
 
 /** 查找父级元素 */
-export const domP = (node: any, attrName: string, attrValue: string): IMyElement | undefined => {
-  const nodeP = node.parentElement as IMyElement;
+export const domP = (node: any, attrName: string, attrValue: string): HTMLElement | undefined => {
+  const nodeP = node.parentElement as HTMLElement;
   if (!nodeP) return undefined;
   if (!attrName || !attrValue) return nodeP;
   if (nodeP === document.body) return undefined;
@@ -118,7 +119,7 @@ export const copy = async (value: string) => {
     const domTextarea = domC('textArea', {
       value,
       style: 'width: 0px;position: fixed;left: -999px;top: 10px;',
-    });
+    }) as HTMLTextAreaElement;
     domTextarea.setAttribute('readonly', 'readonly');
     document.body.appendChild(domTextarea);
     domTextarea.select();
@@ -127,7 +128,7 @@ export const copy = async (value: string) => {
   }
 };
 
-const messageDoms: IMyElement[] = [];
+const messageDoms: HTMLElement[] = [];
 /**
  * 信息提示框
  * @param {string} value 信息内容
@@ -161,9 +162,9 @@ export const message = (value: string, t: number = 3000) => {
  * 创建透明按钮
  * @param {string} innerHTML 按钮内容
  * @param {string} extraCLass 按钮额外类名
- * @returns {IMyElement} 元素
+ * @returns {HTMLElement} 元素
  */
-export const createBtnTr = (innerHTML: string, extraCLass: string = ''): IMyElement => {
+export const createBtnTr = (innerHTML: string, extraCLass: string = ''): HTMLElement => {
   return domC('button', {
     innerHTML,
     className: `ctz-button ctz-button-transparent ${extraCLass}`,

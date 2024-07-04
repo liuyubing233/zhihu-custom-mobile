@@ -1,7 +1,6 @@
 import { myStorage } from '../commons/storage';
 import { dom, domC } from '../commons/tools';
 import { CLASS_TIME_ITEM } from '../configs';
-import { IMyElement } from '../types';
 
 /** 时间格式化 */
 export const timeFormatter = (time: string | number, formatter = 'YYYY-MM-DD HH:mm:ss') => {
@@ -24,7 +23,7 @@ export const timeFormatter = (time: string | number, formatter = 'YYYY-MM-DD HH:
 };
 
 /** 问题添加时间 */
-export const updateItemTime = (event: IMyElement) => {
+export const updateItemTime = (event: HTMLElement) => {
   const nodeCreated = event.querySelector('[itemprop="dateCreated"]') as HTMLMetaElement;
   const nodePublished = event.querySelector('[itemprop="datePublished"]') as HTMLMetaElement;
   const nodeModified = event.querySelector('[itemprop="dateModified"]') as HTMLMetaElement;
@@ -55,8 +54,8 @@ export const addTimeForQuestion = async () => {
   const { releaseTimeForQuestion } = await myStorage.getConfig();
   const className = 'ctz-question-time';
   if (dom(`.${className}`)) return;
-  const nodeCreated = dom('[itemprop="dateCreated"]');
-  const nodeModified = dom('[itemprop="dateModified"]');
+  const nodeCreated = dom('[itemprop="dateCreated"]') as HTMLMetaElement;
+  const nodeModified = dom('[itemprop="dateModified"]') as HTMLMetaElement;
   const nodeTitle = dom('.QuestionHeader-title');
   if (!(releaseTimeForQuestion && nodeCreated && nodeModified && nodeTitle)) return;
   const createTime = timeFormatter(nodeCreated.content);

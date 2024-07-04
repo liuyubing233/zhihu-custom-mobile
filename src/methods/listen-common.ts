@@ -1,7 +1,7 @@
 import { requestVote } from '../commons/request';
 import { domC, domP } from '../commons/tools';
 import { CLASS_COPY_LINK } from '../configs';
-import { EVoteType, EZhihuType, IConfig, IContentResType, IMyElement } from '../types';
+import { EVoteType, EZhihuType, IConfig, IContentResType } from '../types';
 import { IZhihuAttachment } from '../types/zhihu-answer.type';
 import { IZhihuRecommendDataTarget } from '../types/zhihu-list-response.type';
 import { myListenComment } from './listen-comment';
@@ -21,7 +21,7 @@ const CLASS_VOTE_DOWN = 'VoteButton--down';
 
 /** 监听图片操作 */
 export const addListenImage = (event: MouseEvent) => {
-  const target = event.target as IMyElement;
+  const target = event.target as HTMLImageElement;
   if (target.nodeName === 'IMG') {
     let src = target.src;
     if (target.classList.contains('ztext-gif')) {
@@ -36,7 +36,7 @@ export const addListenImage = (event: MouseEvent) => {
 /** 自定义按钮的处理方式 */
 export const eventListenButton = (event: MouseEvent) => {
   addListenImage(event);
-  const target = event.target as IMyElement;
+  const target = event.target as HTMLElement;
   Object.keys(eventMainObject).forEach((key) => {
     if (target.classList.contains(key)) {
       event.preventDefault();

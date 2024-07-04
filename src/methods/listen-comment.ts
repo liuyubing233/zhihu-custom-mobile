@@ -2,7 +2,6 @@ import { requestComment, requestCommentChild } from '../commons/request';
 import { myScroll } from '../commons/scroll-stop-on';
 import { dom, domById, domC, throttle } from '../commons/tools';
 import { ID_CTZ_COMMENT, ID_CTZ_COMMENT_BACK, ID_CTZ_COMMENT_CHILD, ID_CTZ_COMMENT_CLOSE } from '../configs';
-import { IMyElement } from '../types';
 import { myLoadingToast } from '../types/loading-toast';
 import { IAuthorTag, ICommentData, ICommentPaging } from '../types/zhihu-comment.type';
 import { requestCommentVote } from './../commons/request';
@@ -63,7 +62,7 @@ export const myListenComment: myListenComment = {
   initOperate: function () {
     const me = this as myListenComment;
     domById(ID_CTZ_COMMENT)?.addEventListener('click', async (event) => {
-      const nodeCurrent = event.target as IMyElement;
+      const nodeCurrent = event.target as HTMLInputElement;
       const { id, name } = nodeCurrent;
       // 关闭弹窗按钮
       if (id === ID_CTZ_COMMENT_CLOSE) {
@@ -150,7 +149,7 @@ export const myListenCommentChild: myListenComment = {
   initOperate: function () {
     const me = this;
     domById(ID_CTZ_COMMENT_CHILD)!.addEventListener('click', (event) => {
-      const nodeCurrent = event.target as IMyElement;
+      const nodeCurrent = event.target as HTMLElement;
       if (nodeCurrent.id === ID_CTZ_COMMENT_BACK) {
         dom(`#${ID_CTZ_COMMENT_CHILD} .ctz-comment-content`)!.scrollTop = 0;
         domById(ID_CTZ_COMMENT_CHILD)!.style.display = 'none';

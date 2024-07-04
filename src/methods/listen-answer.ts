@@ -40,7 +40,7 @@ export const myListenAnswer = {
       return;
     }
     const pageJsData = JSON.parse(nodeJsonData.innerText || '{}');
-    nodeQuestionMain!.addEventListener('click', (event) => {
+    nodeQuestionMain!.addEventListener('click', (event: MouseEvent) => {
       eventListenButton(event);
     });
     nodesStopPropagation(['.RichContent-inner', '.Question-main figure img', '.Question-main a'], [addListenImage]);

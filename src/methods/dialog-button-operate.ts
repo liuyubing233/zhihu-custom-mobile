@@ -39,7 +39,7 @@ export const myButtonOperate: Record<string, Function> = {
   },
   /** 导入配置 */
   configImport: async function () {
-    const nodeImport = dom('[name=textConfigImport]');
+    const nodeImport = dom('[name=textConfigImport]') as HTMLInputElement;
     const configImport = nodeImport ? nodeImport.value : '{}';
     const configThis = JSON.parse(configImport);
     const configPrev = await myStorage.getConfig();
@@ -53,13 +53,13 @@ export const myButtonOperate: Record<string, Function> = {
   },
   /** 自定义样式 */
   styleCustom: async function () {
-    const nodeText = dom('[name="textStyleCustom"]');
+    const nodeText = dom('[name="textStyleCustom"]') as HTMLInputElement;
     const value = nodeText ? nodeText.value : '';
     await myStorage.updateConfig('customizeCss', value);
     myCustomStyle.change(value);
   },
   styleCustomReset: async function () {
-    (dom('[name="textStyleCustom"]')!.value as string) = '';
+    ((dom('[name="textStyleCustom"]') as HTMLInputElement)!.value as string) = '';
     await myStorage.updateConfig('customizeCss', '');
     myCustomStyle.change('');
   },

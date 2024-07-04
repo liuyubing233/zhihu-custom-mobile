@@ -231,13 +231,37 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
   if (attachment && attachment.type === 'video') {
     const { hd, ld, sd } = attachment.video.videoInfo.playlist;
     contentHTML += `
-<iframe style="${styleFrame}" src="${hd.url || ld.url || sd.url}"></iframe>
-<a style="background: #f8f8fa;padding: 16px;display: block;" target="_blank" href="https://www.zhihu.com/zvideo/${
-      attachment.video.zvideoId
-    }?playTime=0.0&utm_id=0">
-  <div style="font-weight: bold;font-size: 16px;">${attachment.video.title}</div>
-  <div style="margin-top:4px;font-size:12px;">${attachment.video.playCount} 播放 · ${attachment.video.voteupCount} 赞同</div>
-</a>
+<div class="VideoAnswerPlayer">
+  <div class="VideoAnswerPlayer-video">
+    <div class="css-122y91a">
+      <div class="css-10klw3m">
+        <div class="_1fog6rx">
+          <div class="_1n8yr2n" tabindex="-1">
+            <div class="_190hxbq">
+              <video
+                class="_1k7bcr7"
+                preload="metadata"
+                playsinline=""
+                webkit-playsinline=""
+                x-webkit-airplay="deny"
+                src="${sd.url || ld.url || hd.url}"
+                style="object-fit: contain"
+                controls=""
+              ></video>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <a role="button" href="https://www.zhihu.com/zvideo/${attachment.video.zvideoId}?playTime=0.0&utm_id=0"
+    tabindex="0" aria-label="跳转到对应视频" class="VideoAnswerPlayer-stateBar" target="_blank">
+    <div class="VideoAnswerPlayer-state">
+      <div class="VideoAnswerPlayer-state--title">${attachment.video.title}</div>
+      <div class="VideoAnswerPlayer-state--data">${attachment.video.playCount} 播放 · ${attachment.video.voteupCount} 赞同</div>
+    </div>
+  </a>
+</div>
     `;
   }
 

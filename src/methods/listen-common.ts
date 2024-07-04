@@ -209,10 +209,11 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
     : target.content;
 
   const isMore = isVideo ? true : innerHTML.length > moreLength;
+
   const vDomContent = domC('div', { innerHTML });
   const styleFrame = 'border:none;width: calc(100vw - 32px);height: calc((100vw - 32px)/1.8);';
   vDomContent.querySelectorAll('img').forEach((item) => {
-    item.src = item.getAttribute('data-original') || item.getAttribute('data-actualsrc') || '';
+    item.src = item.getAttribute('data-original') || item.getAttribute('data-actualsrc') || item.src || '';
   });
   vDomContent.querySelectorAll('a.video-box').forEach((item) => {
     const nItem = item as HTMLAnchorElement;
@@ -225,6 +226,7 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
   });
   let contentHTML = vDomContent.innerHTML;
   vDomContent.remove();
+
   // 处理纯视频回答内容
   if (attachment && attachment.type === 'video') {
     const { hd, ld, sd } = attachment.video.videoInfo.playlist;

@@ -2504,6 +2504,31 @@
           myListenAnswer.init();
         }, 0);
       }
+      const observer = new MutationObserver((MutationRecord) => {
+        const addedNode = MutationRecord[0].addedNodes[0];
+        const touchClose = (addedNode2) => {
+          if (!addedNode2)
+            return;
+          const domWrapper = addedNode2.querySelector(".MobileModal-wrapper");
+          if (!domWrapper)
+            return;
+          if (domWrapper.innerText.toLowerCase().includes("app")) {
+            const buttonClose = domWrapper.querySelector(".Button--secondary.Button--grey");
+            if (buttonClose) {
+              buttonClose.click();
+              setTimeout(() => touchClose(addedNode2), 100);
+            }
+          }
+        };
+        touchClose(addedNode);
+      });
+      observer.observe(document.body, {
+        characterData: false,
+        attributes: false,
+        attributeOldValue: false,
+        subtree: false,
+        childList: true
+      });
       fnLog("function onDocumentStart init");
     }
     onDocumentStart();

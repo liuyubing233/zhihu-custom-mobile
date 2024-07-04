@@ -2191,9 +2191,8 @@
         this.checkListHeight();
       }
       setTimeout(() => {
-        const nodeAnswers = domA(".List .List .List-item");
-        const nodeList = dom(".List .List");
-        if (nodeAnswers.length && !nodeAnswers[0].classList.contains(CLASS_ANSWER_ITEM) || !nodeList) {
+        const nodeAnswers = domA(".List-item");
+        if (nodeAnswers.length && !nodeAnswers[0].classList.contains(CLASS_ANSWER_ITEM)) {
           fnLog("回答内容被覆盖，等待重载...");
           myListenAnswer.init();
         }

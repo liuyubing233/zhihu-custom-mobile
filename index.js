@@ -2066,6 +2066,9 @@
         message("链接复制成功");
       }
     });
+    dom("#root").addEventListener("click", (event) => {
+      eventListenButton(event);
+    });
   };
   var Store = class {
     constructor() {
@@ -2124,9 +2127,6 @@
         return;
       }
       const pageJsData = JSON.parse(nodeJsonData.innerText || "{}");
-      nodeQuestionMain.addEventListener("click", (event) => {
-        eventListenButton(event);
-      });
       nodesStopPropagation([".RichContent-inner", ".Question-main figure img", ".Question-main a"], [addListenImage]);
       nodesStopPropagation([".RichContent-inner p"], [], "copy");
       const nodeQuestionAnswerContent = dom(".QuestionAnswer-content");
@@ -2319,9 +2319,6 @@
       const nodeTopStoryRecommend = dom(".TopstoryMain") || dom(".NotLoggedInTopstory");
       if (!nodeTopStoryRecommend)
         return;
-      nodeTopStoryRecommend.addEventListener("click", async function(event) {
-        eventListenButton(event);
-      });
       const nodeJsonData = domById("js-initialData");
       const config = await myStorage.getConfig();
       if (!nodeJsonData) {

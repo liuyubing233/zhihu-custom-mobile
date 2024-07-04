@@ -6,11 +6,10 @@ import { IZhihuRecommendData } from '../types/zhihu-list-response.type';
 import {
   CONTENT_TYPE_OBJ,
   createHTMLCopyLink,
-  eventListenButton,
   innerHTMLContentItemMeta,
   innerHTMLRichInnerAndAction,
   openLoading,
-  removeByBox,
+  removeByBox
 } from './listen-common';
 
 /** 加载推荐列表 */
@@ -20,10 +19,6 @@ export const myListenListRecommend = {
   init: async function () {
     const nodeTopStoryRecommend = dom('.TopstoryMain') || dom('.NotLoggedInTopstory');
     if (!nodeTopStoryRecommend) return;
-    nodeTopStoryRecommend.addEventListener('click', async function (event) {
-      eventListenButton(event);
-    });
-
     const nodeJsonData = domById('js-initialData');
     const config = await myStorage.getConfig();
     if (!nodeJsonData) {

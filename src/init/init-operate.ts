@@ -4,6 +4,7 @@ import { CLASS_COPY_LINK, CLASS_INPUT_CHANGE, CLASS_INPUT_CLICK } from '../confi
 import { myButtonOperate } from '../methods/dialog-button-operate';
 import { fnChanger } from '../methods/fn-changer';
 import { myListenComment, myListenCommentChild } from '../methods/listen-comment';
+import { eventListenButton } from '../methods/listen-common';
 import { myMenu, myMenu2 } from '../methods/menu';
 import { myPreview } from '../methods/preview';
 
@@ -52,5 +53,9 @@ export const initOperate = () => {
       copy(link);
       message('链接复制成功');
     }
+  });
+
+  dom('#root')!.addEventListener('click', (event: MouseEvent) => {
+    eventListenButton(event);
   });
 };

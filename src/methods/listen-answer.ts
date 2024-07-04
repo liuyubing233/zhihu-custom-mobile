@@ -8,12 +8,11 @@ import {
   CLASS_BTN_CLOSE,
   addListenImage,
   createHTMLCopyLink,
-  eventListenButton,
   innerHTMLContentItemMeta,
   innerHTMLRichInnerAndAction,
   openEnd,
   openLoading,
-  removeByBox,
+  removeByBox
 } from './listen-common';
 
 const CLASS_ANSWER_ITEM = 'ctz-answer-item';
@@ -40,9 +39,6 @@ export const myListenAnswer = {
       return;
     }
     const pageJsData = JSON.parse(nodeJsonData.innerText || '{}');
-    nodeQuestionMain!.addEventListener('click', (event: MouseEvent) => {
-      eventListenButton(event);
-    });
     nodesStopPropagation(['.RichContent-inner', '.Question-main figure img', '.Question-main a'], [addListenImage]);
     nodesStopPropagation(['.RichContent-inner p'], [], 'copy'); // 去除禁止复制
     const nodeQuestionAnswerContent = dom('.QuestionAnswer-content');

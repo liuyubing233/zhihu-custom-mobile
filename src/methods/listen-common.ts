@@ -8,8 +8,6 @@ import { myListenComment } from './listen-comment';
 import { myPreview } from './preview';
 import { createTimeHTML } from './time';
 
-/** 自定义展开按钮类名 */
-export const CLASS_BTN_EXPEND = 'ctz-n-button-expend';
 /** 自定义收起按钮类名 */
 export const CLASS_BTN_CLOSE = 'ctz-n-button-close';
 /** 自定义评论按钮类名 */
@@ -46,13 +44,15 @@ export const eventListenButton = (event: MouseEvent) => {
   });
 };
 
+// Button ContentItem-action ContentItem-rightButton FEfUrdfMIKpQDJDqkjte Button--plain fEPKGkUK5jyc4fUuT0QP
+
 const eventMainObject: Record<string, Function> = {
   /** 展开更多 */
-  [CLASS_BTN_EXPEND]: (currentNode: HTMLElement) => {
+  'ContentItem-expandButton': (currentNode: HTMLElement) => {
     const nodeRich = domP(currentNode, 'class', 'RichContent')!;
     const nodeRichInner = nodeRich.querySelector('.RichContent-inner') as HTMLElement;
     const nodeBtnOther = nodeRich.querySelector(`.${CLASS_BTN_CLOSE}`) as HTMLElement;
-    const nodeBtnTHis = nodeRich.querySelector(`.${CLASS_BTN_EXPEND}`) as HTMLElement;
+    const nodeBtnTHis = nodeRich.querySelector(`.ContentItem-expandButton`) as HTMLElement;
     nodeRich.classList.remove('is-collapsed');
     nodeRichInner.style.maxHeight = 'max-content';
     nodeBtnOther.style.display = 'block';
@@ -62,7 +62,7 @@ const eventMainObject: Record<string, Function> = {
   [CLASS_BTN_CLOSE]: (currentNode: HTMLElement) => {
     const nodeRich = domP(currentNode, 'class', 'RichContent')!;
     const nodeRichInner = nodeRich.querySelector('.RichContent-inner') as HTMLElement;
-    const nodeBtnOther = nodeRich.querySelector(`.${CLASS_BTN_EXPEND}`) as HTMLElement;
+    const nodeBtnOther = nodeRich.querySelector(`.ContentItem-expandButton`) as HTMLElement;
     const nodeActions = nodeRich.querySelector('.ContentItem-actions') as HTMLElement;
     const nodeBtnTHis = nodeRich.querySelector(`.${CLASS_BTN_CLOSE}`) as HTMLElement;
     nodeActions.style.cssText = '';
@@ -286,9 +286,9 @@ export const innerHTMLRichInnerAndAction = (data: any, options?: { moreLength?: 
     <button class="ctz-n-button-comment Button Button--plain Button--withIcon Button--withLabel">评论 ${target.commentCount}</button>
     ${isMore ? '<button class="ctz-n-button-close Button" style="display: none">收起 ▲</button>' : ''}
   </div>
-  ${isMore ? '<button class="ctz-n-button-expend">展开更多 ▼</button>' : ''}
-</div>
-`;
+  ${isMore ? '<button class="Button ContentItem-rightButton ContentItem-expandButton Button--plain">展开更多 ▼</button>' : ''}
+  </div>
+  `;
 };
 
 export const createHTMLCopyLink = (link: string) =>

@@ -42,7 +42,7 @@ const myBackground = {
       `,.css-10u695f,.css-r4op92` +
       `{color: ${color}!important}`;
     const linkText =
-      `.RelevantQuery li,.modal-dialog a,.zhi a,.ctz-n-button-expend,.VoteButton` +
+      `.RelevantQuery li,.modal-dialog a,.zhi a,.VoteButton` +
       `,.ContentItem-more,.QuestionMainAction,a.UserLink-link,.RichContent--unescapable.is-collapsed .ContentItem-rightButton,.ContentItem-title a:hover` +
       `,.css-b7erz1,.css-1vbwaf6,.css-1jj6qre,.css-jf1cpf,.css-vphnkw,.css-1icigob` +
       `{color: deepskyblue!important;}`;

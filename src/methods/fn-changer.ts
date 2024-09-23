@@ -4,6 +4,7 @@ import { INPUT_NAME_THEME, INPUT_NAME_THEME_DARK, INPUT_NAME_ThEME_LIGHT } from 
 import { loadBackground, onUseThemeDark } from './background';
 import { myHidden } from './hidden';
 import { addTimeForArticle, addTimeForQuestion } from './time';
+import { fnHaveTopSearch } from './top-search';
 import { myVersion } from './version';
 
 /** 更改编辑器方法 */
@@ -23,6 +24,7 @@ export const fnChanger = async (ev: HTMLInputElement) => {
     [INPUT_NAME_THEME_DARK]: changeBackground,
     releaseTimeForQuestion: addTimeForQuestion,
     releaseTimeForArticle: addTimeForArticle,
+    haveTopSearch: fnHaveTopSearch,
   };
   await myStorage.updateConfig(name, type === 'checkbox' ? checked : value);
   const nodeName = domById(name);

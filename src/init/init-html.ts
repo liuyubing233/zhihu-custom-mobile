@@ -4,11 +4,13 @@ import { BASIC_SHOW_CONTENT } from '../configs/basic-show';
 import { addBackgroundElement } from '../methods/background';
 import { myMenu } from '../methods/menu';
 import { openButtonPosition } from '../methods/open-button-position';
+import { fnHaveTopSearch } from '../methods/top-search';
 import { INNER_HTML, INNER_VERSION } from '../web-resources';
 
 /** 加载基础元素及绑定方法 */
 export const initHTML = () => {
   document.body.appendChild(domC('div', { id: 'CTZ_MAIN', innerHTML: INNER_HTML }));
+  fnHaveTopSearch()
   openButtonPosition();
   dom('.ctz-version')!.innerText = `version: ${INNER_VERSION}`;
   dom('.ctz-menu')!.innerHTML = HEADER.map(({ href, value }) => `<a href="${href}"><span>${value}</span></a>`).join('');

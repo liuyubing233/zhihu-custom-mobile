@@ -261,4 +261,6 @@ export interface IConfig extends IConfigHidden, IConfigFilter {
   commentHeaderToBottom?: boolean;
   /** 显示IP */
   showIP?: boolean;
+  /** 是否显示顶部搜索 */
+  haveTopSearch?: boolean;
 }

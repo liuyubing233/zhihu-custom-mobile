@@ -107,7 +107,7 @@ const myBackground = {
     `,.zu-autocomplete-row-label,.ac-row.zu-autocomplete-row-search-link,.PostItem,.Recommendations-Main,.ErrorPage` +
     `,.css-1e7fksk,.css-1gfesro,.css-ud510h,.css-vb0amv,.css-t89z5u,.css-u3vsx3>div,.css-5k4zcx,.css-13heq6w,.css-13heq6w>a,.css-1eltcns,.css-yoby3j,.css-l63y2t,.css-173civf,.css-1nalx0p,.css-mn9570` +
     `,.css-4r7szo,.css-vkey2q,.css-ugzr12,.css-6v1k3,.css-1xj1964,.css-ggid2,.css-rhbxt0,.css-1j23ebo,.css-7wvdjh,.css-kt4t4n` +
-    `,#CTZ_COMMENT,#CTZ_COMMENT_CHILD` +
+    `,#CTZ_COMMENT,#CTZ_COMMENT_CHILD, #CTZ_TOP_SEARCH` +
     `,.mobile-top-nav-popup .top-nav-dropdown,.zm-item-tag,.mobile-top-nav-popup .top-nav-dropdown a,.Topbar,.AutoInviteItem-wrapper--mobile`,
   useCSSJustBGC2: `.slide-up`,
   /** 背景色透明的元素名称 */

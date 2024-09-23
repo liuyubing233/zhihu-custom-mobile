@@ -50,7 +50,8 @@ export const CONFIG_DEFAULT: IConfig = {
   showQuestionLog: true,
   showAllContent: true,
   showToAnswer: true,
-  showIP: true
+  showIP: true,
+  haveTopSearch: true,
 };
 
 /** 缓存的历史记录数量 */

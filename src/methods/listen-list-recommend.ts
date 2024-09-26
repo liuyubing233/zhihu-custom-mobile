@@ -82,7 +82,7 @@ const addHistoryItem = async (data: IZhihuRecommendData) => {
   myStorage.setHistoryItem('list', historyList);
 };
 
-const createListHTML = (data: IZhihuRecommendData[], config: IConfig) => data.map((i) => createListItemHTML(i, config)).join('');
+const createListHTML = (data: IZhihuRecommendData[], config: IConfig) => data.filter(i => i.target).map((i) => createListItemHTML(i, config)).join('');
 
 const createListItemHTML = (data: IZhihuRecommendData, config: IConfig) => {
   const { releaseTimeForList, copyAnswerLink, showToAnswer, removeItemAboutVideo, removeItemAboutArticle } = config;

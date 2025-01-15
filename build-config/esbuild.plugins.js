@@ -2,36 +2,46 @@ const fs = require('fs');
 const path = require('path');
 const less = require('less');
 
-/** 加载 HTML 和 CSS 资源 */
-const envInnerResources = {
-  name: 'envInnerResources',
+const envLoad = {
+  name: 'envLoad',
   setup(build) {
-    build.onLoad({ filter: /web-resources.ts/ }, async (args) => {
-      const filenameLess = path.join(__dirname, '../src/styles/index.less');
-      const contentLess = fs.readFileSync(filenameLess, 'utf-8');
-      const res = await less.render(contentLess, { compress: true, filename: filenameLess });
-      if (!res.css) {
-        throw Error('less转css失败');
-      }
-      const NAME_HTML = 'INNER_HTML';
-      const NAME_CSS = 'INNER_CSS';
-      const NAME_VERSION = 'INNER_VERSION'
-      const version = process.env.npm_package_version
-      const pathHTML = path.join(__dirname, '../src/index.html');
-      const REGEXP_REPLACE = /\s*\n\s*/g; // 删除回车及前后空格
-      const REGEXP_REPLACE_COMMIT = /\<\!\-\-[^(\<\!)]*\-\-\>/g; // 删除HTML注释
-      const strHTML = fs.readFileSync(pathHTML).toString();
+    build.onLoad({ filter: /.ts/ }, async (args) => {
       const prevContent = fs.readFileSync(args.path).toString();
-      const nRegExp = (name) => new RegExp('(' + name + '\\s\\=\\s`)()(`)');
-      const regexpHTML = nRegExp(NAME_HTML);
-      const innerHTML = strHTML.replace(REGEXP_REPLACE, '').replace(REGEXP_REPLACE_COMMIT, '');
-      const regexpCSS = nRegExp(NAME_CSS);
-      const innerCSS = res.css.replace(REGEXP_REPLACE, '');
-      return { contents: prevContent.replace(regexpHTML, `$1${innerHTML}$3`).replace(regexpCSS, `$1${innerCSS}$3`).replace(nRegExp(NAME_VERSION), `$1${version}$3`) };
+
+      if (args.path.includes('web-resources.ts')) {
+        // 加载 HTML 和 CSS 资源
+        const filenameLess = path.join(__dirname, '../src/styles/index.less');
+        const contentLess = fs.readFileSync(filenameLess, 'utf-8');
+        const res = await less.render(contentLess, { compress: true, filename: filenameLess });
+        if (!res.css) {
+          throw Error('less转css失败');
+        }
+        const NAME_HTML = 'INNER_HTML';
+        const NAME_CSS = 'INNER_CSS';
+        const NAME_VERSION = 'INNER_VERSION';
+        const version = process.env.npm_package_version;
+        const pathHTML = path.join(__dirname, '../src/index.html');
+        const REGEXP_REPLACE = /\s*\n\s*/g; // 删除回车及前后空格
+        const REGEXP_REPLACE_COMMIT = /\<\!\-\-[^(\<\!)]*\-\-\>/g; // 删除HTML注释
+        const strHTML = fs.readFileSync(pathHTML).toString();
+        const prevContent = fs.readFileSync(args.path).toString();
+        const nRegExp = (name) => new RegExp('(' + name + '\\s\\=\\s`)()(`)');
+        const regexpHTML = nRegExp(NAME_HTML);
+        const innerHTML = strHTML.replace(REGEXP_REPLACE, '').replace(REGEXP_REPLACE_COMMIT, '');
+        const regexpCSS = nRegExp(NAME_CSS);
+        const innerCSS = res.css.replace(REGEXP_REPLACE, '');
+        return {
+          contents: prevContent.replace(regexpHTML, `$1${innerHTML}$3`).replace(regexpCSS, `$1${innerCSS}$3`).replace(nRegExp(NAME_VERSION), `$1${version}$3`),
+          loader: 'ts',
+        };
+      }
+
+      const REGEXP_ANNOTATE_1 = /\/\*\*[\s\S]*?\*\//g; // 匹配 /** */ 格式注释
+      const REGEXP_ANNOTATE_2 = /\s\/\/.*/g; // 匹配 // xxx 格式注释
+      return { contents: prevContent.replace(REGEXP_ANNOTATE_1, '').replace(REGEXP_ANNOTATE_2, ''), loader: 'ts' };
     });
   },
 };
-
 /** 打包完成后删除路径注释并生成 index.js */
 const envEnd = {
   name: 'envEnd',
@@ -46,4 +56,4 @@ const envEnd = {
   },
 };
 
-module.exports = { envInnerResources, envEnd };
+module.exports = { envLoad, envEnd };

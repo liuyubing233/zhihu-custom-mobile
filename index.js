@@ -925,7 +925,6 @@
         }
         function a2(t3, e3, n3, r3, o4, a3) {
           return i2((u2 = i2(i2(e3, t3), i2(r3, a3))) << (c3 = o4) | u2 >>> 32 - c3, n3);
-          var u2, c3;
         }
         function u(t3, e3, n3, r3, o4, i3, u2) {
           return a2(e3 & n3 | ~e3 & r3, t3, e3, o4, i3, u2);
@@ -2222,7 +2221,7 @@
   <div
     class="ContentItem AnswerItem ctz-self-item"
     data-za-index="0"
-    data-zop='{"authorName":"${target.author.name}","itemId":${target.id},"title":"${target.question.title}","type":"${targetType}"}'
+    data-zop='{"authorName":"${target.author.name}","itemId":"${target.id}","title":"${target.question.title}","type":"${targetType}"}'
     name="${target.id}"
     itemprop="suggestedAnswer"
     itemtype="http://schema.org/Answer"
@@ -2349,7 +2348,7 @@
   >
     <div
       class="ContentItem ${contentItem}"
-      data-zop='{"authorName":"${target.author.name}","itemId":${target.id},"title":"${itemTitle}","type":"${type}"}'
+      data-zop='{"authorName":"${target.author.name}","itemId":"${target.id}","title":"${itemTitle}","type":"${type}"}'
       name="${target.id}"
       itemprop="${type}"
       itemtype="http://schema.org/${nType}"

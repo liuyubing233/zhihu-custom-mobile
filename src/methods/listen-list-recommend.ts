@@ -116,7 +116,7 @@ const createListItemHTML = (data: IZhihuRecommendData, config: IConfig) => {
   >
     <div
       class="ContentItem ${contentItem}"
-      data-zop='{"authorName":"${target.author.name}","itemId":${target.id},"title":"${itemTitle}","type":"${type}"}'
+      data-zop='{"authorName":"${target.author.name}","itemId":"${target.id}","title":"${itemTitle}","type":"${type}"}'
       name="${target.id}"
       itemprop="${type}"
       itemtype="http://schema.org/${nType}"

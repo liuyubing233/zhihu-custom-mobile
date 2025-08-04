@@ -198,7 +198,7 @@ const createListItemHTML = (data: IZhihuAnswerDataItem, config: IConfig) => {
   <div
     class="ContentItem AnswerItem ctz-self-item"
     data-za-index="0"
-    data-zop='{"authorName":"${target.author.name}","itemId":${target.id},"title":"${target.question.title}","type":"${targetType}"}'
+    data-zop='{"authorName":"${target.author.name}","itemId":"${target.id}","title":"${target.question.title}","type":"${targetType}"}'
     name="${target.id}"
     itemprop="suggestedAnswer"
     itemtype="http://schema.org/Answer"
